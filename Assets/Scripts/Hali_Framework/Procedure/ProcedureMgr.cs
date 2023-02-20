@@ -107,5 +107,12 @@ namespace Hali_Framework
 
             return _procedureFsm.GetState<T>();
         }
+
+        /// <summary>
+        /// 改变当前流程
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public void ChangeState<T>() where T : ProcedureBase
+            => _procedureFsm.ChangeState<T>();
     }
 }

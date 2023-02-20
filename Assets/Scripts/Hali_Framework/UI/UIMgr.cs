@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 namespace Hali_Framework
 {
@@ -269,7 +267,7 @@ namespace Hali_Framework
         public void HidePanel(PanelEntity panel, object userData = null, bool isShutdown = false)
         {
             if (panel == null)
-                throw new Exception("Hide panel is null.");
+                Debug.Log("Hide panel is null.");
             UIGroup group = panel.UIGroup;
             if (group == null)
                 throw new Exception("UI group is invalid.");
@@ -284,12 +282,15 @@ namespace Hali_Framework
             }
             else
             {
-                panel.AddHideCompleteListener(() =>
-                {
-                    group.Refresh();
-                    _recycleQueue.Enqueue(panel);
-                });
+                panel.AddHideCompleteListener(OnPanelHideComplete);
             }
+        }
+
+        private void OnPanelHideComplete(PanelEntity panelEntity)
+        {
+            panelEntity.UIGroup.Refresh();
+            _recycleQueue.Enqueue(panelEntity);
+            panelEntity.RemoveHideCompleteListener(OnPanelHideComplete);
         }
 
         /// <summary>
@@ -347,7 +348,7 @@ namespace Hali_Framework
             group.Refresh();
             panel.OnRefocus(userData);
         }
-        
+
 
         private void InternalShowPanel(int serialId, string assetName, UIGroup uiGroup, GameObject obj, bool isNew,
             object userData, Action<PanelBase> callback)

@@ -22,5 +22,12 @@ namespace Hali_Framework
         public const string UIGROUP_MID = "Middle";
         public const string UIGROUP_TOP = "Top";
         public const string UIGROUP_SYS = "System";
+        
+        //Res
+        public const string RES_GROUP_BEGIN = "Begin";
+        public const string RES_GROUP_GAME = "Game";
+        
+        //Layer
+        public const string ROLE_LAYER = "Role";
     }
 }

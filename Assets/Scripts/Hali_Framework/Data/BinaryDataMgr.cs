@@ -182,5 +182,15 @@ namespace Hali_Framework
                 return _dataDic[tableName] as T;
             return null;
         }
+
+        public V GetInfo<T, K, V>(K index) where T : BaseContainer
+        {
+            Dictionary<K,V> dic = GetTable<T>().GetDic() as Dictionary<K, V>;
+            
+            if (dic == null) return default;
+            if (dic.TryGetValue(index, out V val))
+                return val;
+            return default;
+        }
     }
 }

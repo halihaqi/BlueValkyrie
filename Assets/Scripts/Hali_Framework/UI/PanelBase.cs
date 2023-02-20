@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -155,6 +157,35 @@ namespace Hali_Framework
 
         #region UI事件
 
+        /// <summary>
+        /// 添加自定义UI事件
+        /// </summary>
+        /// <param name="control">控件</param>
+        /// <param name="type">事件类型</param>
+        /// <param name="callback">事件</param>
+        protected void AddCustomListener(UIBehaviour control, EventTriggerType type,
+            UnityAction<BaseEventData> callback)
+        {
+            if (control == null)
+                throw new Exception($"{Name} add custom listener control is null");
+            EventTrigger trigger = control.GetComponent<EventTrigger>();
+            trigger ??= control.gameObject.AddComponent<EventTrigger>();
+
+            EventTrigger.Entry entry = new EventTrigger.Entry();
+            entry.eventID = type;
+            entry.callback.AddListener(callback);
+            trigger.triggers.Add(entry);
+        }
+
+        protected void AddCustomListeners(UIBehaviour[] controls, EventTriggerType type,
+            UnityAction<BaseEventData> callback)
+        {
+            for (int i = 0; i < controls.Length; i++)
+            {
+                AddCustomListener(controls[i], type, callback);
+            }
+        }
+
         protected virtual void OnClick(string btnName){}
 
         protected virtual void OnToggleValueChanged(string togName, bool isToggle){}
@@ -194,6 +225,24 @@ namespace Hali_Framework
             }
             Debug.Log($"{Name} no UIControl named:{name}");
             return null;
+        }
+
+        /// <summary>
+        /// 获得所有该种类UI控件
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public List<T> GetControls<T>() where T : UIBehaviour
+        {
+            List<T> list = new List<T>();
+            foreach (var control in _controlDic.Values)
+            {
+                T item = control.Find(o => o is T) as T;
+                if(item != null)
+                    list.Add(item);
+            }
+
+            return list;
         }
         
         /// <summary>

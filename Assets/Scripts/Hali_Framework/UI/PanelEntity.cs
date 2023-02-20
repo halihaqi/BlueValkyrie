@@ -20,7 +20,7 @@ namespace Hali_Framework
         private CanvasGroup _canvasGroup;
         private const float FADE_SPEED = 0.01f;
         private Action<PanelEntity> _showCompleteEvent;
-        private Action _hideCompleteEvent;
+        private Action<PanelEntity> _hideCompleteEvent;
 
         #region 属性
 
@@ -83,12 +83,18 @@ namespace Hali_Framework
         {
             _panelLogic.OnShowComplete();
             _showCompleteEvent?.Invoke(this);
+            EventMgr.Instance.TriggerEvent(ClientEvent.SHOW_PANEL_COMPLETE, this);
         }
 
         public void AddShowCompleteListener(Action<PanelEntity> callback)
         {
             _showCompleteEvent -= callback;
             _showCompleteEvent += callback;
+        }
+
+        public void RemoveShowCompleteListener(Action<PanelEntity> callback)
+        {
+            _showCompleteEvent -= callback;
         }
         
         public void OnUpdate(float elapseSeconds, float realElapseSeconds)
@@ -111,13 +117,19 @@ namespace Hali_Framework
         private void OnHideComplete()
         {
             _panelLogic.OnHideComplete();
-            _hideCompleteEvent?.Invoke();
+            _hideCompleteEvent?.Invoke(this);
+            EventMgr.Instance.TriggerEvent(ClientEvent.HIDE_PANEL_COMPLETE, this);
         }
 
-        public void AddHideCompleteListener(Action callback)
+        public void AddHideCompleteListener(Action<PanelEntity> callback)
         {
             _hideCompleteEvent -= callback;
             _hideCompleteEvent += callback;
+        }
+
+        public void RemoveHideCompleteListener(Action<PanelEntity> callback)
+        {
+            _hideCompleteEvent -= callback;
         }
 
         public void OnRecycle()

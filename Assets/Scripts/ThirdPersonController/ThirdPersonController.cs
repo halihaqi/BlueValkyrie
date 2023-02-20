@@ -1,6 +1,6 @@
+using System;
 using Hali_Framework;
 using UnityEngine;
-using UnityEngine.Events;
 
 [RequireComponent(typeof(CharacterController))]
 public class ThirdPersonController : MonoBehaviour
@@ -10,20 +10,28 @@ public class ThirdPersonController : MonoBehaviour
     public float sprintSpeed = 5;
     public float rotateSpeed = 50;
     public float rotateSmoothTime = 0.12f;
+    public float jumpForce = 1;
+    public float jumpTimeout = 0.5f;
 
     [Header("Gravity")]
     public float gravity = -15;
 
     [Header("FollowCamera")]
+    public Camera followCamera;
+    public Transform followTarget;
     public float topClamp = 70;//相机最大仰角
     public float bottomClamp = -30;//相机最大俯角
     public bool isFilpPitch = true;
 
     [Header("GroundCheck")]
-    public bool isGrounded = true;
     public float groundOffset = -0.29f;
     public float groundRadius = 0.28f;
     public LayerMask groundLayers = 1;
+    
+    [Header("HeadCheck")]
+    public float headOffset = 0.29f;
+    public float headRadius = 0.28f;
+    public LayerMask headLayers = 1;
 
     //输入参数
     private Vector2 _inputLook;
@@ -35,29 +43,43 @@ public class ThirdPersonController : MonoBehaviour
     private float _rotVelocity;
     private float _verticalVelocity;
     private float _terminalVelocity = 53;
+    
+    //跳跃参数
+    private bool _isGrounded = true;
+    private float _jumpTimeoutDelta;
 
     //相机参数
-    private Camera followCamera;
-    private Transform followTarget;
+    private ThirdPersonCam _thirdPersonCam;
     private float _camTargetYaw;
     private float _camTargetPitch;
 
-    //输入事件监听
-    protected UnityAction<KeyCode> inputEvent;
-
     //Component
-    //protected Animator anim;
-    protected CharacterController cc;
+    private bool _hasAnim;
+    private Animator _anim;
+    private CharacterController _cc;
+    private static readonly int Speed = Animator.StringToHash("speed");
+    private static readonly int Ground = Animator.StringToHash("ground");
+    private static readonly int Jump = Animator.StringToHash("jump");
 
     protected virtual void Awake()
     {
         //获取组件
-        //anim = GetComponent<Animator>();
-        cc = GetComponent<CharacterController>();
-        //找到相机跟随点
-        followTarget = transform.Find("FollowPos");
-        followCamera = Camera.main;
-        followCamera.GetComponent<ThirdPersonCam>().followTarget = followTarget;
+        
+        _anim = GetComponentInChildren<Animator>();
+        _cc = GetComponent<CharacterController>();
+        
+        //初始化跟随相机
+        if (followCamera == null)
+            throw new Exception("Player has no follow camera.");
+        if (!followCamera.TryGetComponent(out _thirdPersonCam))
+            _thirdPersonCam = followCamera.gameObject.AddComponent<ThirdPersonCam>();
+        if (_thirdPersonCam.followTarget == null)
+        {
+            _thirdPersonCam.followTarget = followTarget;
+            if (_thirdPersonCam.followTarget == null)
+                throw new Exception("Player camera has no follow target.");
+        }
+
         //打开输入监听
         InputMgr.Instance.OpenOrClose(true);
     }
@@ -70,8 +92,10 @@ public class ThirdPersonController : MonoBehaviour
 
     protected virtual void Update()
     {
-        Gravity();
-        GroundCheck();
+        _hasAnim = _anim != null;
+        
+        JumpAndGravity();
+        GroundHeadCheck();
         UpdateInput();
         Move();
         CameraTargetRotation();       
@@ -114,36 +138,66 @@ public class ThirdPersonController : MonoBehaviour
         Vector3 targetDir = Quaternion.Euler(0, _targetRot, 0) * Vector3.forward;
 
         //移动人物,加上垂直速度
-        cc.Move((targetDir.normalized + Vector3.up * _verticalVelocity) * targetSpeed * Time.deltaTime);
+        _cc.Move(targetDir.normalized * (targetSpeed * Time.deltaTime) + Vector3.up * (_verticalVelocity * Time.deltaTime));
 
         //移动动画
-        //anim.SetFloat("Speed", Input.GetKey(KeyCode.LeftShift) ? inputDir.magnitude : inputDir.magnitude / 2);
+        if(_hasAnim)
+            _anim.SetFloat(Speed, Input.GetKey(KeyCode.LeftShift) ? inputDir.magnitude : inputDir.magnitude / 2);
     }
 
     /// <summary>
     /// 地面检测
     /// </summary>
-    private void GroundCheck()
+    private void GroundHeadCheck()
     {
-        Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - groundOffset, transform.position.z);
-        isGrounded = Physics.CheckSphere(spherePosition, groundRadius, groundLayers, QueryTriggerInteraction.Ignore);
+        var pos = transform.position;
+        Vector3 feetPosition =
+            new Vector3(pos.x, pos.y - groundOffset, pos.z);
+        _isGrounded = Physics.CheckSphere(feetPosition, groundRadius, groundLayers, QueryTriggerInteraction.Ignore);
+        
+        //头部检测，如果撞到头顶，跳跃速度归零
+        Vector3 headPosition =
+            new Vector3(pos.x, pos.y + headOffset, pos.z);
+        if (Physics.CheckSphere(headPosition, headRadius, headLayers, QueryTriggerInteraction.Ignore))
+            _verticalVelocity = 0f;
     }
 
     /// <summary>
     /// 重力
     /// </summary>
-    private void Gravity()
+    private void JumpAndGravity()
     {
-        if (!isGrounded)
+        //Jump
+        if (_isGrounded)
         {
-            //如果没有达到垂直速度阈值，就会一直加垂直速度
-            if (_verticalVelocity < _terminalVelocity)
-                _verticalVelocity += gravity * Time.deltaTime;
+            if (_hasAnim)
+                _anim.SetBool(Ground, true);
+
+            if (_verticalVelocity < 0)
+                _verticalVelocity = -2f;
+            
+            //jump
+            if (Input.GetKeyDown(KeyCode.Space) && _jumpTimeoutDelta <= 0)
+            {
+                _verticalVelocity = Mathf.Sqrt(jumpForce * -2f * gravity);
+                
+                if(_hasAnim)
+                    _anim.SetTrigger(Jump);
+            }
+
+            if (_jumpTimeoutDelta >= 0)
+                _jumpTimeoutDelta -= Time.deltaTime;
         }
         else
         {
-            _verticalVelocity = 0;
+            _jumpTimeoutDelta = jumpTimeout;
+            if(_hasAnim)
+                _anim.SetBool(Ground, false);
         }
+        
+        //Gravity
+        if (_verticalVelocity < _terminalVelocity)
+            _verticalVelocity += gravity * Time.deltaTime;
     }
 
     /// <summary>
@@ -161,7 +215,7 @@ public class ThirdPersonController : MonoBehaviour
         _camTargetYaw = TransformUtils.ClampAngle(_camTargetYaw, float.MinValue, float.MaxValue);
         _camTargetPitch = TransformUtils.ClampAngle(_camTargetPitch, bottomClamp, topClamp);
         //移动相机目标点
-        followTarget.rotation = Quaternion.Euler(_camTargetPitch, _camTargetYaw, 0);
+        _thirdPersonCam.followTarget.rotation = Quaternion.Euler(_camTargetPitch, _camTargetYaw, 0);
     }
 
     private void OnDrawGizmosSelected()
@@ -169,11 +223,20 @@ public class ThirdPersonController : MonoBehaviour
         //如果在地面为绿色，如果不在为红色
         Color groundedColorGreen = new Color(0, 1, 0, 0.35f);
         Color airColorRed = new Color(1, 0, 0, 0.35f);
-        Gizmos.color = isGrounded ? groundedColorGreen : airColorRed;
+        Gizmos.color = _isGrounded ? groundedColorGreen : airColorRed;
 
         //画球
-        Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - groundOffset, transform.position.z);
-        Gizmos.DrawSphere(spherePosition, groundRadius);
+        var pos = transform.position;
+        Vector3 feetPosition =
+            new Vector3(pos.x, pos.y - groundOffset, pos.z);
+        Gizmos.DrawSphere(feetPosition, groundRadius);
+        
+        //头部检测，如果撞到头顶，跳跃速度归零
+        Vector3 headPosition =
+            new Vector3(pos.x, pos.y + headOffset, pos.z);
+        bool isHeadHit = Physics.CheckSphere(headPosition, headRadius, headLayers, QueryTriggerInteraction.Ignore);
+        Gizmos.color = !isHeadHit ? groundedColorGreen : airColorRed;
+        Gizmos.DrawSphere(headPosition, headRadius);
     }
 
 }

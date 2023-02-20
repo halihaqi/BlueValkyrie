@@ -32,6 +32,8 @@ namespace Editor.Excel
             
             //数据表容器
             DataTableCollection tableCollection;
+            //先生成容器基类
+            GenerateBaseContainer();
             //获取文件夹下所有表数据
             for (var i = 0; i < fileInfos.Length; i++)
             {
@@ -81,6 +83,19 @@ namespace Editor.Excel
             File.WriteAllText($"{DATA_CLASS_PATH}{table.TableName}.cs", content.ToString());
         }
 
+        private static void GenerateBaseContainer()
+        {
+            //创建或获取源文件夹
+            Directory.CreateDirectory(DATA_CLASS_PATH);
+            StringBuilder content = new StringBuilder();
+            content.Append($"public class BaseContainer\n{{\n");
+            content.Append("public abstract object GetDic();\n");
+            content.Append("}");
+            
+            //创建数据容器类
+            File.WriteAllText("BaseContainer.cs", content.ToString());
+        }
+
         /// <summary>
         /// 根据Excel表创建数据容器类
         /// </summary>
@@ -94,10 +109,11 @@ namespace Editor.Excel
             Directory.CreateDirectory(DATA_CONTAINER_PATH);
             
             StringBuilder content = new StringBuilder();
-            content.Append($"using System.Collections.Generic;\n");
-            content.Append($"public class {table.TableName}Container\n{{\n");
+            content.Append("using System.Collections.Generic;\n");
+            content.Append($"public class {table.TableName}Container : BaseContainer\n{{\n");
             content.Append($"   public Dictionary<{rowType[keyIndex]}, {table.TableName}> ");
             content.Append($"dataDic = new Dictionary<{rowType[keyIndex]}, {table.TableName}>();\n");
+            content.Append("    public override object GetDic() => dataDic;\n");
             content.Append("}");
             
             //创建数据容器类

@@ -54,7 +54,6 @@ namespace Hali_Framework
         /// <param name="obj">物体实例</param>
         public void PushObj(string path, GameObject obj)
         {
-            Debug.Log($"Push {obj}");
             if (_objectPoolCollection.ContainsKey(path))
             {
                 _objectPoolCollection[path].Push(obj);

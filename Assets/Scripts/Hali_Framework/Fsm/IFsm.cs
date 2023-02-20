@@ -90,5 +90,11 @@ namespace Hali_Framework
         /// <param name="name">有限状态机数据名称。</param>
         /// <returns>是否移除有限状态机数据成功。</returns>
         bool RemoveData(string name);
+        
+        /// <summary>
+        /// 改变状态机当前状态
+        /// </summary>
+        /// <typeparam name="TState"></typeparam>
+        void ChangeState<TState>() where TState : FsmState<T>;
     }
 }

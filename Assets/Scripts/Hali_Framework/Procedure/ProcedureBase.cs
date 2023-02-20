@@ -49,5 +49,12 @@ namespace Hali_Framework
         {
             base.OnDestroy(procedureOwner);
         }
+
+        /// <summary>
+        /// 改变当前流程
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        protected void ChangeState<T>() where T : ProcedureBase
+            => ProcedureMgr.Instance.ChangeState<T>();
     }
 }

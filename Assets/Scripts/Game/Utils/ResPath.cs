@@ -1,0 +1,24 @@
+﻿using Hali_Framework;
+
+namespace Game.Utils
+{
+    public static class ResPath
+    {
+        public static string GetSchoolBadgeIcon(RoleInfo info)
+        {
+            string school = info.school.ToUpper();
+            return $"Image/SchoolBadge/School_Icon_{school}";
+        }
+        
+        public static string GetSchoolBadgeIcon(int id)
+        {
+            RoleInfo info = BinaryDataMgr.Instance.GetInfo<RoleInfoContainer, int, RoleInfo>(id);
+            return GetSchoolBadgeIcon(info);
+        }
+
+        public static string GetStudentIcon(RoleInfo info)
+        {
+            return $"Image/HeadIcon/Student_Portrait_{info.name}";
+        }
+    }
+}

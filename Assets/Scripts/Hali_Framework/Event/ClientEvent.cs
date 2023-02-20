@@ -20,6 +20,14 @@
         //UI
         SHOW_PANEL_SUCCESS,
         SHOW_PANEL_FAIL,
-        HIDE_PANEL,
+        SHOW_PANEL_COMPLETE,
+        HIDE_PANEL_COMPLETE,
+        
+        //Role
+        ROLE_CHANGE,
+        ROLE_SHOW_INFO,
+        ROLE_CHANGE_COMPLETE,
+        
+        
     }
 }

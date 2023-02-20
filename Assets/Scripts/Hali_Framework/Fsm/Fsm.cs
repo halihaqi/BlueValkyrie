@@ -327,7 +327,7 @@ namespace Hali_Framework
         /// 切换当前有限状态机状态。
         /// </summary>
         /// <typeparam name="TState">要切换到的有限状态机状态类型。</typeparam>
-        internal void ChangeState<TState>() where TState : FsmState<T>
+        public void ChangeState<TState>() where TState : FsmState<T>
         {
             if (_mCurrentState == null)
             {
