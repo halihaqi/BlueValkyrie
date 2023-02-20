@@ -45,6 +45,7 @@ namespace Game.Begin
         {
             if (_cachedRoles.ContainsKey(roleId))
             {
+                _curRole = _cachedRoles[roleId];
                 _cachedRoles[roleId].gameObject.SetActive(true);
                 _cachedRoles[roleId].ShowMe(() => { _isChanging = false;});
                 return;
@@ -125,6 +126,8 @@ namespace Game.Begin
                 Destroy(role.gameObject);
             }
             _cachedRoles.Clear();
+            _curRole = null;
+            _hidingRole = null;
         }
     }
 }
