@@ -70,6 +70,18 @@ namespace Hali_Framework
             }
         }
 
+        public void PushObjs(string path, params GameObject[] objs)
+        {
+            for (int i = 0; i < objs.Length; i++)
+                PushObj(path, objs[i]);
+        }
+        
+        public void PushObjs(string path, List<GameObject> objs)
+        {
+            for (int i = 0; i < objs.Count; i++)
+                PushObj(path, objs[i]);
+        }
+
         /// <summary>
         /// 获得对象池缓存的对象数
         /// </summary>

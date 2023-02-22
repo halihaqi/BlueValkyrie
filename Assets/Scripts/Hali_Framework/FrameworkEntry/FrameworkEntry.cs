@@ -26,9 +26,9 @@ namespace Hali_Framework
             
             MonoMgr.Instance.AddUpdateListener(Update);
 
-            UIMgr.Instance.AddUIGroup(GameConst.UIGROUP_BOT, 0);
-            UIMgr.Instance.AddUIGroup(GameConst.UIGROUP_MID, 1);
-            UIMgr.Instance.AddUIGroup(GameConst.UIGROUP_TOP, 2);
+            UIMgr.Instance.AddUIGroup(GameConst.UIGROUP_Panel, 0);
+            UIMgr.Instance.AddUIGroup(GameConst.UIGROUP_POP, 1);
+            UIMgr.Instance.AddUIGroup(GameConst.UIGROUP_TIP, 2);
             UIMgr.Instance.AddUIGroup(GameConst.UIGROUP_SYS, 3);
         }
 

@@ -34,9 +34,9 @@ namespace Hali_Framework
         public void Save(string part, string name, object data)
         {
             string parentFile = $"{Application.persistentDataPath}/{part}";
-            string path = $"{Application.persistentDataPath}/{part}/{name}.zxy";
+            string path = $"{parentFile}/{name}.zxy";
 
-            if (Directory.Exists(parentFile))
+            if (!Directory.Exists(parentFile))
                 Directory.CreateDirectory(parentFile);
             
             using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
@@ -54,7 +54,7 @@ namespace Hali_Framework
             if (!File.Exists(path))
                 return default;
 
-            T obj;
+            T obj = default;
             using (FileStream fs = new FileStream(path, FileMode.Open))
             {
                 BinaryFormatter bf = new BinaryFormatter();

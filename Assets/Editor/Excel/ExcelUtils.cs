@@ -86,14 +86,14 @@ namespace Editor.Excel
         private static void GenerateBaseContainer()
         {
             //创建或获取源文件夹
-            Directory.CreateDirectory(DATA_CLASS_PATH);
+            Directory.CreateDirectory(DATA_CONTAINER_PATH);
             StringBuilder content = new StringBuilder();
             content.Append($"public class BaseContainer\n{{\n");
             content.Append("public abstract object GetDic();\n");
             content.Append("}");
             
             //创建数据容器类
-            File.WriteAllText("BaseContainer.cs", content.ToString());
+            File.WriteAllText($"{DATA_CONTAINER_PATH}BaseContainer.cs", content.ToString());
         }
 
         /// <summary>

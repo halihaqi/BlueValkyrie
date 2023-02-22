@@ -53,7 +53,7 @@ namespace Hali_Framework
         public void LoadSceneWithPanel<T>(string sceneName, UnityAction callback) where T : PanelBase
         {
             //先显示LoadingUI
-            UIMgr.Instance.ShowPanel<T>(GameConst.UIGROUP_BOT, callback: panel =>
+            UIMgr.Instance.ShowPanel<T>(GameConst.UIGROUP_Panel, callback: panel =>
             {
                 //显示完后开始切换场景
                 ResMgr.Instance.ClearAllRes();

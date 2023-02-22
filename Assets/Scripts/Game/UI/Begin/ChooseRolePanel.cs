@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Game.Begin;
+using Game.Model;
+using Game.UI.Base;
 using Hali_Framework;
 using UnityEngine.UI;
 
@@ -15,6 +18,8 @@ namespace Game.UI.Begin
         private Button _btnSure;
 
         private int _panelId = -1;
+
+        private Action<string> _sureCallback;
 
         protected internal override void OnInit(object userData)
         {
@@ -33,6 +38,8 @@ namespace Game.UI.Begin
             _btnLeft = GetControl<Button>("btn_left");
             _btnRight = GetControl<Button>("btn_right");
             _btnSure = GetControl<Button>("btn_sure");
+
+            _sureCallback = SureCallback;
         }
 
         protected internal override void OnShow(object userData)
@@ -59,15 +66,18 @@ namespace Game.UI.Begin
             {
                 case "btn_left":
                     if(BeginRolePostureMgr.Instance.IsChanging) return;
+                    UIMgr.Instance.HidePanel(_panelId);
                     _selectIndex = _selectIndex - 1 < 0 ? _roleIdList.Count - 1 : _selectIndex - 1;
                     BeginRolePostureMgr.Instance.ChangeRole(_roleIdList[_selectIndex]);       
                     break;
                 case "btn_right":
                     if(BeginRolePostureMgr.Instance.IsChanging) return;
+                    UIMgr.Instance.HidePanel(_panelId);
                     _selectIndex = _selectIndex + 1 > _roleIdList.Count - 1 ? 0 : _selectIndex + 1;
                     BeginRolePostureMgr.Instance.ChangeRole(_roleIdList[_selectIndex]);  
                     break;
                 case "btn_back":
+                    UIMgr.Instance.HidePanel(_panelId);
                     BeginRolePostureMgr.Instance.ResetRole();
                     UIMgr.Instance.HidePanel(this);
                     BeginCamera.Instance.Move(() =>
@@ -76,13 +86,8 @@ namespace Game.UI.Begin
                     });
                     break;
                 case "btn_sure":
+                    UIMgr.Instance.ShowPanel<InputPop>(GameConst.UIGROUP_POP, userData: _sureCallback);
                     break;
-            }
-
-            if (_panelId != -1)
-            {
-                UIMgr.Instance.HidePanel(_panelId);
-                _panelId = -1;
             }
         }
 
@@ -95,7 +100,7 @@ namespace Game.UI.Begin
 
         private void OnRoleShowInfo()
         {
-            _panelId = UIMgr.Instance.ShowPanel<RoleInfoPanel>(GameConst.UIGROUP_MID, userData: _roleIdList[_selectIndex]);
+            _panelId = UIMgr.Instance.ShowPanel<RoleInfoPop>(GameConst.UIGROUP_POP, userData: _roleIdList[_selectIndex]);
         }
 
         private void OnRoleChangeComplete()
@@ -104,5 +109,8 @@ namespace Game.UI.Begin
             _btnRight.interactable = true;
             _btnSure.interactable = true;
         }
+
+        private void SureCallback(string str)
+            => UIMgr.Instance.ShowPanel<SaveLoadPop>(GameConst.UIGROUP_POP, userData: new SaveLoadParam(true, str));
     }
 }

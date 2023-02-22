@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -17,6 +18,7 @@ namespace Hali_Framework
         private int _originalLayer = 0;
 
         private Dictionary<string, List<UIBehaviour>> _controlDic;
+        private Dictionary<string, List<ControlBase>> _addControlDic;
 
         public PanelEntity PanelEntity => _panelEntity;
 
@@ -59,15 +61,12 @@ namespace Hali_Framework
         {
             _cachedTransform ??= transform;
             _controlDic = new Dictionary<string, List<UIBehaviour>>();
+            _addControlDic = new Dictionary<string, List<ControlBase>>();
             _panelEntity = GetComponent<PanelEntity>();
             _originalLayer = gameObject.layer;
             
-            //搜索常用UI组件添加到容器中
-            FindChildrenControls<Button>();
-            FindChildrenControls<Image>();
-            FindChildrenControls<Text>();
-            FindChildrenControls<Toggle>();
-            FindChildrenControls<Slider>();
+            //搜索所有子物体的UI组件添加到容器中
+            FindChildrenControls(this.transform);
         }
 
         /// <summary>
@@ -111,11 +110,18 @@ namespace Hali_Framework
             Visible = false;
             _available = false;
         }
-        
+
         /// <summary>
         /// 界面回收
         /// </summary>
-        protected internal virtual void OnRecycle(){}
+        protected internal virtual void OnRecycle()
+        {
+            foreach (var kv in _addControlDic)
+                foreach (var controlBase in kv.Value)
+                    ObjectPoolMgr.Instance.PushObj(kv.Key, controlBase.gameObject);
+                
+            _addControlDic.Clear();
+        }
 
         /// <summary>
         /// 界面暂停
@@ -153,12 +159,15 @@ namespace Hali_Framework
         /// <param name="depthInUIGroup">界面在界面组中的深度</param>
         protected internal virtual void OnDepthChanged(int uiGroupDepth, int depthInUIGroup){}
 
+        protected void HideMe(object userData = null, bool isShutdown = false) 
+            => UIMgr.Instance.HidePanel(PanelEntity.SerialId, userData, isShutdown);
+
         #endregion
 
         #region UI事件
 
         /// <summary>
-        /// 添加自定义UI事件
+        /// 添加自定义UI事件，同类型事件只能添加一个
         /// </summary>
         /// <param name="control">控件</param>
         /// <param name="type">事件类型</param>
@@ -170,9 +179,19 @@ namespace Hali_Framework
                 throw new Exception($"{Name} add custom listener control is null");
             EventTrigger trigger = control.GetComponent<EventTrigger>();
             trigger ??= control.gameObject.AddComponent<EventTrigger>();
+            
+            var oldEntry = trigger.triggers.Find(e => e.eventID == type);
+            if (oldEntry != null)
+            {
+                oldEntry.callback.RemoveAllListeners();
+                oldEntry.callback.AddListener(callback);
+                return;
+            }
 
-            EventTrigger.Entry entry = new EventTrigger.Entry();
-            entry.eventID = type;
+            EventTrigger.Entry entry = new EventTrigger.Entry
+            {
+                eventID = type
+            };
             entry.callback.AddListener(callback);
             trigger.triggers.Add(entry);
         }
@@ -184,6 +203,14 @@ namespace Hali_Framework
             {
                 AddCustomListener(controls[i], type, callback);
             }
+        }
+
+        protected void RemoveAllCustomListeners(UIBehaviour control)
+        {
+            if (control == null)
+                throw new Exception($"{Name} add custom listener control is null");
+            if (control.TryGetComponent(out EventTrigger trigger))
+                trigger.triggers.Clear();
         }
 
         protected virtual void OnClick(string btnName){}
@@ -210,20 +237,20 @@ namespace Hali_Framework
         /// 获得物体挂载的UI组件
         /// </summary>
         /// <typeparam name="T">组件类型</typeparam>
-        /// <param name="name">物体名</param>
+        /// <param name="controlName">物体名</param>
         /// <returns></returns>
-        public T GetControl<T>(string name) where T : UIBehaviour
+        public T GetControl<T>(string controlName) where T : UIBehaviour
         {
             //每个物体只会挂载一个同种类的组件，所以不会重复
-            if (_controlDic.ContainsKey(name))
+            if (_controlDic.ContainsKey(controlName))
             {
-                for (int i = 0; i < _controlDic[name].Count; i++)
+                for (int i = 0; i < _controlDic[controlName].Count; i++)
                 {
-                    if (_controlDic[name][i] is T)
-                        return _controlDic[name][i] as T;
+                    if (_controlDic[controlName][i] is T control)
+                        return control;
                 }
             }
-            Debug.Log($"{Name} no UIControl named:{name}");
+            Debug.Log($"{Name} no UIControl named:{controlName}");
             return null;
         }
 
@@ -244,54 +271,100 @@ namespace Hali_Framework
 
             return list;
         }
+
+        /// <summary>
+        /// 添加自定义控件，会自动触发控件的OnInit方法
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="callback"></param>
+        public void AddCustomControl(string path, Action<GameObject> callback)
+        {
+            ObjectPoolMgr.Instance.PopObj(path, go =>
+            {
+                var control = go.GetComponent<ControlBase>();
+                if (control == null)
+                    throw new Exception($"{go.name} has no ControlBase.");
+                if (_addControlDic.ContainsKey(path))
+                {
+                    _addControlDic[path] ??= new List<ControlBase>();
+                    _addControlDic[path].Add(control);
+                }
+                else
+                    _addControlDic.Add(path, new List<ControlBase> { control });
+                
+                control.OnInit();
+                callback?.Invoke(go);
+            });
+        }
         
         /// <summary>
-        /// 搜索所有子物体的特定UI组件并添加进字典容器中
+        /// 搜索所有子物体的UI组件并添加进字典容器中，
+        /// 如果是ControlBase下的子物体将不会添加，由ControlBase管理
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        private void FindChildrenControls<T>() where T : UIBehaviour
+        private void FindChildrenControls(Transform parent)
         {
-            //搜索所有子物体的组件
-            T[] controls = this.GetComponentsInChildren<T>();
-            for (int i = 0; i < controls.Length; i++)
-            {
-                //添加组件进字典
-                string objName = controls[i].gameObject.name;
+            if(parent.childCount <=0) return;
 
-                if (_controlDic.ContainsKey(objName))
-                    _controlDic[objName].Add(controls[i]);
-                else
-                    _controlDic.Add(objName, new List<UIBehaviour>() { controls[i] });
-            
-                //组件添加事件监听
-                if(controls[i] is Button btn)
+            //搜索所有子物体的组件
+            Transform child;
+            bool stopRecursion = false;
+            for (int i = 0; i < parent.childCount; i++)
+            {
+                stopRecursion = false;
+                child = parent.GetChild(i);
+                var controls = child.GetComponents<UIBehaviour>();
+                foreach (var control in controls)
                 {
-                    btn.onClick.AddListener(() =>
+                    if (_controlDic.ContainsKey(control.name))
+                        _controlDic[control.name].Add(control);
+                    else
+                        _controlDic.Add(control.name, new List<UIBehaviour> { control });
+                        
+                    //如果是ControlBase，中断搜索，由ControlBase管理子控件
+                    if (control is ControlBase cb)
                     {
-                        OnClick(objName);
-                    });
-                }
-                if (controls[i] is Toggle tog)
-                {
-                    tog.onValueChanged.AddListener((isToggle) =>
+                        cb.OnInit();
+                        stopRecursion = true;
+                        continue;
+                    }
+
+                    #region 组件添加事件监听
+
+                    if(control is Button btn)
                     {
-                        OnToggleValueChanged(objName, isToggle);
-                    });
-                }
-                if (controls[i] is Slider sld)
-                {
-                    sld.onValueChanged.AddListener((val) =>
+                        btn.onClick.AddListener(() =>
+                        {
+                            OnClick(control.name);
+                        });
+                    }
+                    if (control is Toggle tog)
                     {
-                        OnSliderValueChanged(objName, val);
-                    });
-                }
-                if (controls[i] is InputField ifd)
-                {
-                    ifd.onValueChanged.AddListener((val) =>
+                        tog.onValueChanged.AddListener((isToggle) =>
+                        {
+                            OnToggleValueChanged(control.name, isToggle);
+                        });
+                    }
+                    if (control is Slider sld)
                     {
-                        OnInputFieldValueChanged(objName, val);
-                    });
+                        sld.onValueChanged.AddListener((val) =>
+                        {
+                            OnSliderValueChanged(control.name, val);
+                        });
+                    }
+                    if (control is InputField ifd)
+                    {
+                        ifd.onValueChanged.AddListener((val) =>
+                        {
+                            OnInputFieldValueChanged(control.name, val);
+                        });
+                    }
+
+                    #endregion
                 }
+
+                //递归搜索所有子物体
+                if(!stopRecursion)
+                    FindChildrenControls(child);
             }
         }
     }

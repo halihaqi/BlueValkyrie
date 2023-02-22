@@ -180,7 +180,7 @@ namespace Hali_Framework
         /// <param name="userData">用户数据</param>
         /// <typeparam name="T">面板类名必须和资源名一致</typeparam>
         /// <returns>界面id</returns>
-        public int ShowPanel<T>(string uiGroupName = GameConst.UIGROUP_BOT,
+        public int ShowPanel<T>(string uiGroupName = GameConst.UIGROUP_Panel,
             object userData = null, Action<PanelBase> callback = null) where T : PanelBase =>
             ShowPanel(typeof(T).Name, uiGroupName, userData, callback);
 
@@ -193,7 +193,7 @@ namespace Hali_Framework
         /// <param name="userData">用户数据</param>
         /// <returns>界面id</returns>
         /// <exception cref="Exception"></exception>
-        public int ShowPanel(string assetName, string uiGroupName = GameConst.UIGROUP_BOT, object userData = null,
+        public int ShowPanel(string assetName, string uiGroupName = GameConst.UIGROUP_Panel, object userData = null,
             Action<PanelBase> callback = null)
         {
             if (string.IsNullOrEmpty(assetName))

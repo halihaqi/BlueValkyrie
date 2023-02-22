@@ -18,9 +18,9 @@ namespace Hali_Framework
         
         //UI
         //UI组名
-        public const string UIGROUP_BOT = "Bottom";
-        public const string UIGROUP_MID = "Middle";
-        public const string UIGROUP_TOP = "Top";
+        public const string UIGROUP_Panel = "Panel";
+        public const string UIGROUP_POP = "Pop";
+        public const string UIGROUP_TIP = "Tip";
         public const string UIGROUP_SYS = "System";
         
         //Res
@@ -29,5 +29,9 @@ namespace Hali_Framework
         
         //Layer
         public const string ROLE_LAYER = "Role";
+        
+        //Data
+        public const int FILE_NUM = 20;//存档数
+        public const string DATA_PART_PLAYER = "Player";
     }
 }
