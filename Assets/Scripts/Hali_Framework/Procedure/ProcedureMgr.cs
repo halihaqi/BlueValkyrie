@@ -109,6 +109,31 @@ namespace Hali_Framework
         }
 
         /// <summary>
+        /// 设置流程数据。
+        /// </summary>
+        /// <typeparam name="TData">数据的类型。</typeparam>
+        /// <param name="name">数据名称。</param>
+        /// <param name="data">要获取的数据。</param>
+        public void SetData<TData>(string name, TData data)
+            => _procedureFsm.SetData(name, data);
+
+        /// <summary>
+        /// 移除流程数据。
+        /// </summary>
+        /// <param name="name">数据名称。</param>
+        /// <returns>是否移除数据成功。</returns>
+        public bool RemoveData(string name)
+            => _procedureFsm.RemoveData(name);
+
+        /// <summary>
+        /// 获取流程数据。
+        /// </summary>
+        /// <param name="name">数据名称。</param>
+        /// <returns>要获取的数据。</returns>
+        public TData GetData<TData>(string name)
+            => _procedureFsm.GetData<TData>(name);
+
+        /// <summary>
         /// 改变当前流程
         /// </summary>
         /// <typeparam name="T"></typeparam>

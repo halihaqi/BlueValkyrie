@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Game.Begin;
-using Game.Model;
+using Game.Managers;
 using Game.UI.Base;
 using Hali_Framework;
 using UnityEngine.UI;
@@ -111,6 +111,14 @@ namespace Game.UI.Begin
         }
 
         private void SureCallback(string str)
-            => UIMgr.Instance.ShowPanel<SaveLoadPop>(GameConst.UIGROUP_POP, userData: new SaveLoadParam(true, str));
+        {
+            if (string.IsNullOrEmpty(str))
+            {
+                TipMgr.Instance.ShowTip("请输入用户名!");
+                return;
+            }
+
+            UIMgr.Instance.ShowPanel<SaveLoadPop>(GameConst.UIGROUP_POP, userData: new SaveLoadParam(true, str));
+        }
     }
 }

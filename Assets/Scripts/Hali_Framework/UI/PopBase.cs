@@ -9,12 +9,13 @@ namespace Hali_Framework
     {
         protected Image bk;
         protected bool isModal = false;
+        protected bool isTouchHide = true;
 
         protected internal override void OnInit(object userData)
         {
             base.OnInit(userData);
             bk = GetComponent<Image>();
-            if(isModal && bk != null)
+            if(isModal && isTouchHide && bk != null)
                 AddCustomListener(bk, EventTriggerType.PointerClick, data =>
                 {
                     HideMe();

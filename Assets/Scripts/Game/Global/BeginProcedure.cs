@@ -1,15 +1,14 @@
-﻿using Hali_Framework;
+﻿using Game.UI.Begin;
+using Hali_Framework;
 
 namespace Game.Global
 {
-    public class InitProcedure : ProcedureBase
+    public class BeginProcedure : ProcedureBase
     {
         protected internal override void OnEnter(IFsm<ProcedureMgr> procedureOwner)
         {
             base.OnEnter(procedureOwner);
-            //todo 初始化
-
-            ChangeState<BeginProcedure>();
+            UIMgr.Instance.ShowPanel<BeginPanel>();
         }
     }
 }

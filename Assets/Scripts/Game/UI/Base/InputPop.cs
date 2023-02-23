@@ -34,11 +34,6 @@ namespace Game.UI.Base
             base.OnClick(btnName);
             if (btnName.Equals("btn_sure"))
             {
-                if (string.IsNullOrEmpty(_ifName.text))
-                {
-                    //tip
-                    return;
-                }
                 _callback?.Invoke(_ifName.text);
                 HideMe();
             }

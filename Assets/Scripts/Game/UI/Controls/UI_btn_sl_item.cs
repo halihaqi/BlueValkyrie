@@ -1,4 +1,6 @@
-﻿using Game.Model;
+﻿using Game.Global;
+using Game.Managers;
+using Game.Model;
 using Hali_Framework;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,6 +23,11 @@ namespace Game.UI.Controls
         private Text _txtTime;
         private Text _txtComplete;
 
+        private int _userId;
+        private string _userName;
+
+        private PlayerInfo _info;
+
         protected internal override void OnInit()
         {
             base.OnInit();
@@ -40,42 +47,64 @@ namespace Game.UI.Controls
         }
 
 
-        public void SetData(bool isSave, int dataId, PlayerInfo info, string userName = null)
+        public void SetData(bool isSave, int userId, PlayerInfo info, string userName = null)
         {
+            _userId = userId;
+            _userName = userName;
+            _info = info;
+            
             _btn.onClick.RemoveAllListeners();
             if (isSave)
             {
                 _imgTitleSave.gameObject.SetActive(true);
                 _imgTitleLoad.gameObject.SetActive(false);
-                _btn.onClick.RemoveAllListeners();
                 _btn.onClick.AddListener(() =>
                 {
-                    var playerData = BinaryDataMgr.Instance.Load<PlayerData>(GameConst.DATA_PART_PLAYER, "PlayerData");
-                    var newInfo = new PlayerInfo
-                    {
-                        id = dataId,
-                        name = userName,
-                        time = 0,
-                        complete = 0,
-                    };
-                    playerData.dataDic[dataId] = newInfo;
-                    BinaryDataMgr.Instance.Save(GameConst.DATA_PART_PLAYER, "PlayerData", playerData);
-                    UpdateView(newInfo);
+                    string str = _info != null ? "是否覆盖存档？" : "是否创建新存档？";
+                    TipMgr.Instance.ShowConfirm(str, OnSaveClick);
                 });
             }
             else
             {                          
                 _imgTitleSave.gameObject.SetActive(false);
                 _imgTitleLoad.gameObject.SetActive(true);
-                _btn.onClick.RemoveAllListeners();
                 _btn.onClick.AddListener(() =>
                 {
                      
                 });
             }
 
-            _txtTitle.text = $"存档{dataId + 1}";
+            _txtTitle.text = $"存档{_userId + 1}";
             UpdateView(info);
+        }
+
+        private void OnSaveClick()
+        {
+            var playerData = BinaryDataMgr.Instance.Load<PlayerData>(GameConst.DATA_PART_PLAYER, "PlayerData");
+            var playerInfo = new PlayerInfo
+            {
+                id = _userId,
+                name = _userName,
+                time = 0,
+                complete = 0,
+            };
+            playerData.dataDic[_userId] = playerInfo;
+            BinaryDataMgr.Instance.Save(GameConst.DATA_PART_PLAYER, "PlayerData", playerData);
+            UpdateView(playerInfo);
+            
+            //进入游戏流程
+            ProcedureMgr.Instance.SetData(PlayerMgr.PLAYER_DATA_KEY, playerInfo);
+            ProcedureMgr.Instance.ChangeState<GameProcedure>();
+        }
+
+        private void OnLoadClick()
+        {
+            var dic = BinaryDataMgr.Instance.Load<PlayerData>(GameConst.DATA_PART_PLAYER, "PlayerData").dataDic;
+            var playerInfo = dic[_userId];
+            
+            //进入游戏流程
+            ProcedureMgr.Instance.SetData(PlayerMgr.PLAYER_DATA_KEY, playerInfo);
+            ProcedureMgr.Instance.ChangeState<GameProcedure>();
         }
 
         private void UpdateView(PlayerInfo info)

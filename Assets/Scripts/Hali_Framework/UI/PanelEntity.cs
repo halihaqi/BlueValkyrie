@@ -16,9 +16,12 @@ namespace Hali_Framework
         private string _assetName;
         private UIGroup _uiGroup;
         private PanelBase _panelLogic;
-        
         private CanvasGroup _canvasGroup;
+        
         private const float FADE_SPEED = 0.01f;
+        private bool _isFade = true;
+        private float _customRecycleDelay = 0;
+        
         private Action<PanelEntity> _showCompleteEvent;
         private Action<PanelEntity> _hideCompleteEvent;
 
@@ -49,6 +52,11 @@ namespace Hali_Framework
         /// </summary>
         public PanelBase Logic => _panelLogic;
 
+        /// <summary>
+        /// 是否渐变显隐
+        /// </summary>
+        public bool IsFade => _isFade;
+
         #endregion
 
 
@@ -74,9 +82,14 @@ namespace Hali_Framework
 
         public void OnShow(object userData)
         {
-            StopAllCoroutines();
-            StartCoroutine(FadeInOut(true));
             _panelLogic.OnShow(userData);
+            if (_isFade)
+            {
+                StopAllCoroutines();
+                StartCoroutine(FadeInOut(true));
+            }
+            else
+                OnShowComplete();
         }
 
         private void OnShowComplete()
@@ -105,14 +118,21 @@ namespace Hali_Framework
         public void OnHide(bool isShutdown, object userData)
         {
             _panelLogic.OnHide(isShutdown, userData);
-            if (!isShutdown)
+            if (!isShutdown && _isFade)
             {
                 StopAllCoroutines();
                 StartCoroutine(FadeInOut(false));
             }
             else
-                OnHideComplete();
+            {
+                if(_customRecycleDelay <= 0)
+                    OnHideComplete();
+                else
+                    DelayUtils.Instance.Delay(_customRecycleDelay, 1, DelayHideComplete);
+            }
         }
+
+        private void DelayHideComplete(object obj) => OnHideComplete();
 
         private void OnHideComplete()
         {
@@ -169,6 +189,24 @@ namespace Hali_Framework
         {
             _depth = depthInUIGroup;
             _panelLogic.OnDepthChanged(uiGroupDepth, depthInUIGroup);
+        }
+
+        /// <summary>
+        /// 设置自定义面板显隐
+        /// </summary>
+        /// <param name="delayRecycleTime">面板延迟回收时间</param>
+        public void SetCustomFade(float delayRecycleTime)
+        {
+            _isFade = false;
+            if (delayRecycleTime <= 0)
+                delayRecycleTime = 0;
+            _customRecycleDelay = delayRecycleTime;
+        }
+
+        public void ResetFade()
+        {
+            _isFade = true;
+            _customRecycleDelay = 0;
         }
         
         /// <summary>
