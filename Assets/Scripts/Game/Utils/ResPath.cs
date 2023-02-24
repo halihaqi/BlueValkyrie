@@ -20,5 +20,10 @@ namespace Game.Utils
         {
             return $"Image/HeadIcon/Student_Portrait_{info.name}";
         }
+
+        public static string GetStudentObjPath(RoleInfo info)
+        {
+            return $"Prefabs/Students/{info.school}/{info.name}";
+        }
     }
 }

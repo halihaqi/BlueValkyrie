@@ -116,10 +116,7 @@ namespace Hali_Framework
         /// </summary>
         protected internal virtual void OnRecycle()
         {
-            foreach (var kv in _addControlDic)
-                foreach (var controlBase in kv.Value)
-                    ObjectPoolMgr.Instance.PushObj(kv.Key, controlBase.gameObject);
-                
+            RecycleCustomControls();
             _addControlDic.Clear();
         }
 
@@ -174,45 +171,20 @@ namespace Hali_Framework
         /// <param name="callback">事件</param>
         protected void AddCustomListener(UIBehaviour control, EventTriggerType type,
             UnityAction<BaseEventData> callback)
-        {
-            if (control == null)
-                throw new Exception($"{Name} add custom listener control is null");
-            EventTrigger trigger = control.GetComponent<EventTrigger>();
-            trigger ??= control.gameObject.AddComponent<EventTrigger>();
-            
-            var oldEntry = trigger.triggers.Find(e => e.eventID == type);
-            if (oldEntry != null)
-            {
-                oldEntry.callback.RemoveAllListeners();
-                oldEntry.callback.AddListener(callback);
-                return;
-            }
-
-            EventTrigger.Entry entry = new EventTrigger.Entry
-            {
-                eventID = type
-            };
-            entry.callback.AddListener(callback);
-            trigger.triggers.Add(entry);
-        }
+            => UIMgr.Instance.AddCustomListener(control, type, callback);
 
         protected void AddCustomListeners(UIBehaviour[] controls, EventTriggerType type,
             UnityAction<BaseEventData> callback)
-        {
-            for (int i = 0; i < controls.Length; i++)
-            {
-                AddCustomListener(controls[i], type, callback);
-            }
-        }
+            => UIMgr.Instance.AddCustomListeners(controls, type, callback);
+        
+        protected void AddCustomListeners<T>(List<T> controls, EventTriggerType type,
+            UnityAction<BaseEventData> callback) where T : UIBehaviour
+        => UIMgr.Instance.AddCustomListeners(controls, type, callback);
 
         protected void RemoveAllCustomListeners(UIBehaviour control)
-        {
-            if (control == null)
-                throw new Exception($"{Name} add custom listener control is null");
-            if (control.TryGetComponent(out EventTrigger trigger))
-                trigger.triggers.Clear();
-        }
+            => UIMgr.Instance.RemoveAllCustomListeners(control);
 
+        
         protected virtual void OnClick(string btnName){}
 
         protected virtual void OnToggleValueChanged(string togName, bool isToggle){}
@@ -295,6 +267,20 @@ namespace Hali_Framework
                 control.OnInit();
                 callback?.Invoke(go);
             });
+        }
+
+        /// <summary>
+        /// 回收添加的自定义控件进池，默认OnRecycle调用
+        /// </summary>
+        protected void RecycleCustomControls()
+        {
+            foreach (var kv in _addControlDic)
+            {
+                foreach (var control in kv.Value)
+                {
+                    ObjectPoolMgr.Instance.PushObj(kv.Key, control.gameObject);
+                }
+            }
         }
         
         /// <summary>

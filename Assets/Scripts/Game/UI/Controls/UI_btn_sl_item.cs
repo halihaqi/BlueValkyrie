@@ -53,6 +53,7 @@ namespace Game.UI.Controls
             _userName = userName;
             _info = info;
             
+            //添加按钮事件
             _btn.onClick.RemoveAllListeners();
             if (isSave)
             {
@@ -65,15 +66,19 @@ namespace Game.UI.Controls
                 });
             }
             else
-            {                          
-                _imgTitleSave.gameObject.SetActive(false);
-                _imgTitleLoad.gameObject.SetActive(true);
-                _btn.onClick.AddListener(() =>
+            {
+                if (info != null)
                 {
-                     
-                });
+                    _imgTitleSave.gameObject.SetActive(false);
+                    _imgTitleLoad.gameObject.SetActive(true);
+                    _btn.onClick.AddListener(() =>
+                    {
+                        TipMgr.Instance.ShowConfirm("是否进入该存档？", OnLoadClick);
+                    });
+                }
             }
 
+            //更新面板
             _txtTitle.text = $"存档{_userId + 1}";
             UpdateView(info);
         }

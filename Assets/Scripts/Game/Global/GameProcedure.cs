@@ -2,6 +2,7 @@
 using Game.Model;
 using Game.UI.Base;
 using Hali_Framework;
+using UnityEngine;
 
 namespace Game.Global
 {
@@ -24,7 +25,7 @@ namespace Game.Global
 
         private void OnEnterScene()
         {
-            
+            PlayerMgr.Instance.SetPlayerPrefab(Camera.main);
         }
     }
 }

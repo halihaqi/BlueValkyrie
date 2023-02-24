@@ -62,12 +62,22 @@ namespace Game.UI.Begin
             {
                 _imgHead.sprite = img;
             });
+            
+            EventMgr.Instance.AddListener(ClientEvent.ROLE_CHANGE_BEGIN, OnRoleChangeBegin);
         }
-
+        
         protected internal override void OnShowComplete()
         {
             base.OnShowComplete();
             EventMgr.Instance.TriggerEvent(ClientEvent.ROLE_CHANGE_COMPLETE);
         }
+
+        protected internal override void OnHide(bool isShutdown, object userData)
+        {
+            base.OnHide(isShutdown, userData);
+            EventMgr.Instance.RemoveListener(ClientEvent.ROLE_CHANGE_BEGIN, OnRoleChangeBegin);
+        }
+
+        private void OnRoleChangeBegin() => HideMe();
     }
 }

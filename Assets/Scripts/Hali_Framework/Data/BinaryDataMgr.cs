@@ -183,6 +183,14 @@ namespace Hali_Framework
             return null;
         }
 
+        /// <summary>
+        /// 获取表中元素
+        /// </summary>
+        /// <param name="index">item主键</param>
+        /// <typeparam name="T">容器名</typeparam>
+        /// <typeparam name="K">item主键类</typeparam>
+        /// <typeparam name="V">item类</typeparam>
+        /// <returns></returns>
         public V GetInfo<T, K, V>(K index) where T : BaseContainer
         {
             Dictionary<K,V> dic = GetTable<T>().GetDic() as Dictionary<K, V>;

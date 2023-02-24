@@ -19,6 +19,13 @@ namespace Game.UI.Begin
         {
             isModal = true;
             base.OnInit(userData);
+
+            _content = GetControl<ScrollRect>("sv_sl_data").content;
+        }
+
+        protected internal override void OnShow(object userData)
+        {
+            base.OnShow(userData);
             
             if (userData is SaveLoadParam p)
             {
@@ -27,13 +34,6 @@ namespace Game.UI.Begin
             }
             else
                 throw new Exception($"{Name} param is invalid.");
-            
-            _content = GetControl<ScrollRect>("sv_sl_data").content;
-        }
-
-        protected internal override void OnShow(object userData)
-        {
-            base.OnShow(userData);
 
             //获取存档
             var playerData = BinaryDataMgr.Instance.Load<PlayerData>(GameConst.DATA_PART_PLAYER, "PlayerData");
@@ -44,15 +44,25 @@ namespace Game.UI.Begin
             }
 
             //添加存档item
-            foreach (var kv in playerData.dataDic)
+            var saveDic = playerData.dataDic;
+            for (int i = 0; i < GameConst.FILE_NUM; i++)
             {
-                AddCustomControl(ITEM_PATH, go =>
-                {
-                    go.transform.SetParent(_content, false);
-                    var item = go.GetComponent<UI_btn_sl_item>();
-                    item.SetData(_isSave, kv.Key, kv.Value, _nowUserName);
-                });
+                int index = i;
+                if(saveDic.ContainsKey(index))
+                    AddSaveItem(index, playerData.dataDic[index]);
+                else
+                    AddSaveItem(index, null);
             }
+        }
+
+        private void AddSaveItem(int saveId, PlayerInfo saveInfo)
+        {
+            AddCustomControl(ITEM_PATH, go =>
+            {
+                go.transform.SetParent(_content, false);
+                var item = go.GetComponent<UI_btn_sl_item>();
+                item.SetData(_isSave, saveId, saveInfo, _nowUserName);
+            });
         }
     }
 
@@ -60,8 +70,11 @@ namespace Game.UI.Begin
     {
         public bool isSave;
         public string userName;
+        public int secretaryId;
 
-        public SaveLoadParam(bool isSave, string userName)
-            => (this.isSave, this.userName) = (isSave, userName);
+        public SaveLoadParam(bool isSave, string userName, int secretaryId)
+            => (this.isSave, this.userName, this.secretaryId) = (isSave, userName, secretaryId);
+
+        public SaveLoadParam(bool isSave) => this.isSave = isSave;
     }
 }

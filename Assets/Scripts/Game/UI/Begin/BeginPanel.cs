@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using DG.Tweening;
-using Game.Begin;
+using Game.BeginScene;
+using Game.Managers;
+using Game.Model;
 using Game.UI.Utils;
 using Hali_Framework;
 using UnityEngine;
@@ -15,17 +17,20 @@ namespace Game.UI.Begin
     {
         private RingLayoutGroup _ringLayoutGroup;
 
-        private Button[] _btns;
+        private List<Button> _btns;
         private Button _pointBtn;
+        private Button _btnLoad;
         
         protected internal override void OnInit(object userData)
         {
             base.OnInit(userData);
             //获取组件
+            _btns = new List<Button>();
             _ringLayoutGroup = GetComponentInChildren<RingLayoutGroup>();
 
             var img = GetControl<Image>("group_btn");
-            _btns = GetControls<Button>().ToArray();
+            _btns = GetControls<Button>();
+            _btnLoad = _btns.Find(b => b.name == "btn_load");
             
             //添加动效
             AddCustomListener(img, EventTriggerType.PointerEnter,
@@ -41,7 +46,18 @@ namespace Game.UI.Begin
         protected internal override void OnShow(object userData)
         {
             base.OnShow(userData);
+            
+            var playerData = BinaryDataMgr.Instance.Load<PlayerData>(GameConst.DATA_PART_PLAYER, "PlayerData");
+            if (playerData == null || playerData.dataDic.Count <= 0)
+            {
+                //隐藏Load按钮
+                _btnLoad.gameObject.SetActive(false);
+            }
+            else
+                _btnLoad.gameObject.SetActive(true);
+            
             _ringLayoutGroup.transform.localScale = Vector3.one * 0.8f;
+            _ringLayoutGroup.ArcBtnGroup();
         }
 
         protected override void OnClick(string btnName)
@@ -50,13 +66,15 @@ namespace Game.UI.Begin
             switch (btnName)
             {
                 case "btn_new":
-                    UIMgr.Instance.HidePanel(this);
+                    HideMe();
                     BeginCamera.Instance.Move(() =>
                     {
                         UIMgr.Instance.ShowPanel<ChooseRolePanel>();
                     });
                     break;
                 case "btn_load":
+                    UIMgr.Instance.ShowPanel<SaveLoadPop>(GameConst.UIGROUP_POP,
+                        userData: new SaveLoadParam(false));
                     break;
                 case "btn_option":
                     break;

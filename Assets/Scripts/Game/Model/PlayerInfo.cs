@@ -11,10 +11,6 @@ namespace Game.Model
         public PlayerData()
         {
             dataDic = new (GameConst.FILE_NUM);
-            for (int i = 0; i < GameConst.FILE_NUM; i++)
-            {
-                dataDic.Add(i, null);
-            }
         }
     }
     
@@ -25,5 +21,7 @@ namespace Game.Model
         public string name;
         public int time;
         public float complete;//完成度 [0,1]
+
+        public int secretaryId;
     }
 }

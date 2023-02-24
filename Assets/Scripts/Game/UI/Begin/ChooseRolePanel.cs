@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Game.Begin;
+using Game.BeginScene;
 using Game.Managers;
 using Game.UI.Base;
 using Hali_Framework;
@@ -16,9 +16,7 @@ namespace Game.UI.Begin
         private Button _btnLeft;
         private Button _btnRight;
         private Button _btnSure;
-
-        private int _panelId = -1;
-
+        
         private Action<string> _sureCallback;
 
         protected internal override void OnInit(object userData)
@@ -45,18 +43,19 @@ namespace Game.UI.Begin
         protected internal override void OnShow(object userData)
         {
             base.OnShow(userData);
-            EventMgr.Instance.AddListener(ClientEvent.ROLE_CHANGE, OnRoleChange);
+            EventMgr.Instance.AddListener(ClientEvent.ROLE_CHANGE_BEGIN, OnRoleChange);
             EventMgr.Instance.AddListener(ClientEvent.ROLE_SHOW_INFO, OnRoleShowInfo);
             EventMgr.Instance.AddListener(ClientEvent.ROLE_CHANGE_COMPLETE, OnRoleChangeComplete);
-            BeginRolePostureMgr.Instance.ChangeRole(_roleIdList[_selectIndex]);
+            BeginSceneMonoMgr.Instance.ChangeRole(_roleIdList[_selectIndex]);
         }
 
         protected internal override void OnHide(bool isShutdown, object userData)
         {
             base.OnHide(isShutdown, userData);
-            EventMgr.Instance.RemoveListener(ClientEvent.ROLE_CHANGE, OnRoleChange);
+            EventMgr.Instance.RemoveListener(ClientEvent.ROLE_CHANGE_BEGIN, OnRoleChange);
             EventMgr.Instance.RemoveListener(ClientEvent.ROLE_SHOW_INFO, OnRoleShowInfo);
             EventMgr.Instance.RemoveListener(ClientEvent.ROLE_CHANGE_COMPLETE, OnRoleChangeComplete);
+            EventMgr.Instance.TriggerEvent(ClientEvent.ROLE_CHANGE_BEGIN);
         }
 
         protected override void OnClick(string btnName)
@@ -65,20 +64,17 @@ namespace Game.UI.Begin
             switch (btnName)
             {
                 case "btn_left":
-                    if(BeginRolePostureMgr.Instance.IsChanging) return;
-                    UIMgr.Instance.HidePanel(_panelId);
+                    if(BeginSceneMonoMgr.Instance.IsChanging) return;
                     _selectIndex = _selectIndex - 1 < 0 ? _roleIdList.Count - 1 : _selectIndex - 1;
-                    BeginRolePostureMgr.Instance.ChangeRole(_roleIdList[_selectIndex]);       
+                    BeginSceneMonoMgr.Instance.ChangeRole(_roleIdList[_selectIndex]);       
                     break;
                 case "btn_right":
-                    if(BeginRolePostureMgr.Instance.IsChanging) return;
-                    UIMgr.Instance.HidePanel(_panelId);
+                    if(BeginSceneMonoMgr.Instance.IsChanging) return;
                     _selectIndex = _selectIndex + 1 > _roleIdList.Count - 1 ? 0 : _selectIndex + 1;
-                    BeginRolePostureMgr.Instance.ChangeRole(_roleIdList[_selectIndex]);  
+                    BeginSceneMonoMgr.Instance.ChangeRole(_roleIdList[_selectIndex]);  
                     break;
                 case "btn_back":
-                    UIMgr.Instance.HidePanel(_panelId);
-                    BeginRolePostureMgr.Instance.ResetRole();
+                    BeginSceneMonoMgr.Instance.ResetRole();
                     UIMgr.Instance.HidePanel(this);
                     BeginCamera.Instance.Move(() =>
                     {
@@ -100,7 +96,7 @@ namespace Game.UI.Begin
 
         private void OnRoleShowInfo()
         {
-            _panelId = UIMgr.Instance.ShowPanel<RoleInfoPop>(GameConst.UIGROUP_POP, userData: _roleIdList[_selectIndex]);
+            UIMgr.Instance.ShowPanel<RoleInfoPop>(GameConst.UIGROUP_POP, userData: _roleIdList[_selectIndex]);
         }
 
         private void OnRoleChangeComplete()
@@ -118,7 +114,8 @@ namespace Game.UI.Begin
                 return;
             }
 
-            UIMgr.Instance.ShowPanel<SaveLoadPop>(GameConst.UIGROUP_POP, userData: new SaveLoadParam(true, str));
+            UIMgr.Instance.ShowPanel<SaveLoadPop>(GameConst.UIGROUP_POP,
+                userData: new SaveLoadParam(true, str, _roleIdList[_selectIndex]));
         }
     }
 }

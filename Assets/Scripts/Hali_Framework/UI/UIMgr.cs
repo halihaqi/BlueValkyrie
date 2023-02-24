@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Game.UI.Base;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 namespace Hali_Framework
 {
@@ -11,10 +15,11 @@ namespace Hali_Framework
         private readonly HashSet<int> _loadingPanelsToRelease;
         private readonly Queue<PanelEntity> _recycleQueue;
         private int _cachedSerialId;
-        private GameObject _canvas;
+        private CanvasEntity _canvas;
         private GameObject _eventSystem;
 
-        private const string PANEL_PATH = "UI/";
+        public const string PANEL_PATH = "UI/";
+        public const string CONTROL_PATH = "UI/Controls";
 
         /// <summary>
         /// 界面组数量
@@ -267,7 +272,10 @@ namespace Hali_Framework
         public void HidePanel(PanelEntity panel, object userData = null, bool isShutdown = false)
         {
             if (panel == null)
+            {
                 Debug.Log("Hide panel is null.");
+                return;
+            }
             UIGroup group = panel.UIGroup;
             if (group == null)
                 throw new Exception("UI group is invalid.");
@@ -348,6 +356,62 @@ namespace Hali_Framework
             group.Refresh();
             panel.OnRefocus(userData);
         }
+        
+                /// <summary>
+        /// 添加自定义UI事件，同类型事件只能添加一个
+        /// </summary>
+        /// <param name="control">控件</param>
+        /// <param name="type">事件类型</param>
+        /// <param name="callback">事件</param>
+        public void AddCustomListener(UIBehaviour control, EventTriggerType type,
+            UnityAction<BaseEventData> callback)
+        {
+            if (control == null)
+                throw new Exception($"Add custom listener control is null");
+            EventTrigger trigger = control.GetComponent<EventTrigger>();
+            trigger ??= control.gameObject.AddComponent<EventTrigger>();
+            
+            var oldEntry = trigger.triggers.Find(e => e.eventID == type);
+            if (oldEntry != null)
+            {
+                oldEntry.callback.RemoveAllListeners();
+                oldEntry.callback.AddListener(callback);
+                return;
+            }
+
+            EventTrigger.Entry entry = new EventTrigger.Entry
+            {
+                eventID = type
+            };
+            entry.callback.AddListener(callback);
+            trigger.triggers.Add(entry);
+        }
+
+        public void AddCustomListeners(UIBehaviour[] controls, EventTriggerType type,
+            UnityAction<BaseEventData> callback)
+        {
+            for (int i = 0; i < controls.Length; i++)
+            {
+                AddCustomListener(controls[i], type, callback);
+            }
+        }
+        
+        public void AddCustomListeners<T>(List<T> controls, EventTriggerType type,
+            UnityAction<BaseEventData> callback) where T : UIBehaviour
+        {
+            for (int i = 0; i < controls.Count; i++)
+            {
+                AddCustomListener(controls[i], type, callback);
+            }
+        }
+
+        public void RemoveAllCustomListeners(UIBehaviour control)
+        {
+            if (control == null)
+                throw new Exception($"Add custom listener control is null");
+            if (control.TryGetComponent(out EventTrigger trigger))
+                trigger.triggers.Clear();
+        }
 
 
         private void InternalShowPanel(int serialId, string assetName, UIGroup uiGroup, GameObject obj, bool isNew,
@@ -356,7 +420,7 @@ namespace Hali_Framework
             //移除加载列表
             if (isNew)
                 _loadingPanels.Remove(serialId);
-
+            
             obj.name = assetName;
             obj.transform.SetParent(uiGroup.UIGroupEntity.transform, false);
             if (!obj.TryGetComponent(out PanelEntity panel))
@@ -376,8 +440,7 @@ namespace Hali_Framework
         {
             if (_canvas == null)
             {
-                _canvas = new GameObject("Canvas");
-                _canvas.AddComponent<CanvasEntity>();
+                _canvas = new GameObject("Canvas").AddComponent<CanvasEntity>();
             }
 
             if (_eventSystem == null)

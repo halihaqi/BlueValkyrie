@@ -23,7 +23,7 @@ namespace Editor.Excel
         private const int READ_INDEX = 4;
         
 
-        [MenuItem("Excel/GenerateExcel")]
+        [MenuItem("Tools/Excel/GenerateExcel")]
         private static void GenerateExcelInfo()
         {
             //创建或获取源文件夹

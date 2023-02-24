@@ -24,6 +24,7 @@ namespace Hali_Framework
         
         private Action<PanelEntity> _showCompleteEvent;
         private Action<PanelEntity> _hideCompleteEvent;
+        private Action<float> _alphaUpdateEvent;
 
         #region 属性
 
@@ -208,6 +209,17 @@ namespace Hali_Framework
             _isFade = true;
             _customRecycleDelay = 0;
         }
+
+        internal void AddAlphaUpdateListener(Action<float> callback)
+        {
+            _alphaUpdateEvent -= callback;
+            _alphaUpdateEvent += callback;
+        }
+        
+        internal void RemoveAlphaUpdateListener(Action<float> callback)
+        {
+            _alphaUpdateEvent -= callback;
+        }
         
         /// <summary>
         /// 面板渐变显示隐藏协程
@@ -224,6 +236,7 @@ namespace Hali_Framework
                 while(_canvasGroup.alpha < 1)
                 {
                     _canvasGroup.alpha += FADE_SPEED;
+                    _alphaUpdateEvent?.Invoke(_canvasGroup.alpha);
                     yield return null;
                 }
 
@@ -235,6 +248,7 @@ namespace Hali_Framework
                 while (_canvasGroup.alpha > 0)
                 {
                     _canvasGroup.alpha -= FADE_SPEED;
+                    _alphaUpdateEvent?.Invoke(_canvasGroup.alpha);
                     yield return null;
                 }
 

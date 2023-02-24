@@ -12,7 +12,7 @@ namespace Game.UI.Base
         protected internal override void OnInit(object userData)
         {
             isModal = true;
-            isTouchHide = false;
+            interactable = false;
             base.OnInit(userData);
             _txtTip = GetControl<Text>("txt_tip");
         }

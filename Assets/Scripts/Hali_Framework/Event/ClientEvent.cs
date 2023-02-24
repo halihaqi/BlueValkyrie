@@ -24,10 +24,8 @@
         HIDE_PANEL_COMPLETE,
         
         //Role
-        ROLE_CHANGE,
+        ROLE_CHANGE_BEGIN,
         ROLE_SHOW_INFO,
         ROLE_CHANGE_COMPLETE,
-        
-        
     }
 }

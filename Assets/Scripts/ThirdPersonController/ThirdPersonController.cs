@@ -45,6 +45,7 @@ public class ThirdPersonController : MonoBehaviour
     private float _terminalVelocity = 53;
     
     //跳跃参数
+    [SerializeField]
     private bool _isGrounded = true;
     private float _jumpTimeoutDelta;
 
@@ -60,14 +61,16 @@ public class ThirdPersonController : MonoBehaviour
     private static readonly int Speed = Animator.StringToHash("speed");
     private static readonly int Ground = Animator.StringToHash("ground");
     private static readonly int Jump = Animator.StringToHash("jump");
-
+    
     protected virtual void Awake()
     {
         //获取组件
-        
         _anim = GetComponentInChildren<Animator>();
         _cc = GetComponent<CharacterController>();
-        
+    }
+    
+    protected virtual void Start()
+    {
         //初始化跟随相机
         if (followCamera == null)
             throw new Exception("Player has no follow camera.");
@@ -79,6 +82,8 @@ public class ThirdPersonController : MonoBehaviour
             if (_thirdPersonCam.followTarget == null)
                 throw new Exception("Player camera has no follow target.");
         }
+
+        followCamera.transform.position = this.transform.position - this.transform.forward;
 
         //打开输入监听
         InputMgr.Instance.OpenOrClose(true);
@@ -155,10 +160,10 @@ public class ThirdPersonController : MonoBehaviour
             new Vector3(pos.x, pos.y - groundOffset, pos.z);
         _isGrounded = Physics.CheckSphere(feetPosition, groundRadius, groundLayers, QueryTriggerInteraction.Ignore);
         
-        //头部检测，如果撞到头顶，跳跃速度归零
+        //头部检测，如果撞到头顶并且不在地面，跳跃速度归零
         Vector3 headPosition =
             new Vector3(pos.x, pos.y + headOffset, pos.z);
-        if (Physics.CheckSphere(headPosition, headRadius, headLayers, QueryTriggerInteraction.Ignore))
+        if (!_isGrounded && Physics.CheckSphere(headPosition, headRadius, headLayers, QueryTriggerInteraction.Ignore))
             _verticalVelocity = 0f;
     }
 
