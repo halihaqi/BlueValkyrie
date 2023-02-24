@@ -25,6 +25,7 @@ namespace Game.UI.Controls
 
         private int _userId;
         private string _userName;
+        private int _secretaryId;
 
         private PlayerInfo _info;
 
@@ -47,10 +48,11 @@ namespace Game.UI.Controls
         }
 
 
-        public void SetData(bool isSave, int userId, PlayerInfo info, string userName = null)
+        public void SetData(bool isSave, int userId, PlayerInfo info, string userName = null, int secretaryId = 0)
         {
             _userId = userId;
             _userName = userName;
+            _secretaryId = secretaryId;
             _info = info;
             
             //添加按钮事件
@@ -92,6 +94,7 @@ namespace Game.UI.Controls
                 name = _userName,
                 time = 0,
                 complete = 0,
+                secretaryId = _secretaryId,
             };
             playerData.dataDic[_userId] = playerInfo;
             BinaryDataMgr.Instance.Save(GameConst.DATA_PART_PLAYER, "PlayerData", playerData);

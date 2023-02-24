@@ -88,8 +88,8 @@ namespace Editor.Excel
             //创建或获取源文件夹
             Directory.CreateDirectory(DATA_CONTAINER_PATH);
             StringBuilder content = new StringBuilder();
-            content.Append($"public class BaseContainer\n{{\n");
-            content.Append("public abstract object GetDic();\n");
+            content.Append($"public abstract class BaseContainer\n{{\n");
+            content.Append("    public abstract object GetDic();\n");
             content.Append("}");
             
             //创建数据容器类

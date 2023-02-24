@@ -49,13 +49,15 @@ namespace Hali_Framework
         protected internal override void OnHide(bool isShutdown, object userData)
         {
             base.OnHide(isShutdown, userData);
-            RemoveAllCustomListeners(_mask.Mask);
+            if(_mask != null)
+                RemoveAllCustomListeners(_mask.Mask);
         }
 
         protected internal override void OnRecycle()
         {
             base.OnRecycle();
-            _mask.SetActive(false);
+            if(_mask != null)
+                _mask.SetActive(false);
         }
 
         private void OnClickBk(BaseEventData data)

@@ -28,6 +28,8 @@ namespace Game.BeginScene
             base.Awake();
             _showPos = BeginSceneMonoMgr.Instance.ShowPos;
             _hidePos = BeginSceneMonoMgr.Instance.HidePos;
+            moveSpeed = 1.5f;
+            angularSpeed = 6f;
         }
 
         private void Start()
@@ -59,7 +61,7 @@ namespace Game.BeginScene
             {
                 if (Input.GetMouseButton(0))
                 {
-                    _anim.SetBool(Pick, true);
+                    anim.SetBool(Pick, true);
                     Vector3 mousePos = Input.mousePosition;
                     mousePos.z = Mathf.Abs(Camera.main.transform.position.x - transform.position.x);
                     Vector3 targetPos = Camera.main.ScreenToWorldPoint(mousePos);
@@ -71,7 +73,7 @@ namespace Game.BeginScene
                 else if (Input.GetMouseButtonUp(0))
                 {
                     transform.position = _showPos.position;
-                    _anim.SetBool(Pick, false);
+                    anim.SetBool(Pick, false);
                     _isDruging = false;
                 }
             }
@@ -87,14 +89,14 @@ namespace Game.BeginScene
         public void ShowMe(Action callback)
         {
             _showCompleteEvent = callback;
-            _anim.SetFloat(Speed, 1);
+            anim.SetFloat(Speed, 0.5f);
             StopAllCoroutines();
             StartCoroutine(Move(_showPos.position, () =>
             {
-                _anim.SetFloat(Speed, 0);
+                anim.SetFloat(Speed, 0);
                 StartCoroutine(TurnRound(-transform.right, () =>
                 {
-                    _anim.SetTrigger(Reaction);
+                    anim.SetTrigger(Reaction);
                 }));
             }));
         }
@@ -102,17 +104,17 @@ namespace Game.BeginScene
         public void HideMe(Action callback)
         {
             transform.position = _showPos.position;
-            _anim.SetBool(Pick, false);
+            anim.SetBool(Pick, false);
             _isDruging = false;
             _canPick = false;
             StopAllCoroutines();
             StartCoroutine(TurnRound(transform.right, () =>
             {
-                _anim.SetFloat(Speed, 1);
+                anim.SetFloat(Speed, 0.5f);
                 StartCoroutine(Move(_hidePos.position, () =>
                 {
                     transform.localPosition = Vector3.zero;
-                    _anim.SetFloat(Speed, 0);
+                    anim.SetFloat(Speed, 0);
                     callback?.Invoke();
                 }));
             }));
@@ -143,7 +145,7 @@ namespace Game.BeginScene
             Quaternion targetRot = Quaternion.LookRotation(targetDir);
             while (transform.rotation != targetRot)
             {
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * rotateSpeed);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * angularSpeed);
                 yield return null;
             }
             callback?.Invoke();

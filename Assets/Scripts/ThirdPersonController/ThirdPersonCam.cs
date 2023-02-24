@@ -20,6 +20,8 @@ public class ThirdPersonCam : MonoBehaviour
     [Range(0.001f, 1f)]
     public float camRadius = 0.15f;//相机碰撞大小
 
+    public float minDistance = 0.3f;//相机距target的最小距离
+
     //射线检测
     private Ray _ray;
     private RaycastHit _hit;
@@ -41,8 +43,11 @@ public class ThirdPersonCam : MonoBehaviour
         //如果被阻挡
         if (isUseObstacles && IsObstructed())
         {
-            float dis = Vector3.Distance(_hit.point, followTarget.position) - 0.2f;
-            _targetFollowPos = followTarget.position + _offset - followTarget.forward * dis;
+            //应该修正到的距离
+            //增加一点距离保证修正后仍处于遮挡状态
+            float reviseDis = Vector3.Distance(_hit.point, followTarget.position) + 0.15f;
+            reviseDis = Mathf.Max(reviseDis, minDistance);
+            _targetFollowPos = followTarget.position + _offset - followTarget.forward * reviseDis;
             if (!_isTransmit)
             {
                 transform.position = _targetFollowPos;
@@ -70,11 +75,11 @@ public class ThirdPersonCam : MonoBehaviour
 
         //Physics.SphereCast(ray, camRadius, out hit, 1000, camCollisionFilter);
         Physics.Raycast(_ray, out _hit, 1000, camCollisionFilter);
-        if (_hit.collider != null && _hit.collider.tag != ignoreTag)
+        if (_hit.collider != null && !_hit.collider.CompareTag(ignoreTag))
         {
             //如果玩家和障碍的距离短于玩家和相机的距离
             //说明视线被遮挡
-            float dis = Vector3.Distance(followTarget.position, _hit.point) - 0.5f;
+            float dis = Vector3.Distance(followTarget.position, _hit.point);
             if(dis < Vector3.Distance(followTarget.position, transform.position))
             {
                 return true;

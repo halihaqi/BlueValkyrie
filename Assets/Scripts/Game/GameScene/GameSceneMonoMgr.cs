@@ -1,12 +1,20 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Game.GameScene
 {
     public class GameSceneMonoMgr : SingletonMono<GameSceneMonoMgr>
     {
         [SerializeField]
-        private Transform _playerBornPos;
+        private Transform bornTrans;
+        public Vector3 playerBornPos;
+        public Quaternion playerBornRotation;
 
-        public Transform PlayerBornPos => _playerBornPos;
+        private void OnValidate()
+        {
+            if(Application.isPlaying || bornTrans == null) return;
+            playerBornPos = bornTrans.position;
+            playerBornRotation = bornTrans.rotation;
+        }
     }
 }

@@ -49,15 +49,13 @@ namespace Game.UI.Begin
             
             var playerData = BinaryDataMgr.Instance.Load<PlayerData>(GameConst.DATA_PART_PLAYER, "PlayerData");
             if (playerData == null || playerData.dataDic.Count <= 0)
-            {
                 //隐藏Load按钮
                 _btnLoad.gameObject.SetActive(false);
-            }
             else
                 _btnLoad.gameObject.SetActive(true);
             
-            _ringLayoutGroup.transform.localScale = Vector3.one * 0.8f;
             _ringLayoutGroup.ArcBtnGroup();
+            _ringLayoutGroup.transform.localScale = Vector3.one * 0.8f;
         }
 
         protected override void OnClick(string btnName)

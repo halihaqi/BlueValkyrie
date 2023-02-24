@@ -12,6 +12,7 @@ namespace Game.UI.Begin
     {
         private bool _isSave;
         private string _nowUserName;
+        private int _secretaryId;
         private Transform _content;
         private const string ITEM_PATH = "UI/Controls/btn_sl_item";
 
@@ -31,6 +32,7 @@ namespace Game.UI.Begin
             {
                 _isSave = p.isSave;
                 _nowUserName = p.userName;
+                _secretaryId = p.secretaryId;
             }
             else
                 throw new Exception($"{Name} param is invalid.");
@@ -61,7 +63,7 @@ namespace Game.UI.Begin
             {
                 go.transform.SetParent(_content, false);
                 var item = go.GetComponent<UI_btn_sl_item>();
-                item.SetData(_isSave, saveId, saveInfo, _nowUserName);
+                item.SetData(_isSave, saveId, saveInfo, _nowUserName, _secretaryId);
             });
         }
     }

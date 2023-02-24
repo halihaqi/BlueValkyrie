@@ -11,8 +11,8 @@ namespace Game.Managers
         private PlayerInfo _nowPlayer;
         private RoleInfo _secretaryInfo;
 
-        private GameObject _playerObj;
-        private GameObject _secretaryObj;
+        private PlayerController _playerEntity;
+        private SecretaryEntity _secretaryEntity;
 
         private const string PLAYER_RES_PATH = "Prefabs/Player/Player"; 
         public const string PLAYER_DATA_KEY = "Player";
@@ -28,21 +28,25 @@ namespace Game.Managers
                     _secretaryInfo = null;
                     return;
                 }
-                _secretaryInfo = BinaryDataMgr.Instance.GetInfo<RoleInfoContainer, int, RoleInfo>(_nowPlayer.id);
+                _secretaryInfo = BinaryDataMgr.Instance.GetInfo<RoleInfoContainer, int, RoleInfo>(_nowPlayer.secretaryId);
             }
         }
 
         public RoleInfo NowSecretaryInfo => _secretaryInfo;
 
+        public bool HasPlayer => _playerEntity != null;
+
+        public bool HasSecretary => _secretaryEntity != null;
+
         public void SetPlayerPrefab(Camera followCam)
         {
             //加载主角
-            if (_playerObj == null)
+            if (_playerEntity == null)
             {
                 ResMgr.Instance.LoadAsync<GameObject>(GameConst.GAME_SCENE, PLAYER_RES_PATH, obj =>
                 {
-                    _playerObj = obj;
-                    _playerObj.GetComponent<PlayerController>().followCamera = followCam;
+                    _playerEntity = obj.GetComponent<PlayerController>();
+                    _playerEntity.followCamera = followCam;
                 });
             }
 
@@ -51,17 +55,20 @@ namespace Game.Managers
             ResMgr.Instance.LoadAsync<GameObject>(GameConst.GAME_SCENE, ResPath.GetStudentObjPath(_secretaryInfo),
                 obj =>
                 {
-                    _secretaryObj = obj;
+                    _secretaryEntity = obj.AddComponent<SecretaryEntity>();
+                    var playerTrans = _playerEntity.transform;
+                    _secretaryEntity.FollowTarget = playerTrans;
+                    _secretaryEntity.SetFollowDistance(2);
                 });
         }
 
         public void DestroyPlayerPrefab()
         {
-            if(_playerObj == null) return;
-            Object.Destroy(_playerObj);
-            Object.Destroy(_secretaryObj);
-            _playerObj = null;
-            _secretaryObj = null;
+            if(_playerEntity == null) return;
+            Object.Destroy(_playerEntity.gameObject);
+            Object.Destroy(_secretaryEntity.gameObject);
+            _playerEntity = null;
+            _secretaryEntity = null;
         }
     }
 }

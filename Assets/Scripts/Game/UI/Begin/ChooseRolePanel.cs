@@ -30,6 +30,7 @@ namespace Game.UI.Begin
             {
                 _roleIdList.Add(roleInfo.roleId);
             }
+            _roleIdList.Sort();
             _selectIndex = 0;
             
             //获取控件

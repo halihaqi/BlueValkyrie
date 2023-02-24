@@ -1,6 +1,8 @@
 ﻿using System;
 using Hali_Framework;
 using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.Serialization;
 
 namespace Game.Base
 {
@@ -8,14 +10,16 @@ namespace Game.Base
     public abstract class RoleBase : MonoBehaviour
     {
         private RoleInfo _roleInfo;
-        
+
         [SerializeField]
-        protected float moveSpeed = 1.5f;
+        protected float moveSpeed = 3.5f;
         [SerializeField]
-        protected float rotateSpeed = 10;
+        protected float angularSpeed = 120;
+        [SerializeField]
+        protected float stopDistance = 0.15f;
         
-        protected Animator _anim;
-        protected CapsuleCollider _collider;
+        protected Animator anim;
+        protected CapsuleCollider roleCollider;
 
         public RoleInfo RoleInfo => _roleInfo;
 
@@ -23,29 +27,29 @@ namespace Game.Base
 
         protected virtual void Awake()
         {
-            _anim = GetComponentInChildren<Animator>();
-            _collider = GetComponent<CapsuleCollider>();
+            anim = GetComponentInChildren<Animator>();
+            roleCollider = GetComponent<CapsuleCollider>();
 
-            if (_anim == null || _collider == null)
-                throw new Exception("Role Prefab has no animator or collider.");
+            if (anim == null)
+                throw new Exception("Role Prefab has no animator.");
             SetTrigger(false);
             SetColliderSize(Vector3.up * 1.08f, 0.5f, 2f);
-            
+
             gameObject.layer = LayerMask.NameToLayer(GameConst.ROLE_LAYER);
         }
 
         public void SetRoleInfo(RoleInfo info) => _roleInfo = info;
 
-        protected void SetColliderSize(Vector3 center, float radius, float height)
+        protected virtual void SetColliderSize(Vector3 center, float radius, float height)
         {
-            _collider.center = center;
-            _collider.radius = radius;
-            _collider.height = height;
+            roleCollider.center = center;
+            roleCollider.radius = radius;
+            roleCollider.height = height;
         }
 
         protected void SetTrigger(bool isTrigger)
         {
-            _collider.isTrigger = isTrigger;
+            roleCollider.isTrigger = isTrigger;
         }
     }
 }
