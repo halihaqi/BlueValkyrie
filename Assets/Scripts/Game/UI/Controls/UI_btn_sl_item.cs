@@ -1,6 +1,7 @@
 ﻿using Game.Global;
 using Game.Managers;
 using Game.Model;
+using Game.Utils;
 using Hali_Framework;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,12 +11,11 @@ namespace Game.UI.Controls
     public class UI_btn_sl_item : ControlBase
     {
         private Button _btn;
-        
+
+        private Image _imgBadge;
         private Image _imgTitleSave;
         private Image _imgTitleLoad;
-        private Image _imgComplete;
-        private Image _imgCompleteBk;
-        private float _completeMaxWidth;
+        private Slider _sldComplete;
 
         private Text _txtTitle;
         private Text _txtTimeTip;
@@ -36,9 +36,8 @@ namespace Game.UI.Controls
             
             _imgTitleSave = GetControl<Image>("img_title_save");
             _imgTitleLoad = GetControl<Image>("img_title_load");
-            _imgComplete = GetControl<Image>("img_complete");
-            _imgCompleteBk = GetControl<Image>("img_complete_bk");
-            _completeMaxWidth = _imgCompleteBk.rectTransform.rect.width;
+            _imgBadge = GetControl<Image>("img_badge");
+            _sldComplete = GetControl<Slider>("sld_complete");
             
             _txtTimeTip = GetControl<Text>("txt_time_tip");
             _txtTitle = GetControl<Text>("txt_title");
@@ -88,14 +87,7 @@ namespace Game.UI.Controls
         private void OnSaveClick()
         {
             var playerData = BinaryDataMgr.Instance.Load<PlayerData>(GameConst.DATA_PART_PLAYER, "PlayerData");
-            var playerInfo = new PlayerInfo
-            {
-                id = _userId,
-                name = _userName,
-                time = 0,
-                complete = 0,
-                secretaryId = _secretaryId,
-            };
+            var playerInfo = new PlayerInfo(_userId, _userName, _secretaryId);
             playerData.dataDic[_userId] = playerInfo;
             BinaryDataMgr.Instance.Save(GameConst.DATA_PART_PLAYER, "PlayerData", playerData);
             UpdateView(playerInfo);
@@ -124,9 +116,11 @@ namespace Game.UI.Controls
                 SetControlsActive(true);
                 _txtName.text = info.name;
                 _txtTime.text = info.time.ToTime();
-                _txtComplete.rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Right,
-                    _completeMaxWidth * info.complete,
-                    _txtComplete.rectTransform.rect.width);
+                _sldComplete.value = info.complete;
+                ResMgr.Instance.LoadAsync<Sprite>(ResPath.GetSchoolBadgeIcon(info.secretaryId), img =>
+                {
+                    _imgBadge.sprite = img;
+                });
             }
         }
 
@@ -136,8 +130,8 @@ namespace Game.UI.Controls
             _txtTime.gameObject.SetActive(isActive);
             _txtName.gameObject.SetActive(isActive);
             _txtComplete.gameObject.SetActive(isActive);
-            _imgCompleteBk.gameObject.SetActive(isActive);
-            _imgComplete.gameObject.SetActive(isActive);
+            _sldComplete.gameObject.SetActive(isActive);
+            _imgBadge.gameObject.SetActive(isActive);
         }
     }
 }

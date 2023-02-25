@@ -249,13 +249,13 @@ namespace Hali_Framework
         /// </summary>
         /// <param name="path"></param>
         /// <param name="callback"></param>
-        public void AddCustomControl(string path, Action<GameObject> callback)
+        public void AddCustomControl<T>(string path, Action<T> callback) where T : ControlBase
         {
             ObjectPoolMgr.Instance.PopObj(path, go =>
             {
-                var control = go.GetComponent<ControlBase>();
+                var control = go.GetComponent<T>();
                 if (control == null)
-                    throw new Exception($"{go.name} has no ControlBase.");
+                    throw new Exception($"{go.name} has no {typeof(T)}.");
                 if (_addControlDic.ContainsKey(path))
                 {
                     _addControlDic[path] ??= new List<ControlBase>();
@@ -265,7 +265,7 @@ namespace Hali_Framework
                     _addControlDic.Add(path, new List<ControlBase> { control });
                 
                 control.OnInit();
-                callback?.Invoke(go);
+                callback?.Invoke(control);
             });
         }
 
@@ -278,6 +278,7 @@ namespace Hali_Framework
             {
                 foreach (var control in kv.Value)
                 {
+                    control.OnRecycle();
                     ObjectPoolMgr.Instance.PushObj(kv.Key, control.gameObject);
                 }
             }

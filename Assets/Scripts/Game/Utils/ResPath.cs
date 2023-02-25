@@ -1,4 +1,5 @@
-﻿using Hali_Framework;
+﻿using Game.Model.BagModel;
+using Hali_Framework;
 
 namespace Game.Utils
 {
@@ -16,14 +17,25 @@ namespace Game.Utils
             return GetSchoolBadgeIcon(info);
         }
 
+        public static string GetStudentIcon(int roleId)
+        {
+            RoleInfo info = BinaryDataMgr.Instance.GetInfo<RoleInfoContainer, int, RoleInfo>(roleId);
+            return GetStudentIcon(info);
+        }
+        
         public static string GetStudentIcon(RoleInfo info)
         {
             return $"Image/HeadIcon/Student_Portrait_{info.name}";
         }
 
-        public static string GetStudentObjPath(RoleInfo info)
+        public static string GetStudentObj(RoleInfo info)
         {
             return $"Prefabs/Students/{info.school}/{info.name}";
+        }
+
+        public static string GetItemIcon(ItemInfo info)
+        {
+            return $"Image/ItemIcon/{((ItemEnum)info.type).ToString()}/{info.resName}";
         }
     }
 }

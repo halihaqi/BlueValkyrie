@@ -19,7 +19,7 @@ namespace Hali_Framework
         private GameObject _eventSystem;
 
         public const string PANEL_PATH = "UI/";
-        public const string CONTROL_PATH = "UI/Controls";
+        public const string CONTROL_PATH = "UI/Controls/";
 
         /// <summary>
         /// 界面组数量

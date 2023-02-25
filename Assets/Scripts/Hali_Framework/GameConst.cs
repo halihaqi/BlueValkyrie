@@ -26,6 +26,7 @@ namespace Hali_Framework
         //Res
         public const string RES_GROUP_BEGIN = "Begin";
         public const string RES_GROUP_GAME = "Game";
+        public const string RES_GROUP_UI = "Ui";
         
         //Layer
         public const string ROLE_LAYER = "Role";

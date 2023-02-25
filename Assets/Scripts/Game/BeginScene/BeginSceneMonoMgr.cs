@@ -55,7 +55,7 @@ namespace Game.BeginScene
             var roles = BinaryDataMgr.Instance.GetTable<RoleInfoContainer>();
             if (roles.dataDic.TryGetValue(roleId, out var roleInfo))
             {
-                string path = ResPath.GetStudentObjPath(roleInfo);
+                string path = ResPath.GetStudentObj(roleInfo);
                 ResMgr.Instance.LoadAsync<GameObject>(GameConst.RES_GROUP_BEGIN, path, obj =>
                 {
                     if (obj == null)

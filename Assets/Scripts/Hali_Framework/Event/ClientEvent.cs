@@ -17,15 +17,18 @@
         //Pool
         POOL_CHANGED,
         
+        //Role
+        ROLE_CHANGE_BEGIN,
+        ROLE_SHOW_INFO,
+        ROLE_CHANGE_COMPLETE,
+        
         //UI
         SHOW_PANEL_SUCCESS,
         SHOW_PANEL_FAIL,
         SHOW_PANEL_COMPLETE,
         HIDE_PANEL_COMPLETE,
         
-        //Role
-        ROLE_CHANGE_BEGIN,
-        ROLE_SHOW_INFO,
-        ROLE_CHANGE_COMPLETE,
+        //Bag
+        BAG_ITEM_CLICK,
     }
 }

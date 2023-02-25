@@ -53,12 +53,12 @@ namespace Game.UI.Begin
             _txtGrade.text = _info.grade;
             _txtMoe.text = _info.moe;
             
-            ResMgr.Instance.LoadAsync<Sprite>(GameConst.RES_GROUP_BEGIN, ResPath.GetSchoolBadgeIcon(_info), img =>
+            ResMgr.Instance.LoadAsync<Sprite>(GameConst.RES_GROUP_UI, ResPath.GetSchoolBadgeIcon(_info), img =>
             {
                 _imgBadge.sprite = img;
             });
             
-            ResMgr.Instance.LoadAsync<Sprite>(GameConst.RES_GROUP_BEGIN, ResPath.GetStudentIcon(_info), img =>
+            ResMgr.Instance.LoadAsync<Sprite>(GameConst.RES_GROUP_UI, ResPath.GetStudentIcon(_info), img =>
             {
                 _imgHead.sprite = img;
             });

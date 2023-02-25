@@ -23,7 +23,7 @@ namespace Game.Base
 
         public RoleInfo RoleInfo => _roleInfo;
 
-        public string ResPath => _roleInfo == null ? null : Utils.ResPath.GetStudentObjPath(_roleInfo);
+        public string ResPath => _roleInfo == null ? null : Utils.ResPath.GetStudentObj(_roleInfo);
 
         protected virtual void Awake()
         {

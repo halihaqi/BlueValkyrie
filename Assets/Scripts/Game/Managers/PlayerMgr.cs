@@ -29,8 +29,11 @@ namespace Game.Managers
                     return;
                 }
                 _secretaryInfo = BinaryDataMgr.Instance.GetInfo<RoleInfoContainer, int, RoleInfo>(_nowPlayer.secretaryId);
+                BagMgr = new BagMgr(_nowPlayer);
             }
         }
+        
+        public BagMgr BagMgr { get; private set; }
 
         public RoleInfo NowSecretaryInfo => _secretaryInfo;
 
@@ -52,7 +55,7 @@ namespace Game.Managers
 
             //加载秘书
             if(_secretaryInfo == null) return;
-            ResMgr.Instance.LoadAsync<GameObject>(GameConst.GAME_SCENE, ResPath.GetStudentObjPath(_secretaryInfo),
+            ResMgr.Instance.LoadAsync<GameObject>(GameConst.GAME_SCENE, ResPath.GetStudentObj(_secretaryInfo),
                 obj =>
                 {
                     _secretaryEntity = obj.AddComponent<SecretaryEntity>();

@@ -10,12 +10,19 @@ namespace Hali_Framework
     public abstract class ControlBase : UIBehaviour
     {
         private Dictionary<string, List<UIBehaviour>> _controlDic;
+        private Dictionary<string, List<ControlBase>> _addControlDic;
 
         protected internal virtual void OnInit()
         {
             _controlDic = new Dictionary<string, List<UIBehaviour>>();
+            _addControlDic = new Dictionary<string, List<ControlBase>>();
             //搜索UI组件添加到容器中
             FindChildrenControls(this.transform);
+        }
+
+        protected internal virtual void OnRecycle()
+        {
+            RecycleCustomControls();
         }
 
         /// <summary>  
@@ -37,6 +44,46 @@ namespace Hali_Framework
             }
             Debug.Log($"No UIControl named:{controlName}");
             return null;
+        }
+        
+        /// <summary>
+        /// 添加自定义控件，会自动触发控件的OnInit方法
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="callback"></param>
+        public void AddCustomControl<T>(string path, Action<T> callback) where T : ControlBase
+        {
+            ObjectPoolMgr.Instance.PopObj(path, go =>
+            {
+                var control = go.GetComponent<T>();
+                if (control == null)
+                    throw new Exception($"{go.name} has no {typeof(T)}.");
+                if (_addControlDic.ContainsKey(path))
+                {
+                    _addControlDic[path] ??= new List<ControlBase>();
+                    _addControlDic[path].Add(control);
+                }
+                else
+                    _addControlDic.Add(path, new List<ControlBase> { control });
+                
+                control.OnInit();
+                callback?.Invoke(control);
+            });
+        }
+        
+        /// <summary>
+        /// 回收添加的自定义控件进池，默认OnRecycle调用
+        /// </summary>
+        protected void RecycleCustomControls()
+        {
+            foreach (var kv in _addControlDic)
+            {
+                foreach (var control in kv.Value)
+                {
+                    control.OnRecycle();
+                    ObjectPoolMgr.Instance.PushObj(kv.Key, control.gameObject);
+                }
+            }
         }
 
         /// <summary>

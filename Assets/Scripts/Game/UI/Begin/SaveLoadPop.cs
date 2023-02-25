@@ -59,10 +59,9 @@ namespace Game.UI.Begin
 
         private void AddSaveItem(int saveId, PlayerInfo saveInfo)
         {
-            AddCustomControl(ITEM_PATH, go =>
+            AddCustomControl<UI_btn_sl_item>(ITEM_PATH, item =>
             {
-                go.transform.SetParent(_content, false);
-                var item = go.GetComponent<UI_btn_sl_item>();
+                item.transform.SetParent(_content, false);
                 item.SetData(_isSave, saveId, saveInfo, _nowUserName, _secretaryId);
             });
         }
