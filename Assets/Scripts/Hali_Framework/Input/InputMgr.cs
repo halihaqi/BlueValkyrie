@@ -7,14 +7,10 @@ namespace Hali_Framework
         //是否开启输入检测
         private bool _isOpenCheck = false;
         public int Priority => 0;
-        
-        public InputMgr()
-        {
-            MonoMgr.Instance.AddUpdateListener(InputUpdate);
-        }
-        
+
         void IModule.Update(float elapseSeconds, float realElapseSeconds)
         {
+            InputUpdate();
         }
 
         void IModule.Dispose()

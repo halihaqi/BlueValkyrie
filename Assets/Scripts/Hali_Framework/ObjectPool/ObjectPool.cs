@@ -24,15 +24,16 @@ namespace Hali_Framework
             /// 对象池构造函数
             /// </summary>
             /// <param name="poolName">对象池名</param>
-            /// <param name="firstObj">第一个对象</param>
             /// <param name="poolObj">对象池实例</param>
-            public ObjectPool(string poolName, GameObject firstObj, GameObject poolObj)
+            /// <param name="firstObj">第一个对象</param>
+            public ObjectPool(string poolName, GameObject poolObj, GameObject firstObj = null)
             {
                 this._parentObj = new GameObject(poolName);
                 PoolName = poolName;
                 _parentObj.transform.parent = poolObj.transform;
                 _poolList = new Queue<GameObject>();
-                Push(firstObj);
+                if(firstObj != null)
+                    Push(firstObj);
             }
 
             public GameObject Pop()

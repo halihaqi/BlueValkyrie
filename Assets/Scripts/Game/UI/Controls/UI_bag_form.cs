@@ -12,16 +12,22 @@ namespace Game.UI.Controls
     {
         private List<BagItemInfo> _items;
 
-        private RectTransform _content;
+        private HList _list;
         private Button _btnSift;
         private Button _btnSort;
 
         protected internal override void OnInit()
         {
             base.OnInit();
-            _content = GetControl<ScrollRect>("sv_bag_cotent").content;
+            _list = GetControl<HList>("sv_bag");
             _btnSift = GetControl<Button>("btn_sift");
             _btnSort = GetControl<Button>("btn_sort");
+
+            _list.Padding = new Vector2(51f, 30f);
+            _list.Space = new Vector2(18f, 17f);
+            
+            _list.IsVirtual = true;
+            _list.itemRenderer = OnItemRenderer;
         }
 
         public void SetData(int bagId)
@@ -35,14 +41,14 @@ namespace Game.UI.Controls
 
         private void UpdateView()
         {
-            //todo
-            foreach (var item in _items)
-            {
-                AddCustomControl<UI_btn_bag_item>($"{UIMgr.CONTROL_PATH}btn_bag_item", bagItem =>
-                {
-                    bagItem.SetData(item.id, item.num);
-                });
-            }
+            _list.numItems = _items.Count;
+        }
+
+        private void OnItemRenderer(int index, GameObject obj)
+        {
+            var itemObj = obj.GetComponent<UI_btn_bag_item>();
+            var bagItemInfo = _items[index];
+            itemObj.SetData(bagItemInfo.id, bagItemInfo.num);
         }
     }
 }

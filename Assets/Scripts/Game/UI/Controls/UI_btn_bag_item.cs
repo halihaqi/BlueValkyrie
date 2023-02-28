@@ -17,10 +17,10 @@ namespace Game.UI.Controls
         protected internal override void OnInit()
         {
             base.OnInit();
-            _btn = GetControl<Button>("btn_bag_item");
+            _btn = GetComponent<Button>();
             _imgItem = GetControl<Image>("img_item");
             _imgChoose = GetControl<Image>("img_choose");
-            _txtNum = GetControl<Text>("txt_choose");
+            _txtNum = GetControl<Text>("txt_num");
             _imgChoose.gameObject.SetActive(false);
             _btn.onClick.RemoveAllListeners();
             _btn.onClick.AddListener(OnClick);

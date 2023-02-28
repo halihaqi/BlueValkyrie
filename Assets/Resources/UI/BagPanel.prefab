@@ -1945,6 +1945,9 @@ GameObject:
   m_Component:
   - component: {fileID: 7351151966096212864}
   - component: {fileID: 7353741658609478665}
+  - component: {fileID: -1851131248075567472}
+  - component: {fileID: 1721365933941920093}
+  - component: {fileID: 5160017138470014512}
   m_Layer: 0
   m_Name: BagPanel
   m_TagString: Untagged
@@ -1985,6 +1988,42 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8365989871340866854}
   m_CullTransparentMesh: 1
+--- !u!225 &-1851131248075567472
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8365989871340866854}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &1721365933941920093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8365989871340866854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4490cb59ee8842cf9774130f7a659750, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5160017138470014512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8365989871340866854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: daf66641b6a642e89dd4ac1946b7869f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &9190869560185561439
 GameObject:
   m_ObjectHideFlags: 0

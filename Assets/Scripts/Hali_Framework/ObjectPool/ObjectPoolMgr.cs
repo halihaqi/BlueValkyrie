@@ -66,7 +66,7 @@ namespace Hali_Framework
                     _poolCollectionObj.AddComponent<PoolCollectionEntity>().
                         SetPoolCollection(_objectPoolCollection);
                 }
-                _objectPoolCollection.Add(path, new ObjectPool(path, obj, _poolCollectionObj));
+                _objectPoolCollection.Add(path, new ObjectPool(path, _poolCollectionObj, obj));
             }
         }
 
