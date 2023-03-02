@@ -35,7 +35,7 @@ namespace Game.Utils
 
         public static string GetItemIcon(ItemInfo info)
         {
-            return $"Image/ItemIcon/{((ItemEnum)info.type).ToString()}/{info.resName}";
+            return $"Image/ItemIcon/{((ItemType)info.type).ToString()}/{info.resName}";
         }
     }
 }

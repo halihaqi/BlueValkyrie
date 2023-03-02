@@ -16,21 +16,23 @@ namespace Hali_Framework
     }
 
     public delegate void ListItemRenderer(int index, GameObject item);
+    public delegate void ListItemClick(int index, ControlBase cb);
     
     [RequireComponent(typeof(ScrollRect))]
-    public class HList : UIBehaviour
+    public class HList : ControlBase
     {
         private class ItemInfo
         {
             public GameObject obj;
             public uint updateFlag;
-            public bool selected;
         }
         
         //Unity设置
         [Header("Base")]
         [SerializeField]
         private GameObject defaultItem = null;
+        [SerializeField]
+        private Vector2 defaultItemSize;
         [SerializeField]
         private ListLayoutType layoutType = ListLayoutType.Horizontal;
         [SerializeField]
@@ -46,6 +48,7 @@ namespace Hali_Framework
         private float top = 0;
 
         public ListItemRenderer itemRenderer;
+        public ListItemClick onClickItem;
         
         private ScrollRect _sv;
         private ObjectPool _pool;
@@ -63,6 +66,10 @@ namespace Hali_Framework
         private int _firstIndex;
         private int _lastIndex;
         private uint _itemInfoVer;//用来标志item是否在本次处理中已被重用
+        
+        //Custom Drag
+        private Vector2 _pointerStartLocalCursor;
+        private Vector2 _contentStartPosition;
         
 
         public RectTransform Content => _sv.content;
@@ -116,12 +123,7 @@ namespace Hali_Framework
                             _virtualItems.Add(ii);
                         }
                     }
-                    else
-                    {
-                        for (int i = _numItems; i < oldCount; i++)
-                            _virtualItems[i].selected = false;
-                    }
-                    
+
                     SetContentSize();
                     RefreshVirtualList(true);
                 }
@@ -131,7 +133,7 @@ namespace Hali_Framework
                     if (value > count)
                     {
                         for (int i = count; i < value; i++)
-                            _children.Add(AddChildFromPool());
+                            _children.Add(AddChildFromPool(Content.childCount));
                     }
                     else
                     {
@@ -149,7 +151,7 @@ namespace Hali_Framework
 
         public Vector2 Padding
         {
-            get => new(left, top);
+            get => new Vector2(left, top);
             set
             {
                 if (Math.Abs(value.x - left) < 0.001f && Math.Abs(value.y - top) < 0.001f) return;
@@ -170,11 +172,10 @@ namespace Hali_Framework
             }
         }
 
-        protected override void Awake()
+        protected internal override void OnInit()
         {
+            base.OnInit();
             _sv ??= GetComponent<ScrollRect>();
-            if (_sv == null)
-                throw new Exception("UI list has no ScrollView.");
 
             _children = new List<GameObject>();
             _virtualItems = new List<ItemInfo>();
@@ -191,8 +192,8 @@ namespace Hali_Framework
         {
             _sv ??= GetComponent<ScrollRect>();
             _children ??= new List<GameObject>();
-            _sv.horizontal = layoutType is ListLayoutType.Horizontal or ListLayoutType.SingleRow;
-            _sv.vertical = layoutType is ListLayoutType.Vertical or ListLayoutType.SingleColumn;
+            _sv.horizontal = layoutType == ListLayoutType.Horizontal || layoutType == ListLayoutType.SingleRow;
+            _sv.vertical = layoutType == ListLayoutType.Vertical || layoutType == ListLayoutType.SingleColumn;
             SetContentAnchors();
             if(Content.childCount <= 0) return;
             EditorApplication.delayCall = () =>
@@ -201,7 +202,13 @@ namespace Hali_Framework
                 for (int i = 0; i < Content.childCount; i++)
                     _children.Add(Content.GetChild(i).gameObject);
                 _numItems = _children.Count;
-                _itemSize = defaultItem.GetComponent<RectTransform>().sizeDelta;
+                _itemSize = ((RectTransform)defaultItem.transform).sizeDelta;
+                if (defaultItemSize.x > 0.01f && defaultItemSize.y > 0.01f)
+                    _itemSize = defaultItemSize;
+                for (int i = 0; i < Content.childCount; i++)
+                {
+                    ((RectTransform)Content.GetChild(i).transform).sizeDelta = _itemSize;
+                }
                 SetColumnRow();
                 SetContentSize();
                 RefreshNormalList();
@@ -227,34 +234,38 @@ namespace Hali_Framework
 
         #region pool
 
-        private GameObject AddChildAt(int index)
-        {
-            var obj = AddChildFromPool();
-            obj.transform.SetSiblingIndex(index);
-            return obj;
-        }
-        
-        private GameObject AddChildFromPool()
+        private GameObject AddChildFromPool(int index)
         {
             GameObject obj = null;
             if (_pool.CacheNum <= 0)
             {
                 obj = Instantiate(defaultItem.gameObject, Content, false);
-                if(obj.TryGetComponent(out ControlBase cb))
-                    cb.OnInit();
             }
             else
             {
                 obj = _pool.Pop();
                 obj.transform.SetParent(Content, false);
             }
+
+            if (defaultItemSize.x > 0.01f && defaultItemSize.y > 0.01f)
+                ((RectTransform)obj.transform).sizeDelta = defaultItemSize;
+            if (obj.TryGetComponent(out ControlBase cb))
+            {
+                cb.OnInit();
+                SetItemEvent(index, cb);
+            }
+            obj.transform.SetSiblingIndex(index);
+
             return obj;
         }
 
         private void PushToPool(GameObject obj)
         {
-            if(obj.TryGetComponent(out ControlBase cb))
+            if (obj.TryGetComponent(out ControlBase cb))
+            {
                 cb.OnRecycle();
+                RemoveItemEvent(cb);
+            }
             _pool.Push(obj);
         }
 
@@ -264,8 +275,8 @@ namespace Hali_Framework
 
         private void Init()
         {
-            _sv.horizontal = layoutType is ListLayoutType.Horizontal or ListLayoutType.SingleRow;
-            _sv.vertical = layoutType is ListLayoutType.Vertical or ListLayoutType.SingleColumn;
+            _sv.horizontal = layoutType == ListLayoutType.Horizontal || layoutType == ListLayoutType.SingleRow;
+            _sv.vertical = layoutType == ListLayoutType.Vertical || layoutType == ListLayoutType.SingleColumn;
             SetContentAnchors();
             
             _itemSize = defaultItem.GetComponent<RectTransform>().sizeDelta;
@@ -317,13 +328,13 @@ namespace Hali_Framework
         {
             int count = isVirtual ? _numItems : _children.Count;
             var rect = Viewport.rect;
-            if (layoutType is ListLayoutType.Horizontal or ListLayoutType.SingleRow)
+            if (layoutType == ListLayoutType.Horizontal || layoutType == ListLayoutType.SingleRow)
             {
                 int columnCount = count / _rowCount + (count % _rowCount == 0 ? 0 : 1);
                 float x = left + columnCount * (_itemSize.x + space.x);
                 Content.sizeDelta = new Vector2(x, rect.height);
             }
-            else if (layoutType is ListLayoutType.Vertical or ListLayoutType.SingleColumn)
+            else if (layoutType == ListLayoutType.Vertical || layoutType == ListLayoutType.SingleColumn)
             {
                 int rowCount = count / _columnCount + (count % _columnCount == 0 ? 0 : 1);
                 float y = top + rowCount * (_itemSize.y + space.y);
@@ -357,9 +368,9 @@ namespace Hali_Framework
         /// <param name="forceUpdate">是否强制更新view，如果为true，view中所有item都会更新</param>
         private void RefreshVirtualList(bool forceUpdate)
         {
-            if (layoutType is ListLayoutType.SingleRow or ListLayoutType.Horizontal)
+            if (layoutType == ListLayoutType.SingleRow || layoutType == ListLayoutType.Horizontal)
                 HandleHorizontalScroll(forceUpdate);
-            else if (layoutType is ListLayoutType.SingleColumn or ListLayoutType.Vertical)
+            else if (layoutType == ListLayoutType.SingleColumn || layoutType == ListLayoutType.Vertical)
                 HandleVerticalScroll(forceUpdate);
         }
 
@@ -446,9 +457,9 @@ namespace Hali_Framework
                     else
                     {
                         if (isForward)
-                            ii.obj = AddChildAt(curIndex - newFirstIndex);
+                            ii.obj = AddChildFromPool(curIndex - newFirstIndex);
                         else
-                            ii.obj = AddChildAt(Content.childCount);
+                            ii.obj = AddChildFromPool(Content.childCount);
                     }
 
                     needRender = true;
@@ -568,9 +579,9 @@ namespace Hali_Framework
                     else
                     {
                         if (isForward)
-                            ii.obj = AddChildAt(curIndex - newFirstIndex);
+                            ii.obj = AddChildFromPool(curIndex - newFirstIndex);
                         else
-                            ii.obj = AddChildAt(Content.childCount);
+                            ii.obj = AddChildFromPool(Content.childCount);
                     }
 
                     needRender = true;
@@ -772,8 +783,10 @@ namespace Hali_Framework
             GameObject obj = null;
             Action<int> updatePos = layoutType switch
             {
-                ListLayoutType.Horizontal or ListLayoutType.SingleRow => UpdateHorizontalOrSingleRow,
-                ListLayoutType.Vertical or ListLayoutType.SingleColumn => UpdateVerticalOrSingleColumn,
+                ListLayoutType.Horizontal => UpdateHorizontalOrSingleRow, 
+                ListLayoutType.SingleRow => UpdateHorizontalOrSingleRow,
+                ListLayoutType.Vertical => UpdateVerticalOrSingleColumn,
+                ListLayoutType.SingleColumn => UpdateVerticalOrSingleColumn,
                 _ => null
             };
 
@@ -812,6 +825,43 @@ namespace Hali_Framework
             #endregion
         }
 
+        #endregion
+
+        #region Events
+
+        private void SetItemEvent(int index, ControlBase cb)
+        {
+            UIMgr.AddCustomEventListener(cb, EventTriggerType.PointerClick, data =>
+            {
+                onClickItem?.Invoke(index, cb);
+            });
+            UIMgr.AddCustomEventListener(cb, EventTriggerType.BeginDrag, data =>
+            {
+                var point = data as PointerEventData;
+                cb.SetBlocksRaycasts(false);
+                _sv.OnBeginDrag(point);
+            });
+            UIMgr.AddCustomEventListener(cb, EventTriggerType.Drag, data =>
+            {
+                var point = data as PointerEventData;
+                _sv.OnDrag(point);
+            });
+            UIMgr.AddCustomEventListener(cb, EventTriggerType.EndDrag, data =>
+            {
+                var point = data as PointerEventData;
+                cb.SetBlocksRaycasts(true);
+                _sv.OnEndDrag(point);
+            });
+        }
+
+        private void RemoveItemEvent(ControlBase cb)
+        {
+            UIMgr.RemoveCustomEvent(cb, EventTriggerType.PointerClick);
+            UIMgr.RemoveCustomEvent(cb, EventTriggerType.BeginDrag);
+            UIMgr.RemoveCustomEvent(cb, EventTriggerType.Drag);
+            UIMgr.RemoveCustomEvent(cb, EventTriggerType.EndDrag);
+        }
+        
         #endregion
     }
 }

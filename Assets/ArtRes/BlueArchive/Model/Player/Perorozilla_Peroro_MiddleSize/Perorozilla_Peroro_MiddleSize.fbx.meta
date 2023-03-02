@@ -1,8 +1,41 @@
 fileFormatVersion: 2
 guid: 07af12830b306a04ba4549c1e4631ad9
 ModelImporter:
-  serializedVersion: 21300
-  internalIDToNameTable: []
+  serializedVersion: 20300
+  internalIDToNameTable:
+  - first:
+      74: -4734703869533964676
+    second: Perorozilla_Peroro_MiddleSize_Exs01
+  - first:
+      74: 458649616018739893
+    second: Perorozilla_Peroro_MiddleSize_Vital_Death
+  - first:
+      74: 3634960128059501765
+    second: Perorozilla_Peroro_MiddleSize_Normal_Attack_End
+  - first:
+      74: -6265161321979082275
+    second: Perorozilla_Peroro_MiddleSize_Exs01_Root
+  - first:
+      74: 4397937419266113301
+    second: Perorozilla_Peroro_MiddleSize_Normal_Idle
+  - first:
+      74: 1496657913399081159
+    second: Perorozilla_Peroro_MiddleSize_Vital_Panic
+  - first:
+      74: -4941136455893882689
+    second: Perorozilla_Peroro_MiddleSize_Normal_Attack_Delay
+  - first:
+      74: 4881958741726469771
+    second: Perorozilla_Peroro_MiddleSize_Normal_Reload
+  - first:
+      74: 9027675219374104358
+    second: Perorozilla_Peroro_MiddleSize_Appear
+  - first:
+      74: 805888281387504581
+    second: Perorozilla_Peroro_MiddleSize_Normal_Attack_Ing
+  - first:
+      74: 3244909059727391767
+    second: Perorozilla_Peroro_MiddleSize_Normal_Attack_Start
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -14,7 +47,6 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
-    removeConstantScaleCurves: 1
     motionNodeName: 
     rigImportErrors: 
     rigImportWarnings: 
@@ -44,7 +76,6 @@ ModelImporter:
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
-    nodeNameCollisionStrategy: 1
     fileIdsGeneration: 2
     swapUVChannels: 0
     generateSecondaryUV: 0
@@ -56,7 +87,6 @@ ModelImporter:
     skinWeightsMode: 0
     maxBonesPerVertex: 4
     minBoneWeight: 0.001
-    optimizeBones: 1
     meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8

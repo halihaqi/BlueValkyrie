@@ -37,7 +37,7 @@ namespace Editor
                 foreach (var clipPath in clipPaths)
                 {
                     var strs = clipPath.Split('_');
-                    splitPaths.Add(strs[^2] + "_" + strs[^1]);
+                    splitPaths.Add(strs[strs.Length - 2] + "_" + strs[strs.Length - 1]);
                 }
 
                 //设置重载Animator

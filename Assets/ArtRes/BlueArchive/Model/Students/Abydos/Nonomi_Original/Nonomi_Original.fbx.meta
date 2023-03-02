@@ -1,8 +1,119 @@
 fileFormatVersion: 2
 guid: 34b4f9c5a364afe44bdb9a946a568d0d
 ModelImporter:
-  serializedVersion: 21300
-  internalIDToNameTable: []
+  serializedVersion: 20300
+  internalIDToNameTable:
+  - first:
+      74: 3067757530274352913
+    second: Nonomi_Original_TSS_Interaction01_Idle
+  - first:
+      74: 2107961492960739926
+    second: Nonomi_Original_Exs_Cam
+  - first:
+      74: -434103444260843338
+    second: Nonomi_Original_Vital_Dying_Ing
+  - first:
+      74: 8920871269789992681
+    second: Nonomi_Original_Move_End_Normal
+  - first:
+      74: 3064811036127350217
+    second: Nonomi_Original_Stand_Reload
+  - first:
+      74: -4616548005528462923
+    second: Nonomi_Original_Normal_Attack_End
+  - first:
+      74: -6050762642070442607
+    second: Nonomi_Original_TSS_Interaction01
+  - first:
+      74: -645385207101449195
+    second: Nonomi_Original_Normal_Attack_Ing
+  - first:
+      74: -1218139049869581340
+    second: Nonomi_Original_Vital_Panic
+  - first:
+      74: 7251032310888273316
+    second: Nonomi_Original_Normal_Reload
+  - first:
+      74: 6679216182542289920
+    second: Nonomi_Original_Cafe_Reaction
+  - first:
+      74: 1628696582040863900
+    second: Nonomi_Original_Victory_Start
+  - first:
+      74: 6656636622032179093
+    second: Nonomi_Original_Cafe_Idle
+  - first:
+      74: -6811520653828978739
+    second: Nonomi_Original_Formation_Idle
+  - first:
+      74: -8134205152433955719
+    second: Nonomi_Original_Cafe_Walk
+  - first:
+      74: -629610199469375912
+    second: Nonomi_Original_Victory_End
+  - first:
+      74: 5060248550887843057
+    second: Nonomi_Original_Rearrange_Reaction
+  - first:
+      74: -7320227142702495154
+    second: Nonomi_Original_Rearrange_Idle
+  - first:
+      74: -228998726093533733
+    second: Nonomi_Original_Stand_Attack_End
+  - first:
+      74: -2257265519073429932
+    second: Nonomi_Original_Formation_Pickup
+  - first:
+      74: -3981497499938644847
+    second: Nonomi_Original_Stand_Attack_Delay
+  - first:
+      74: 3710357349472907777
+    second: Nonomi_Original_Stand_Attack_Ing
+  - first:
+      74: -4906223631825344578
+    second: Nonomi_Original_Move_Callsign
+  - first:
+      74: -3041893496882849215
+    second: Nonomi_Original_Move_End_Stand
+  - first:
+      74: -480659258035480582
+    second: Nonomi_Original_Stand_Callsign
+  - first:
+      74: 2470886035740229949
+    second: Nonomi_Original_Normal_Attack_Delay
+  - first:
+      74: -507613172820034900
+    second: Nonomi_Original_Exs_Cutin
+  - first:
+      74: 588541355768981337
+    second: Nonomi_Original_Public01
+  - first:
+      74: -2921918469959144609
+    second: Nonomi_Original_Exs
+  - first:
+      74: 3241266102824562869
+    second: Nonomi_Original_Move_Ing
+  - first:
+      74: 8413114193156995197
+    second: Nonomi_Original_Normal_Callsign
+  - first:
+      74: 1070170326081710666
+    second: Nonomi_Original_Normal_Idle
+  - first:
+      74: 9090239999904788992
+    second: Nonomi_Original_Stand_Idle
+  - first:
+      74: 4365467275259756204
+    second: Nonomi_Original_Vital_Death
+  - first:
+      74: -1395096375454770582
+    second: Nonomi_Original_Stand_Attack_Start
+  - first:
+      74: -4983010062480447159
+    second: Nonomi_Original_Vital_Retreat
+  - first:
+      74: -5035353412785611576
+    second: Nonomi_Original_Normal_Attack_Start
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -14,7 +125,6 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
-    removeConstantScaleCurves: 1
     motionNodeName: 
     rigImportErrors: 
     rigImportWarnings: 
@@ -44,7 +154,6 @@ ModelImporter:
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
-    nodeNameCollisionStrategy: 1
     fileIdsGeneration: 2
     swapUVChannels: 0
     generateSecondaryUV: 0
@@ -56,7 +165,6 @@ ModelImporter:
     skinWeightsMode: 0
     maxBonesPerVertex: 4
     minBoneWeight: 0.001
-    optimizeBones: 1
     meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8

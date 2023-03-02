@@ -17,6 +17,7 @@ namespace Game.UI.Begin
     {
         private RingLayoutGroup _ringLayoutGroup;
 
+        private Image _img;
         private List<Button> _btns;
         private Button _pointBtn;
         private Button _btnLoad;
@@ -28,18 +29,18 @@ namespace Game.UI.Begin
             _btns = new List<Button>();
             _ringLayoutGroup = GetComponentInChildren<RingLayoutGroup>();
 
-            var img = GetControl<Image>("group_btn");
+            _img = GetControl<Image>("group_btn");
             _btns = GetControls<Button>();
             _btnLoad = _btns.Find(b => b.name == "btn_load");
             
             //添加动效
-            AddCustomListener(img, EventTriggerType.PointerEnter,
+            UIMgr.AddCustomEventListener(_img, EventTriggerType.PointerEnter,
                 OnPointEnterBtnGroup);
-            AddCustomListener(img, EventTriggerType.PointerExit,
+            UIMgr.AddCustomEventListener(_img, EventTriggerType.PointerExit,
                 OnPointExitBtnGroup);
-            AddCustomListeners(_btns, EventTriggerType.PointerEnter,
+            UIMgr.AddCustomEventListener(_btns, EventTriggerType.PointerEnter,
                 OnPointEnterBtn);
-            AddCustomListeners(_btns, EventTriggerType.PointerExit,
+            UIMgr.AddCustomEventListener(_btns, EventTriggerType.PointerExit,
                 OnPointExitBtn);
         }
 
@@ -47,8 +48,7 @@ namespace Game.UI.Begin
         {
             base.OnShow(userData);
             
-            var playerData = BinaryDataMgr.Instance.Load<PlayerData>(GameConst.DATA_PART_PLAYER, "PlayerData");
-            if (playerData == null || playerData.dataDic.Count <= 0)
+            if (!BinaryDataMgr.Instance.HasData(GameConst.DATA_PART_PLAYER, "PlayerData"))
                 //隐藏Load按钮
                 _btnLoad.gameObject.SetActive(false);
             else
@@ -56,6 +56,15 @@ namespace Game.UI.Begin
             
             _ringLayoutGroup.ArcBtnGroup();
             _ringLayoutGroup.transform.localScale = Vector3.one * 0.8f;
+        }
+
+        protected internal override void OnRecycle()
+        {
+            base.OnRecycle();
+            UIMgr.RemoveCustomEvent(_img, EventTriggerType.PointerEnter);
+            UIMgr.RemoveCustomEvent(_img, EventTriggerType.PointerExit);
+            UIMgr.RemoveCustomEvent(_btns, EventTriggerType.PointerEnter);
+            UIMgr.RemoveCustomEvent(_btns, EventTriggerType.PointerExit);
         }
 
         protected override void OnClick(string btnName)

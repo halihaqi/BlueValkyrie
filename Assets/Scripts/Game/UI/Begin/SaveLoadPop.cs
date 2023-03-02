@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Game.Managers;
 using Game.Model;
 using Game.UI.Controls;
 using Hali_Framework;
@@ -10,18 +11,25 @@ namespace Game.UI.Begin
 {
     public class SaveLoadPop : PopBase
     {
+        private const string ITEM_PATH = "UI/Controls/btn_sl_item";
+
         private bool _isSave;
         private string _nowUserName;
         private int _secretaryId;
-        private Transform _content;
-        private const string ITEM_PATH = "UI/Controls/btn_sl_item";
+        
+        private HList _list;
+
+        private Dictionary<int, PlayerInfo> _userDic;
 
         protected internal override void OnInit(object userData)
         {
             isModal = true;
             base.OnInit(userData);
 
-            _content = GetControl<ScrollRect>("sv_sl_data").content;
+            _list = GetControl<HList>("sv_sl_data");
+            _list.IsVirtual = false;
+            _list.itemRenderer = OnItemRender;
+            _list.onClickItem = OnItemClick;
         }
 
         protected internal override void OnShow(object userData)
@@ -36,34 +44,26 @@ namespace Game.UI.Begin
             }
             else
                 throw new Exception($"{Name} param is invalid.");
-
-            //获取存档
-            var playerData = BinaryDataMgr.Instance.Load<PlayerData>(GameConst.DATA_PART_PLAYER, "PlayerData");
-            if (playerData == null)
-            {
-                playerData = new PlayerData();
-                BinaryDataMgr.Instance.Save(GameConst.DATA_PART_PLAYER, "PlayerData", playerData);
-            }
-
-            //添加存档item
-            var saveDic = playerData.dataDic;
-            for (int i = 0; i < GameConst.FILE_NUM; i++)
-            {
-                int index = i;
-                if(saveDic.ContainsKey(index))
-                    AddSaveItem(index, playerData.dataDic[index]);
-                else
-                    AddSaveItem(index, null);
-            }
+            
+            _userDic = PlayerMgr.Instance.LoadUserDic();
+            _list.numItems = GameConst.FILE_NUM;
         }
 
-        private void AddSaveItem(int saveId, PlayerInfo saveInfo)
+        private void OnItemRender(int index, GameObject go)
         {
-            AddCustomControl<UI_btn_sl_item>(ITEM_PATH, item =>
-            {
-                item.transform.SetParent(_content, false);
-                item.SetData(_isSave, saveId, saveInfo, _nowUserName, _secretaryId);
-            });
+            var item = go.GetComponent<UI_btn_sl_item>();
+            
+            _userDic.TryGetValue(index, out var info);
+            item.SetData(_isSave, index, info, _nowUserName, _secretaryId);
+        }
+
+        private void OnItemClick(int index, ControlBase cb)
+        {
+            var item = cb as UI_btn_sl_item;
+            if(_isSave)
+                item.OnSaveClick();
+            else
+                item.OnLoadClick();
         }
     }
 

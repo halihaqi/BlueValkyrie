@@ -3,9 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Managers;
 using Hali_Framework;
+using UnityEngine;
 
 namespace Game.Model.BagModel
 {
+    public enum ItemType
+    {
+        Common,
+        Equip,
+        EquipPiece,
+    }
+    
     [Serializable]
     public class BagData
     {
@@ -220,6 +228,7 @@ namespace Game.Model.BagModel
         public string name;
         public int num;
         public int type;
+        public int visible;
         public string resName;
 
         public BagItemInfo(ItemInfo info)
@@ -227,6 +236,7 @@ namespace Game.Model.BagModel
             id = info.id;
             name = info.fullName;
             type = info.type;
+            visible = info.visible;
             resName = info.resName;
             num = 0;
         }
@@ -241,10 +251,11 @@ namespace Game.Model.BagModel
             id = info.id;
             name = info.name;
             type = info.type;
+            visible = info.visible;
             resName = info.resName;
             num = info.num;
         }
 
-        public int Add(int addNum = 1) => num = Math.Clamp(num + addNum, 0, 999);
+        public int Add(int addNum = 1) => num = Mathf.Clamp(num + addNum, 0, 999);
     }
 }

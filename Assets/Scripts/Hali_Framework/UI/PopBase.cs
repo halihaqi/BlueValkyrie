@@ -43,14 +43,14 @@ namespace Hali_Framework
                 _mask.SetActive(true);
 
             if (isModal && interactable)
-                AddCustomListener(_mask.Mask, EventTriggerType.PointerClick, OnClickBk);
+                UIMgr.AddCustomEventListener(_mask.Mask, EventTriggerType.PointerClick, OnClickBk);
         }
 
         protected internal override void OnHide(bool isShutdown, object userData)
         {
             base.OnHide(isShutdown, userData);
             if(_mask != null)
-                RemoveAllCustomListeners(_mask.Mask);
+                UIMgr.RemoveAllCustomEvents(_mask.Mask);
         }
 
         protected internal override void OnRecycle()

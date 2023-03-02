@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Game.UI.Base;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -60,6 +58,20 @@ namespace Hali_Framework
             _recycleQueue.Clear();
             _cachedSerialId = 0;
         }
+        
+        private void InitCanvas()
+        {
+            if (_canvas == null)
+                _canvas = new GameObject("Canvas").AddComponent<CanvasEntity>();
+
+            if (_eventSystem == null)
+            {
+                _eventSystem = new GameObject("EventSystem");
+                _eventSystem.AddComponent<EventSystemEntity>();
+            }
+        }
+
+        #region UIGroup
 
         /// <summary>
         /// 是否存在界面组
@@ -110,7 +122,12 @@ namespace Hali_Framework
             return true;
         }
 
-        /// <summary>
+        #endregion
+
+
+        #region Panel
+
+                /// <summary>
         /// 是否拥有界面
         /// </summary>
         /// <param name="serialId"></param>
@@ -164,7 +181,7 @@ namespace Hali_Framework
         public bool IsPanelLoading(int serialId) => _loadingPanels.ContainsKey(serialId);
 
         /// <summary>
-        /// 获得所有正在加载的界面
+        /// 获得所有正在加载的界面id
         /// </summary>
         /// <returns></returns>
         public int[] GetAllLoadingPanelIds()
@@ -294,13 +311,6 @@ namespace Hali_Framework
             }
         }
 
-        private void OnPanelHideComplete(PanelEntity panelEntity)
-        {
-            panelEntity.UIGroup.Refresh();
-            _recycleQueue.Enqueue(panelEntity);
-            panelEntity.RemoveHideCompleteListener(OnPanelHideComplete);
-        }
-
         /// <summary>
         /// 隐藏所有已加载界面
         /// </summary>
@@ -357,62 +367,13 @@ namespace Hali_Framework
             panel.OnRefocus(userData);
         }
         
-                /// <summary>
-        /// 添加自定义UI事件，同类型事件只能添加一个
-        /// </summary>
-        /// <param name="control">控件</param>
-        /// <param name="type">事件类型</param>
-        /// <param name="callback">事件</param>
-        public void AddCustomListener(UIBehaviour control, EventTriggerType type,
-            UnityAction<BaseEventData> callback)
-        {
-            if (control == null)
-                throw new Exception($"Add custom listener control is null");
-            EventTrigger trigger = control.GetComponent<EventTrigger>();
-            trigger ??= control.gameObject.AddComponent<EventTrigger>();
-            
-            var oldEntry = trigger.triggers.Find(e => e.eventID == type);
-            if (oldEntry != null)
-            {
-                oldEntry.callback.RemoveAllListeners();
-                oldEntry.callback.AddListener(callback);
-                return;
-            }
-
-            EventTrigger.Entry entry = new EventTrigger.Entry
-            {
-                eventID = type
-            };
-            entry.callback.AddListener(callback);
-            trigger.triggers.Add(entry);
-        }
-
-        public void AddCustomListeners(UIBehaviour[] controls, EventTriggerType type,
-            UnityAction<BaseEventData> callback)
-        {
-            for (int i = 0; i < controls.Length; i++)
-            {
-                AddCustomListener(controls[i], type, callback);
-            }
-        }
         
-        public void AddCustomListeners<T>(List<T> controls, EventTriggerType type,
-            UnityAction<BaseEventData> callback) where T : UIBehaviour
+        private void OnPanelHideComplete(PanelEntity panelEntity)
         {
-            for (int i = 0; i < controls.Count; i++)
-            {
-                AddCustomListener(controls[i], type, callback);
-            }
+            panelEntity.UIGroup.Refresh();
+            _recycleQueue.Enqueue(panelEntity);
+            panelEntity.RemoveHideCompleteListener(OnPanelHideComplete);
         }
-
-        public void RemoveAllCustomListeners(UIBehaviour control)
-        {
-            if (control == null)
-                throw new Exception($"Add custom listener control is null");
-            if (control.TryGetComponent(out EventTrigger trigger))
-                trigger.triggers.Clear();
-        }
-
 
         private void InternalShowPanel(int serialId, string assetName, UIGroup uiGroup, GameObject obj, bool isNew,
             object userData, Action<PanelBase> callback)
@@ -436,18 +397,128 @@ namespace Hali_Framework
             callback?.Invoke(panel.Logic);
         }
 
-        private void InitCanvas()
+        #endregion
+
+
+        #region Custom Event
+        
+        public static void AddCustomEventListener(UIBehaviour control, EventTriggerType type,
+            UnityAction<BaseEventData> callback)
         {
-            if (_canvas == null)
+            if (control == null)
+                throw new Exception($"Add custom listener control is null");
+            if (!control.TryGetComponent(out EventTrigger trigger))
+                trigger = control.gameObject.AddComponent<EventTrigger>();
+            
+            var entry = trigger.triggers.Find(e => e.eventID == type);
+            if (entry != null)
             {
-                _canvas = new GameObject("Canvas").AddComponent<CanvasEntity>();
+                entry.callback.RemoveListener(callback);
+                entry.callback.AddListener(callback);
+                return;
             }
 
-            if (_eventSystem == null)
-            {
-                _eventSystem = new GameObject("EventSystem");
-                _eventSystem.AddComponent<EventSystemEntity>();
-            }
+            entry = new EventTrigger.Entry { eventID = type };
+            entry.callback.AddListener(callback);
+            trigger.triggers.Add(entry);
         }
+
+        public static void AddCustomEventListener(UIBehaviour[] controls, EventTriggerType type,
+            UnityAction<BaseEventData> callback)
+        {
+            for (int i = 0; i < controls.Length; i++)
+                AddCustomEventListener(controls[i], type, callback);
+        }
+        
+        public static void AddCustomEventListener<T>(List<T> controls, EventTriggerType type,
+            UnityAction<BaseEventData> callback) where T : UIBehaviour
+        {
+            for (int i = 0; i < controls.Count; i++)
+                AddCustomEventListener(controls[i], type, callback);
+        }
+
+        public static bool RemoveCustomEventListener(UIBehaviour control, EventTriggerType type,
+            UnityAction<BaseEventData> callback)
+        {
+            if (control == null)
+                throw new Exception($"Remove custom listener control is null");
+            if (control.TryGetComponent(out EventTrigger trigger))
+            {
+                var entry = trigger.triggers.Find(e => e.eventID == type);
+                if (entry != null)
+                {
+                    entry.callback.RemoveListener(callback);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public static void RemoveCustomEventListener(UIBehaviour[] controls, EventTriggerType type,
+            UnityAction<BaseEventData> callback)
+        {
+            for (int i = 0; i < controls.Length; i++)
+                RemoveCustomEventListener(controls[i], type, callback);
+        }
+        
+        public static void RemoveCustomEventListener<T>(List<T> controls, EventTriggerType type,
+            UnityAction<BaseEventData> callback) where T : UIBehaviour
+        {
+            for (int i = 0; i < controls.Count; i++)
+                RemoveCustomEventListener(controls[i], type, callback);
+        }
+
+        public static bool RemoveCustomEvent(UIBehaviour control, EventTriggerType type)
+        {
+            if (control == null)
+                throw new Exception($"Remove custom listener control is null");
+            if (control.TryGetComponent(out EventTrigger trigger))
+            {
+                var entry = trigger.triggers.Find(e => e.eventID == type);
+                return trigger.triggers.Remove(entry);
+            }
+
+            return false;
+        }
+        
+        public static void RemoveCustomEvent(UIBehaviour[] controls, EventTriggerType type)
+        {
+            for (int i = 0; i < controls.Length; i++)
+                RemoveCustomEvent(controls[i], type);
+        }
+
+        public static void RemoveCustomEvent<T>(List<T> controls, EventTriggerType type) where T : UIBehaviour
+        {
+            for (int i = 0; i < controls.Count; i++)
+                RemoveCustomEvent(controls[i], type);
+        }
+
+        public static bool RemoveAllCustomEvents(UIBehaviour control)
+        {
+            if (control == null)
+                throw new Exception($"Remove custom listener control is null");
+            if (control.TryGetComponent(out EventTrigger trigger))
+            {
+                trigger.triggers.Clear();
+                return true;
+            }
+
+            return false;
+        }
+        
+        public static void RemoveAllCustomEvents(UIBehaviour[] controls)
+        {
+            for (int i = 0; i < controls.Length; i++)
+                RemoveAllCustomEvents(controls[i]);
+        }
+        
+        public static void RemoveAllCustomEvents<T>(List<T> controls) where T : UIBehaviour
+        {
+            for (int i = 0; i < controls.Count; i++)
+                RemoveAllCustomEvents(controls[i]);
+        }
+
+        #endregion
     }
 }

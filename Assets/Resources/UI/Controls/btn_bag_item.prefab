@@ -28,7 +28,6 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5948569058141665285}
   m_RootOrder: 0
@@ -87,6 +86,8 @@ GameObject:
   - component: {fileID: 8036524639701929002}
   - component: {fileID: 103338256803617124}
   - component: {fileID: 930935773276405324}
+  - component: {fileID: 6855154724351959802}
+  - component: {fileID: 490962041610575482}
   m_Layer: 0
   m_Name: img_choose
   m_TagString: Untagged
@@ -104,7 +105,6 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: 0.0044701947, w: 0.99999}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2753952502090369924}
   m_RootOrder: 1
@@ -152,6 +152,37 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &6855154724351959802
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3307560914145327731}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!95 &490962041610575482
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3307560914145327731}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 579ccdd0823f1e14d969ba62adac5c97, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &3845165773630448003
 GameObject:
   m_ObjectHideFlags: 0
@@ -181,7 +212,6 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5948569058141665285}
   m_RootOrder: 2
@@ -259,8 +289,9 @@ GameObject:
   - component: {fileID: 2753952502090369924}
   - component: {fileID: 8492588297062011579}
   - component: {fileID: 1788709598340105298}
-  - component: {fileID: 4609215922256950458}
+  - component: {fileID: 1177805847026853400}
   - component: {fileID: 3735314962192459624}
+  - component: {fileID: 5225371139412373128}
   m_Layer: 0
   m_Name: btn_bag_item
   m_TagString: Untagged
@@ -278,7 +309,6 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5948569058141665285}
   - {fileID: 8036524639701929002}
@@ -328,7 +358,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4609215922256950458
+--- !u!114 &1177805847026853400
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -384,6 +414,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3457a64c52414e78b9cf417c606cbc49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!225 &5225371139412373128
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6778356869862581562}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &7331906127308203896
 GameObject:
   m_ObjectHideFlags: 0
@@ -413,7 +455,6 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5189433938342836899}
   - {fileID: 8539112160217281472}
@@ -505,7 +546,6 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5948569058141665285}
   m_RootOrder: 1

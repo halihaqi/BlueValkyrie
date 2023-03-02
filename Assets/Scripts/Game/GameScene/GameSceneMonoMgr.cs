@@ -26,12 +26,10 @@ namespace Game.GameScene
 
         private void TestBag()
         {
-            var bagMgr = PlayerMgr.Instance.BagMgr;
-            if(!bagMgr.HasBag(1))
-                bagMgr.AddBag(1);
+            var bagMgr = PlayerMgr.Instance.BagMaster;
             for (int i = 1; i <= 30; i++)
             {
-                bagMgr.AddItem(1, i, 10);
+                bagMgr.AddItem(0, i, 10);
             }
         }
     }

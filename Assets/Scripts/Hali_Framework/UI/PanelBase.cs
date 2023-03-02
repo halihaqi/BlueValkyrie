@@ -18,7 +18,7 @@ namespace Hali_Framework
         private int _originalLayer = 0;
 
         private Dictionary<string, List<UIBehaviour>> _controlDic;
-        private Dictionary<string, List<ControlBase>> _addControlDic;
+        private Dictionary<Type, List<ControlBase>> _addControlDic;
 
         public PanelEntity PanelEntity => _panelEntity;
 
@@ -61,7 +61,7 @@ namespace Hali_Framework
         {
             _cachedTransform ??= transform;
             _controlDic = new Dictionary<string, List<UIBehaviour>>();
-            _addControlDic = new Dictionary<string, List<ControlBase>>();
+            _addControlDic = new Dictionary<Type, List<ControlBase>>();
             _panelEntity = GetComponent<PanelEntity>();
             _originalLayer = gameObject.layer;
             
@@ -116,8 +116,7 @@ namespace Hali_Framework
         /// </summary>
         protected internal virtual void OnRecycle()
         {
-            RecycleCustomControls();
-            _addControlDic.Clear();
+            RecycleAddCustomControls();
         }
 
         /// <summary>
@@ -161,30 +160,9 @@ namespace Hali_Framework
 
         #endregion
 
-        #region UI事件
-
-        /// <summary>
-        /// 添加自定义UI事件，同类型事件只能添加一个
-        /// </summary>
-        /// <param name="control">控件</param>
-        /// <param name="type">事件类型</param>
-        /// <param name="callback">事件</param>
-        protected void AddCustomListener(UIBehaviour control, EventTriggerType type,
-            UnityAction<BaseEventData> callback)
-            => UIMgr.Instance.AddCustomListener(control, type, callback);
-
-        protected void AddCustomListeners(UIBehaviour[] controls, EventTriggerType type,
-            UnityAction<BaseEventData> callback)
-            => UIMgr.Instance.AddCustomListeners(controls, type, callback);
         
-        protected void AddCustomListeners<T>(List<T> controls, EventTriggerType type,
-            UnityAction<BaseEventData> callback) where T : UIBehaviour
-        => UIMgr.Instance.AddCustomListeners(controls, type, callback);
+        #region UI Event
 
-        protected void RemoveAllCustomListeners(UIBehaviour control)
-            => UIMgr.Instance.RemoveAllCustomListeners(control);
-
-        
         protected virtual void OnClick(string btnName){}
 
         protected virtual void OnToggleValueChanged(string togName, bool isToggle){}
@@ -194,17 +172,10 @@ namespace Hali_Framework
         protected virtual void OnInputFieldValueChanged(string inputName, string val){}
 
         #endregion
-        
-        
-        /// <summary>
-        /// 设置界面的可见性
-        /// </summary>
-        /// <param name="visible"></param>
-        protected virtual void InternalSetVisible(bool visible)
-        {
-            gameObject.SetActive(visible);
-        }
-        
+
+
+        #region Register Controls
+
         /// <summary>
         /// 获得物体挂载的UI组件
         /// </summary>
@@ -244,46 +215,6 @@ namespace Hali_Framework
             return list;
         }
 
-        /// <summary>
-        /// 添加自定义控件，会自动触发控件的OnInit方法
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="callback"></param>
-        public void AddCustomControl<T>(string path, Action<T> callback) where T : ControlBase
-        {
-            ObjectPoolMgr.Instance.PopObj(path, go =>
-            {
-                var control = go.GetComponent<T>();
-                if (control == null)
-                    throw new Exception($"{go.name} has no {typeof(T)}.");
-                if (_addControlDic.ContainsKey(path))
-                {
-                    _addControlDic[path] ??= new List<ControlBase>();
-                    _addControlDic[path].Add(control);
-                }
-                else
-                    _addControlDic.Add(path, new List<ControlBase> { control });
-                
-                control.OnInit();
-                callback?.Invoke(control);
-            });
-        }
-
-        /// <summary>
-        /// 回收添加的自定义控件进池，默认OnRecycle调用
-        /// </summary>
-        protected void RecycleCustomControls()
-        {
-            foreach (var kv in _addControlDic)
-            {
-                foreach (var control in kv.Value)
-                {
-                    control.OnRecycle();
-                    ObjectPoolMgr.Instance.PushObj(kv.Key, control.gameObject);
-                }
-            }
-        }
-        
         /// <summary>
         /// 搜索所有子物体的UI组件并添加进字典容器中，
         /// 如果是ControlBase下的子物体将不会添加，由ControlBase管理
@@ -353,6 +284,91 @@ namespace Hali_Framework
                 if(!stopRecursion)
                     FindChildrenControls(child);
             }
+        }
+
+        #endregion
+        
+        
+        #region Custom Control
+
+        public List<T> GetAddControls<T>() where T : ControlBase
+        {
+            if (_addControlDic.ContainsKey(typeof(T)))
+                return _addControlDic[typeof(T)] as List<T>;
+
+            return null;
+        }
+        
+        /// <summary>
+        /// 实例化自定义控件并加入控件字典，自动触发控件的OnInit方法
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="callback"></param>
+        public void InitCustomControl<T>(string path, Action<T> callback) where T : ControlBase
+        {
+            ResMgr.Instance.LoadAsync<GameObject>(path, go =>
+            {
+                var control = go.GetComponent<T>();
+                if (control == null)
+                    throw new Exception($"{control.GetType().Name} has no {typeof(T)}.");
+                AddCustomControl(control);
+                
+                callback?.Invoke(control);
+            });
+        }
+
+        public void AddCustomControl(ControlBase cb)
+        {
+            Type type = cb.GetType();
+            if (_addControlDic.ContainsKey(type))
+            {
+                _addControlDic[type] ??= new List<ControlBase>();
+                _addControlDic[type].Add(cb);
+            }
+            else
+                _addControlDic.Add(type, new List<ControlBase> { cb });
+            cb.OnInit();
+        }
+
+        public bool RemoveCustomControl<T>() where T : ControlBase
+            => RemoveCustomControl(typeof(T));
+
+        public bool RemoveCustomControl(Type cbType)
+        {
+            if (_addControlDic.ContainsKey(cbType))
+            {
+                var removeCbs = _addControlDic[cbType];
+                _addControlDic.Remove(cbType);
+                foreach (var cb in removeCbs)
+                    cb.OnRecycle();
+                return true;
+            }
+
+            return false;
+        }
+        
+        /// <summary>
+        /// 回收添加的自定义控件进池，OnRecycle调用
+        /// </summary>
+        private void RecycleAddCustomControls()
+        {
+            foreach (var cbList in _addControlDic.Values)
+            {
+                foreach (var control in cbList)
+                    control.OnRecycle();
+            }
+            _addControlDic.Clear();
+        }
+
+        #endregion
+        
+        /// <summary>
+        /// 设置界面的可见性
+        /// </summary>
+        /// <param name="visible"></param>
+        protected virtual void InternalSetVisible(bool visible)
+        {
+            gameObject.SetActive(visible);
         }
     }
 }

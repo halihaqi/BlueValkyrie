@@ -22,13 +22,10 @@ namespace Game.GameScene
             base.Update();
             if (Input.GetKeyDown(KeyCode.B))
             {
-                if (_bagId != -1)
-                {
+                if (UIMgr.Instance.HasPanel(_bagId))
                     UIMgr.Instance.HidePanel(_bagId);
-                    _bagId = -1;
-                }
                 else
-                    _bagId = UIMgr.Instance.ShowPanel<BagPanel>(userData:1);
+                    _bagId = UIMgr.Instance.ShowPanel<BagPanel>(userData:0);
             }
         }
     }

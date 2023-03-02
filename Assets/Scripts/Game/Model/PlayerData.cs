@@ -11,7 +11,7 @@ namespace Game.Model
 
         public PlayerData()
         {
-            dataDic = new (GameConst.FILE_NUM);
+            dataDic = new Dictionary<int, PlayerInfo>(GameConst.FILE_NUM);
         }
     }
     
@@ -35,6 +35,7 @@ namespace Game.Model
             time = 0;
             complete = 0;
             bagData = new BagData(id);
+            bagData.AddBag(0);//Player默认存在编号为0的背包
         }
     }
 }

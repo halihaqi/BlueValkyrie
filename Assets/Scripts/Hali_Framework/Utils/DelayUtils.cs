@@ -96,7 +96,7 @@ namespace Hali_Framework
                     if(item.elapsed < item.delayTime)
                         continue;
 
-                    if (item.elapsed is < 0 or > 0.03f)
+                    if (item.elapsed < 0 || item.elapsed > 0.03f)
                         item.elapsed = 0;
 
                     if (item.realRepeat > 0)

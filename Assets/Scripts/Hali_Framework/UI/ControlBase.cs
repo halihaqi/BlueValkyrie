@@ -7,22 +7,27 @@ using UnityEngine.UI;
 
 namespace Hali_Framework
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public abstract class ControlBase : UIBehaviour
     {
-        private Dictionary<string, List<UIBehaviour>> _controlDic;
-        private Dictionary<string, List<ControlBase>> _addControlDic;
+        protected Selectable selectable;
+        protected CanvasGroup canvasGroup;
+        private Dictionary<string, List<UIBehaviour>> _controlDic;//控件名为键
+        private Dictionary<Type, List<ControlBase>> _addControlDic;//自定义控件类为键
 
         protected internal virtual void OnInit()
         {
             _controlDic = new Dictionary<string, List<UIBehaviour>>();
-            _addControlDic = new Dictionary<string, List<ControlBase>>();
+            _addControlDic = new Dictionary<Type, List<ControlBase>>();
+            selectable = GetComponent<Selectable>();
+            canvasGroup = GetComponent<CanvasGroup>();
             //搜索UI组件添加到容器中
             FindChildrenControls(this.transform);
         }
 
         protected internal virtual void OnRecycle()
         {
-            RecycleCustomControls();
+            RecycleAddCustomControls();
         }
 
         /// <summary>  
@@ -47,45 +52,23 @@ namespace Hali_Framework
         }
         
         /// <summary>
-        /// 添加自定义控件，会自动触发控件的OnInit方法
+        /// 获得所有该种类UI控件
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="callback"></param>
-        public void AddCustomControl<T>(string path, Action<T> callback) where T : ControlBase
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public List<T> GetControls<T>() where T : UIBehaviour
         {
-            ObjectPoolMgr.Instance.PopObj(path, go =>
+            List<T> list = new List<T>();
+            foreach (var control in _controlDic.Values)
             {
-                var control = go.GetComponent<T>();
-                if (control == null)
-                    throw new Exception($"{go.name} has no {typeof(T)}.");
-                if (_addControlDic.ContainsKey(path))
-                {
-                    _addControlDic[path] ??= new List<ControlBase>();
-                    _addControlDic[path].Add(control);
-                }
-                else
-                    _addControlDic.Add(path, new List<ControlBase> { control });
-                
-                control.OnInit();
-                callback?.Invoke(control);
-            });
+                T item = control.Find(o => o is T) as T;
+                if(item != null)
+                    list.Add(item);
+            }
+
+            return list;
         }
         
-        /// <summary>
-        /// 回收添加的自定义控件进池，默认OnRecycle调用
-        /// </summary>
-        protected void RecycleCustomControls()
-        {
-            foreach (var kv in _addControlDic)
-            {
-                foreach (var control in kv.Value)
-                {
-                    control.OnRecycle();
-                    ObjectPoolMgr.Instance.PushObj(kv.Key, control.gameObject);
-                }
-            }
-        }
-
         /// <summary>
         /// 搜索所有子物体的UI组件并添加进字典容器中，
         /// 如果是ControlBase下的子物体将不会添加，由ControlBase管理
@@ -122,5 +105,89 @@ namespace Hali_Framework
                     FindChildrenControls(child);
             }
         }
+
+        public void SetSelectableInteractable(bool isInteractable)
+        {
+            if (selectable != null)
+                selectable.interactable = isInteractable;
+        }
+
+        public void SetBlocksRaycasts(bool enable)
+        {
+            canvasGroup.blocksRaycasts = enable;
+        }
+
+        #region CustomControl
+
+        public List<T> GetAddControls<T>() where T : ControlBase
+        {
+            if (_addControlDic.ContainsKey(typeof(T)))
+                return _addControlDic[typeof(T)] as List<T>;
+
+            return null;
+        }
+        
+        /// <summary>
+        /// 实例化自定义控件并加入控件字典，自动触发控件的OnInit方法
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="callback"></param>
+        public void InitCustomControl<T>(string path, Action<T> callback) where T : ControlBase
+        {
+            ResMgr.Instance.LoadAsync<GameObject>(path, go =>
+            {
+                var control = go.GetComponent<T>();
+                if (control == null)
+                    throw new Exception($"{control.GetType().Name} has no {typeof(T)}.");
+                AddCustomControl(control);
+                
+                callback?.Invoke(control);
+            });
+        }
+
+        public void AddCustomControl(ControlBase cb)
+        {
+            Type type = cb.GetType();
+            if (_addControlDic.ContainsKey(type))
+            {
+                _addControlDic[type] ??= new List<ControlBase>();
+                _addControlDic[type].Add(cb);
+            }
+            else
+                _addControlDic.Add(type, new List<ControlBase> { cb });
+            cb.OnInit();
+        }
+
+        public bool RemoveCustomControl<T>() where T : ControlBase
+            => RemoveCustomControl(typeof(T));
+
+        public bool RemoveCustomControl(Type cbType)
+        {
+            if (_addControlDic.ContainsKey(cbType))
+            {
+                var removeCbs = _addControlDic[cbType];
+                _addControlDic.Remove(cbType);
+                foreach (var cb in removeCbs)
+                    cb.OnRecycle();
+                return true;
+            }
+
+            return false;
+        }
+        
+        /// <summary>
+        /// 回收添加的自定义控件进池，OnRecycle调用
+        /// </summary>
+        private void RecycleAddCustomControls()
+        {
+            foreach (var cbList in _addControlDic.Values)
+            {
+                foreach (var control in cbList)
+                    control.OnRecycle();
+            }
+            _addControlDic.Clear();
+        }
+
+        #endregion
     }
 }

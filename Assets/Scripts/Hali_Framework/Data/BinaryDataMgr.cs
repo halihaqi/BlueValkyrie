@@ -48,13 +48,13 @@ namespace Hali_Framework
             }
         }
 
-        public T Load<T>(string part, string name)
+        public T Load<T>(string part, string name) where T : new()
         {
             string path = $"{Application.persistentDataPath}/{part}/{name}.zxy";
             if (!File.Exists(path))
-                return default;
+                return new T();
 
-            T obj = default;
+            T obj;
             using (FileStream fs = new FileStream(path, FileMode.Open))
             {
                 BinaryFormatter bf = new BinaryFormatter();
@@ -63,6 +63,23 @@ namespace Hali_Framework
             }
 
             return obj;
+        }
+
+        public bool HasData(string part, string name)
+        {
+            return File.Exists($"{Application.persistentDataPath}/{part}/{name}.zxy");
+        }
+
+        public bool TryLoad<T>(string part, string name, out T data) where T : new()
+        {
+            if (HasData(part, name))
+            {
+                data = Load<T>(part, name);
+                return true;
+            }
+
+            data = default;
+            return false;
         }
 
         /// <summary>
@@ -188,15 +205,15 @@ namespace Hali_Framework
         /// </summary>
         /// <param name="index">item主键</param>
         /// <typeparam name="T">容器名</typeparam>
-        /// <typeparam name="K">item主键类</typeparam>
-        /// <typeparam name="V">item类</typeparam>
+        /// <typeparam name="TKey">item主键类</typeparam>
+        /// <typeparam name="TVal">item类</typeparam>
         /// <returns></returns>
-        public V GetInfo<T, K, V>(K index) where T : BaseContainer
+        public TVal GetInfo<T, TKey, TVal>(TKey index) where T : BaseContainer
         {
-            Dictionary<K,V> dic = GetTable<T>().GetDic() as Dictionary<K, V>;
+            Dictionary<TKey,TVal> dic = GetTable<T>().GetDic() as Dictionary<TKey, TVal>;
             
             if (dic == null) return default;
-            if (dic.TryGetValue(index, out V val))
+            if (dic.TryGetValue(index, out TVal val))
                 return val;
             return default;
         }

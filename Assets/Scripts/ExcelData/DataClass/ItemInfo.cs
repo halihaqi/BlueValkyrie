@@ -5,4 +5,5 @@ public class ItemInfo
     public string fullName;
     public int type;
     public string resName;
+    public int visible;
 }

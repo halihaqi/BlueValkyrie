@@ -1,4 +1,5 @@
-﻿using Game.GameScene;
+﻿using System.Collections.Generic;
+using Game.GameScene;
 using Game.Model;
 using Game.Utils;
 using Hali_Framework;
@@ -29,11 +30,11 @@ namespace Game.Managers
                     return;
                 }
                 _secretaryInfo = BinaryDataMgr.Instance.GetInfo<RoleInfoContainer, int, RoleInfo>(_nowPlayer.secretaryId);
-                BagMgr = new BagMgr(_nowPlayer);
+                BagMaster = new BagMaster(_nowPlayer);
             }
         }
         
-        public BagMgr BagMgr { get; private set; }
+        public BagMaster BagMaster { get; private set; }
 
         public RoleInfo NowSecretaryInfo => _secretaryInfo;
 
@@ -63,6 +64,27 @@ namespace Game.Managers
                     _secretaryEntity.FollowTarget = playerTrans;
                     _secretaryEntity.SetFollowDistance(2);
                 });
+        }
+
+        public void SaveUser(int userId, PlayerInfo info)
+        {
+            var playerData = BinaryDataMgr.Instance.Load<PlayerData>(GameConst.DATA_PART_PLAYER, "PlayerData");
+            if(playerData.dataDic.ContainsKey(userId))
+                playerData.dataDic[userId] = info;
+            else
+                playerData.dataDic.Add(userId, info);
+            BinaryDataMgr.Instance.Save(GameConst.DATA_PART_PLAYER, "PlayerData", playerData);
+        }
+
+        public PlayerInfo LoadUser(int userId)
+        {
+            var dic = BinaryDataMgr.Instance.Load<PlayerData>(GameConst.DATA_PART_PLAYER, "PlayerData").dataDic;
+            return dic.TryGetValue(userId, out var info) ? info : null;
+        }
+
+        public Dictionary<int, PlayerInfo> LoadUserDic()
+        {
+            return BinaryDataMgr.Instance.Load<PlayerData>(GameConst.DATA_PART_PLAYER, "PlayerData").dataDic;
         }
 
         public void DestroyPlayerPrefab()
