@@ -10,6 +10,7 @@ namespace Hali_Framework
     [RequireComponent(typeof(CanvasGroup))]
     public abstract class ControlBase : UIBehaviour
     {
+        private const char KEY = '_';
         protected Selectable selectable;
         protected CanvasGroup canvasGroup;
         private Dictionary<string, List<UIBehaviour>> _controlDic;//控件名为键
@@ -84,6 +85,12 @@ namespace Hali_Framework
             {
                 stopRecursion = false;
                 child = parent.GetChild(i);
+                //不加下划线的控件不加入
+                if (!child.name.Contains(KEY))
+                {
+                    FindChildrenControls(child);
+                    continue;
+                }
                 var controls = child.GetComponents<UIBehaviour>();
                 foreach (var control in controls)
                 {

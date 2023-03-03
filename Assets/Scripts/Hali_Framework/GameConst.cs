@@ -34,9 +34,13 @@ namespace Hali_Framework
         //Data
         public const int FILE_NUM = 20;//存档数
         public const string DATA_PART_PLAYER = "Player";
+        public const string DATA_PART_NPC = "NPC";
         
         //Scene
         public const string BEGIN_SCENE = "BeginScene";
         public const string GAME_SCENE = "GameScene";
+        
+        //Tag
+        public const string PLAYER_TAG = "Player";
     }
 }

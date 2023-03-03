@@ -11,6 +11,7 @@ namespace Hali_Framework
     [RequireComponent(typeof(PanelEntity))]
     public abstract class PanelBase : MonoBehaviour
     {
+        private const char KEY = '_';
         private bool _available = false;
         private bool _visible = false;
         private PanelEntity _panelEntity = null;
@@ -47,6 +48,8 @@ namespace Hali_Framework
                 InternalSetVisible(value);
             }
         }
+        
+        public bool IsFullScreen { get; protected set; }
 
         public Transform CachedTransform => _cachedTransform;
 
@@ -77,6 +80,12 @@ namespace Hali_Framework
         {
             _available = true;
             Visible = true;
+            if (IsFullScreen)
+            {
+                InputMgr.Instance.Enabled = false;
+                //如果是全屏，隐藏上方所有面板
+                UIMgr.Instance.HideUpperUIGroupPanels(_panelEntity.UIGroup);
+            }
         }
         
         /// <summary>
@@ -109,6 +118,8 @@ namespace Hali_Framework
         {
             Visible = false;
             _available = false;
+            if (IsFullScreen)
+                InputMgr.Instance.Enabled = true;
         }
 
         /// <summary>
@@ -155,8 +166,10 @@ namespace Hali_Framework
         /// <param name="depthInUIGroup">界面在界面组中的深度</param>
         protected internal virtual void OnDepthChanged(int uiGroupDepth, int depthInUIGroup){}
 
-        protected void HideMe(object userData = null, bool isShutdown = false) 
+        protected void HideMe(object userData, bool isShutdown) 
             => UIMgr.Instance.HidePanel(PanelEntity.SerialId, userData, isShutdown);
+
+        protected void HideMe() => HideMe(null, false);
 
         #endregion
 
@@ -230,6 +243,12 @@ namespace Hali_Framework
             {
                 stopRecursion = false;
                 child = parent.GetChild(i);
+                //不加下划线的控件不加入
+                if (!child.name.Contains(KEY))
+                {
+                    FindChildrenControls(child);
+                    continue;
+                }
                 var controls = child.GetComponents<UIBehaviour>();
                 foreach (var control in controls)
                 {

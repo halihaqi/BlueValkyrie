@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2163212026648313757}
   - component: {fileID: 7693498384320667933}
   m_Layer: 0
-  m_Name: img_alpha
+  m_Name: imgAlpha
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -439,7 +439,7 @@ GameObject:
   - component: {fileID: 1680353102707276545}
   - component: {fileID: 2852372955282330229}
   m_Layer: 0
-  m_Name: img_mask
+  m_Name: imgMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

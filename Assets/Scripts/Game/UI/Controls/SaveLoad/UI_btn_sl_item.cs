@@ -2,6 +2,7 @@
 using Game.Global;
 using Game.Managers;
 using Game.Model;
+using Game.UI.Base;
 using Game.Utils;
 using Hali_Framework;
 using UnityEngine;
@@ -14,13 +15,14 @@ namespace Game.UI.Controls
         private Image _imgBadge;
         private Image _imgTitleSave;
         private Image _imgTitleLoad;
+        
         private Slider _sldComplete;
 
         private Text _txtTitle;
-        private Text _txtTimeTip;
         private Text _txtName;
         private Text _txtTime;
-        private Text _txtComplete;
+
+        private ControlGroup _slGroup;
 
         private int _userId;
         private string _userName;
@@ -37,11 +39,11 @@ namespace Game.UI.Controls
             _imgBadge = GetControl<Image>("img_badge");
             _sldComplete = GetControl<Slider>("sld_complete");
             
-            _txtTimeTip = GetControl<Text>("txt_time_tip");
             _txtTitle = GetControl<Text>("txt_title");
             _txtName = GetControl<Text>("txt_name");
             _txtTime = GetControl<Text>("txt_time");
-            _txtComplete = GetControl<Text>("txt_complete");
+
+            _slGroup = GetControl<ControlGroup>("sl_group");
         }
 
 
@@ -98,10 +100,10 @@ namespace Game.UI.Controls
         private void UpdateView(PlayerInfo info)
         {
             if (info == null)
-                SetControlsActive(false);
+                _slGroup.SetActive(false);
             else
             {
-                SetControlsActive(true);
+                _slGroup.SetActive(true);
                 _txtName.text = info.name;
                 _txtTime.text = info.time.ToTime();
                 _sldComplete.value = info.complete;
@@ -110,16 +112,6 @@ namespace Game.UI.Controls
                     _imgBadge.sprite = img;
                 });
             }
-        }
-
-        private void SetControlsActive(bool isActive)
-        {
-            _txtTimeTip.gameObject.SetActive(isActive);
-            _txtTime.gameObject.SetActive(isActive);
-            _txtName.gameObject.SetActive(isActive);
-            _txtComplete.gameObject.SetActive(isActive);
-            _sldComplete.gameObject.SetActive(isActive);
-            _imgBadge.gameObject.SetActive(isActive);
         }
     }
 }

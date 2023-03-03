@@ -1096,7 +1096,7 @@ GameObject:
   - component: {fileID: 4099072619301449461}
   - component: {fileID: 3695341154309462030}
   m_Layer: 0
-  m_Name: img_alpha
+  m_Name: imgAlpha
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1330,7 +1330,7 @@ GameObject:
   - component: {fileID: 5418976873428688253}
   - component: {fileID: 549039307393235211}
   m_Layer: 0
-  m_Name: img_bk
+  m_Name: imgBk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1894,7 +1894,7 @@ GameObject:
   - component: {fileID: 8029828071528181159}
   - component: {fileID: 634194629196440023}
   m_Layer: 0
-  m_Name: img_splite2
+  m_Name: imgSplite2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1969,7 +1969,7 @@ GameObject:
   - component: {fileID: 9188322278907592684}
   - component: {fileID: 431969111164223284}
   m_Layer: 0
-  m_Name: img_splite
+  m_Name: imgSplite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2500,7 +2500,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 334.95, y: -602.1207}
-  m_SizeDelta: {x: 123.935, y: 48.614}
+  m_SizeDelta: {x: 123.935, y: 48.614014}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &4697461830472019232
 CanvasRenderer:
@@ -2658,7 +2658,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: -103.763, y: -602.1207}
-  m_SizeDelta: {x: 109.494, y: 48.614}
+  m_SizeDelta: {x: 109.494, y: 48.614014}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &6536725523734668217
 CanvasRenderer:

@@ -7,7 +7,11 @@ namespace Game.GameScene
 {
     public class SecretaryEntity : AgentRoleBase
     {
+        private float _reactionInterval = 6f;
+        private float _reactionElapseSeconds;
+        
         private static readonly int Speed = Animator.StringToHash("speed");
+        private static readonly int Reaction = Animator.StringToHash("reaction");
         public Transform FollowTarget { get; set; }
 
         protected override void Awake()
@@ -20,13 +24,22 @@ namespace Game.GameScene
         private void Start()
         {
             SetPosition(GameSceneMonoMgr.Instance.playerBornPos - Vector3.forward * 2);
+            _reactionElapseSeconds = 0;
         }
 
         private void Update()
         {
+            var velocity = agent.velocity.magnitude;
+            _reactionElapseSeconds = velocity < 0.01f ? _reactionElapseSeconds + Time.deltaTime : 0;
             if (FollowTarget != null)
                 agent.SetDestination(FollowTarget.position);
-            anim.SetFloat(Speed, agent.velocity.magnitude);
+            anim.SetFloat(Speed, velocity);
+            
+            if (_reactionElapseSeconds > _reactionInterval)
+            {
+                _reactionElapseSeconds = 0;
+                anim.SetTrigger(Reaction);
+            }
         }
 
         public void SetPosition(Vector3 pos)

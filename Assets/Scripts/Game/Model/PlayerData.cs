@@ -16,7 +16,7 @@ namespace Game.Model
     }
     
     [System.Serializable]
-    public class PlayerInfo
+    public class PlayerInfo : IBagRole
     {
         public int id;
         public string name;
@@ -25,8 +25,11 @@ namespace Game.Model
 
         public int secretaryId;
 
-        public BagData bagData;
+        public BagData BagData { get; set; }
+        
+        public ShopInfo ShopInfo { get; set; }
 
+        public PlayerInfo(){}
         public PlayerInfo(int id, string name, int secretaryId)
         {
             this.id = id;
@@ -34,8 +37,9 @@ namespace Game.Model
             this.secretaryId = secretaryId;
             time = 0;
             complete = 0;
-            bagData = new BagData(id);
-            bagData.AddBag(0);//Player默认存在编号为0的背包
+            BagData = new BagData(id);
+            BagData.AddBag(0);//Player默认存在编号为0的背包
+            ShopInfo = new ShopInfo(id);
         }
     }
 }

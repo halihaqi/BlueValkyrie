@@ -127,7 +127,7 @@ MonoBehaviour:
   isVirtual: 0
   space: {x: 0, y: 17.68}
   left: 15.11
-  top: 12.32
+  top: 30.64
 --- !u!225 &2032519426486603825
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -277,7 +277,7 @@ GameObject:
   - component: {fileID: 6963935198297560177}
   - component: {fileID: 7365146876949886662}
   m_Layer: 0
-  m_Name: img_head
+  m_Name: img1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

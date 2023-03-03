@@ -11,6 +11,7 @@ namespace Game.Base
     {
         private RoleInfo _roleInfo;
 
+        [Header("Base")]
         [SerializeField]
         protected float moveSpeed = 3.5f;
         [SerializeField]
@@ -39,6 +40,12 @@ namespace Game.Base
         }
 
         public void SetRoleInfo(RoleInfo info) => _roleInfo = info;
+
+        public void SetRoleInfo(int roleId)
+        {
+            var info = BinaryDataMgr.Instance.GetInfo<RoleInfoContainer, int, RoleInfo>(roleId);
+            _roleInfo = info ?? throw new Exception("Role entity has no role info.");
+        }
 
         protected virtual void SetColliderSize(Vector3 center, float radius, float height)
         {

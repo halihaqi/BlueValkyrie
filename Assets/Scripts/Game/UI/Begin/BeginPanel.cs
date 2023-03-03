@@ -27,7 +27,7 @@ namespace Game.UI.Begin
             base.OnInit(userData);
             //获取组件
             _btns = new List<Button>();
-            _ringLayoutGroup = GetComponentInChildren<RingLayoutGroup>();
+            _ringLayoutGroup = GetControl<RingLayoutGroup>("group_btn");
 
             _img = GetControl<Image>("group_btn");
             _btns = GetControls<Button>();

@@ -1,5 +1,6 @@
 ﻿using Game.Managers;
 using Game.Model.BagModel;
+using Game.UI.Base;
 using Game.Utils;
 using Hali_Framework;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace Game.UI.Controls
     public class UI_info_form : ControlBase
     {
         private Image _imgItem;
-        private Image _imgAttributeGroup;
+        private ControlGroup _attributeGroup;
         private Text _txtInfo;
         private Text _txtNum;
         private Text _txtAttribute;
@@ -23,7 +24,7 @@ namespace Game.UI.Controls
         {
             base.OnInit();
             _imgItem = GetControl<Image>("img_item");
-            _imgAttributeGroup = GetControl<Image>("img_attribute_group");
+            _attributeGroup = GetControl<ControlGroup>("attribute_group");
             _txtInfo = GetControl<Text>("txt_info");
             _txtNum = GetControl<Text>("txt_num");
             _txtAttribute = GetControl<Text>("txt_attribute");
@@ -66,15 +67,15 @@ namespace Game.UI.Controls
                 var equip = EquipMgr.Instance.GetEquipInfo(_info.id);
                 if (equip != null)
                 {
-                    _imgAttributeGroup.gameObject.SetActive(true);
+                    _attributeGroup.SetActive(true);
                     _txtAttribute.text = EquipMgr.Instance.GetAttributeName(equip);
                     _txtAttributeNum.text = equip.attribute.ToString();
                 }
                 else
-                    _imgAttributeGroup.gameObject.SetActive(false);
+                    _attributeGroup.SetActive(false);
             }
             else
-                _imgAttributeGroup.gameObject.SetActive(false);
+                _attributeGroup.SetActive(false);
         }
 
         private void OnItemClick(ItemInfo info, int num)

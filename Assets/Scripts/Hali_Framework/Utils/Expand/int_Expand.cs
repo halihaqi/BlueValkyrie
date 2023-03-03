@@ -18,5 +18,12 @@ namespace Hali_Framework
             int h = i;
             return h + ":" + m + ":" + s;
         }
+
+        /// <summary>
+        /// 将int转换为 "x00" 格式
+        /// </summary>
+        /// <param name="i"></param>
+        /// <returns></returns>
+        public static string ToXNum(this int i) => $"x{i}";
     }
 }

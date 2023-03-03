@@ -68,6 +68,17 @@ namespace Hali_Framework
             return false;
         }
 
+        public bool HasPanel<T>() where T : PanelBase
+        {
+            foreach (var info in _panelInfos)
+            {
+                if (info.PanelEntity.Logic.GetType() == typeof(T))
+                    return true;
+            }
+
+            return false;
+        }
+
         public PanelEntity GetPanel(int serialId)
         {
             foreach (var info in _panelInfos)

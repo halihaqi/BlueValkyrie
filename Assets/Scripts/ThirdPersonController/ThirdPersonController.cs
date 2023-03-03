@@ -37,6 +37,8 @@ public class ThirdPersonController : MonoBehaviour
     private Vector2 _inputLook;
     private Vector2 _inputMove;
     private float _threshold = 0.01f;//输入最低门槛
+    private bool _isInputShift = false;
+    private bool _isInputJump = false;
 
     //移动参数
     private float _targetRot = 0;
@@ -45,7 +47,6 @@ public class ThirdPersonController : MonoBehaviour
     private float _terminalVelocity = 53;
     
     //跳跃参数
-    [SerializeField]
     private bool _isGrounded = true;
     private float _jumpTimeoutDelta;
 
@@ -86,13 +87,13 @@ public class ThirdPersonController : MonoBehaviour
         followCamera.transform.position = this.transform.position - this.transform.forward;
 
         //打开输入监听
-        InputMgr.Instance.OpenOrClose(true);
+        InputMgr.Instance.Enabled = true;
     }
 
     protected virtual void OnDestroy()
     {
         //关闭输入监听
-        InputMgr.Instance.OpenOrClose(false);
+        InputMgr.Instance.Enabled = false;
     }
 
     protected virtual void Update()
@@ -106,13 +107,19 @@ public class ThirdPersonController : MonoBehaviour
         CameraTargetRotation();       
     }
 
+    private void OnInput(KeyCode key)
+    {
+        _isInputShift = key == KeyCode.LeftShift;
+        _isInputJump = key == KeyCode.Space;
+    }
+
     /// <summary>
     /// 更新输入参数
     /// </summary>
     private void UpdateInput()
     {
-        _inputLook = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-        _inputMove = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        _inputLook = InputMgr.Instance.GetInputLook;
+        _inputMove = InputMgr.Instance.GetInputMove;
     }
 
     /// <summary>
@@ -121,10 +128,10 @@ public class ThirdPersonController : MonoBehaviour
     private void Move()
     {
         //判断是否为冲刺速度
-        float targetSpeed = Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : moveSpeed;
+        float targetSpeed = _isInputShift ? sprintSpeed : moveSpeed;
 
         //判断移动输入是否为0
-        if (_inputMove == Vector2.zero)
+        if (_inputMove.sqrMagnitude < 0.001f)
             targetSpeed = 0;
 
         //输入的方向
@@ -147,7 +154,7 @@ public class ThirdPersonController : MonoBehaviour
 
         //移动动画
         if(_hasAnim)
-            _anim.SetFloat(Speed, Input.GetKey(KeyCode.LeftShift) ? inputDir.magnitude : inputDir.magnitude / 2);
+            _anim.SetFloat(Speed, _isInputShift ? inputDir.magnitude : inputDir.magnitude / 2);
     }
 
     /// <summary>

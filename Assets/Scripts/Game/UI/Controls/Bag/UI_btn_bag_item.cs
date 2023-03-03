@@ -45,7 +45,7 @@ namespace Game.UI.Controls
             {
                 _imgItem.sprite = img;
             });
-            _txtNum.text = $"x{num}";
+            _txtNum.text = num.ToXNum();
         }
 
         private void SetNull(bool isNull)

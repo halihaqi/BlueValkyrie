@@ -29,7 +29,6 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8556553295720783594}
   m_Father: {fileID: 4670149929345566342}
@@ -104,6 +103,7 @@ GameObject:
   - component: {fileID: 6214454814833049741}
   - component: {fileID: 967318672565071202}
   - component: {fileID: 4347329484536635285}
+  - component: {fileID: 3818940596704272015}
   m_Layer: 0
   m_Name: sv_bag
   m_TagString: Untagged
@@ -121,7 +121,6 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3344594379826214540}
   m_Father: {fileID: 5051199927912924083}
@@ -213,11 +212,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defaultItem: {fileID: 6778356869862581562, guid: fdc835bce4c1a7e42b4fa62f3b97f839, type: 3}
+  defaultItemSize: {x: 0, y: 0}
   layoutType: 1
   isVirtual: 0
   space: {x: 1.9, y: 16.94}
   left: 28.02
   top: 32.3
+--- !u!225 &3818940596704272015
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 267941074680840262}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &513817585560913559
 GameObject:
   m_ObjectHideFlags: 0
@@ -230,7 +242,7 @@ GameObject:
   - component: {fileID: 5451179045291379752}
   - component: {fileID: 1455636939712357379}
   m_Layer: 0
-  m_Name: img_bag_bk
+  m_Name: imgBk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -246,7 +258,6 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5051199927912924083}
   m_RootOrder: 1
@@ -306,7 +317,7 @@ GameObject:
   - component: {fileID: 4163443286588183921}
   - component: {fileID: 8555953817971059967}
   m_Layer: 0
-  m_Name: img_bag_top
+  m_Name: imgTop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -322,7 +333,6 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5051199927912924083}
   m_RootOrder: 0
@@ -380,6 +390,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5051199927912924083}
   - component: {fileID: 4903483416885085804}
+  - component: {fileID: 9190518893418552197}
   m_Layer: 0
   m_Name: bag_form
   m_TagString: Untagged
@@ -397,7 +408,6 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 160435525423613869}
   - {fileID: 4237008609769773907}
@@ -425,6 +435,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85254ef86b6946e589a804fafd6e5b77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!225 &9190518893418552197
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2026270049485486980}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &3008022240413620339
 GameObject:
   m_ObjectHideFlags: 0
@@ -437,7 +459,7 @@ GameObject:
   - component: {fileID: 7768745035905575674}
   - component: {fileID: 3668126184445778945}
   m_Layer: 0
-  m_Name: img_sift_rt
+  m_Name: img0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -453,7 +475,6 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 998630338495281476}
   m_RootOrder: 0
@@ -513,7 +534,7 @@ GameObject:
   - component: {fileID: 5980029299434776740}
   - component: {fileID: 3174388951684665393}
   m_Layer: 0
-  m_Name: img_sort_sign
+  m_Name: img1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -529,7 +550,6 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3434426625035688497}
   m_RootOrder: 0
@@ -605,7 +625,6 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3434426625035688497}
   m_RootOrder: 1
@@ -682,7 +701,6 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5051199927912924083}
   m_RootOrder: 5
@@ -778,7 +796,6 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8960813357612424751}
   - {fileID: 4148890333504433822}
@@ -901,7 +918,6 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7612152821720109017}
   - {fileID: 2610320676218309538}
@@ -1021,7 +1037,6 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3344594379826214540}
   m_RootOrder: 0
@@ -1044,7 +1059,7 @@ GameObject:
   - component: {fileID: 8901803242406538899}
   - component: {fileID: 2248454660564846301}
   m_Layer: 0
-  m_Name: txt_sift
+  m_Name: txtSift
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1060,7 +1075,6 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 998630338495281476}
   m_RootOrder: 1

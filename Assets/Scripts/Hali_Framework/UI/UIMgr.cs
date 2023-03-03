@@ -143,6 +143,17 @@ namespace Hali_Framework
             return false;
         }
 
+        public bool HasPanel<T>() where T : PanelBase
+        {
+            foreach (var group in _uiGroups.Values)
+            {
+                if (group.HasPanel<T>())
+                    return true;
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// 获得界面
         /// </summary>
@@ -286,13 +297,10 @@ namespace Hali_Framework
         /// <param name="userData"></param>
         /// <param name="isShutdown"></param>
         /// <exception cref="Exception"></exception>
-        public void HidePanel(PanelEntity panel, object userData = null, bool isShutdown = false)
+        public bool HidePanel(PanelEntity panel, object userData = null, bool isShutdown = false)
         {
             if (panel == null)
-            {
-                Debug.Log("Hide panel is null.");
-                return;
-            }
+                return false;
             UIGroup group = panel.UIGroup;
             if (group == null)
                 throw new Exception("UI group is invalid.");
@@ -309,6 +317,59 @@ namespace Hali_Framework
             {
                 panel.AddHideCompleteListener(OnPanelHideComplete);
             }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 隐藏UIGroup中的所有面板
+        /// </summary>
+        /// <param name="groupName"></param>
+        /// <param name="userData"></param>
+        public void HideUIGroupPanels(string groupName, object userData = null)
+        {
+            var panels = GetUIGroup(groupName).GetAllPanels();
+            foreach (var panel in panels)
+                HidePanel(panel, userData);
+        }
+        
+        /// <summary>
+        /// 隐藏UIGroup中的所有面板
+        /// </summary>
+        /// <param name="group"></param>
+        /// <param name="userData"></param>
+        public void HideUIGroupPanels(UIGroup group, object userData = null)
+        {
+            var panels = group.GetAllPanels();
+            foreach (var panel in panels)
+                HidePanel(panel, userData);
+        }
+
+        /// <summary>
+        /// 隐藏当前UIGroup上方的所有面板
+        /// </summary>
+        /// <param name="curGroupName">当前UIGroup名</param>
+        /// <param name="userData"></param>
+        public void HideUpperUIGroupPanels(string curGroupName, object userData = null)
+        {
+            int curDepth = GetUIGroup(curGroupName).Depth;
+            var groups = GetAllUIGroups();
+            foreach (var group in groups)
+            {
+                if (group.Depth > curDepth)
+                    HideUIGroupPanels(group, userData);
+            }
+        }
+        
+        public void HideUpperUIGroupPanels(UIGroup curGroup, object userData = null)
+        {
+            int curDepth = curGroup.Depth;
+            var groups = GetAllUIGroups();
+            foreach (var group in groups)
+            {
+                if (group.Depth > curDepth)
+                    HideUIGroupPanels(group, userData);
+            }
         }
 
         /// <summary>
@@ -318,10 +379,7 @@ namespace Hali_Framework
         public void HideAllLoadedPanels(object userData = null)
         {
             foreach (var panel in GetAllLoadedPanels())
-            {
-                if(HasPanel(panel.SerialId))
-                    HidePanel(panel, userData);
-            }
+                HidePanel(panel, userData);
         }
 
         /// <summary>

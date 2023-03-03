@@ -31,10 +31,13 @@ namespace Game.Managers
                 }
                 _secretaryInfo = BinaryDataMgr.Instance.GetInfo<RoleInfoContainer, int, RoleInfo>(_nowPlayer.secretaryId);
                 BagMaster = new BagMaster(_nowPlayer);
+                ShopMaster = new BagMaster(_nowPlayer.ShopInfo);
             }
         }
         
         public BagMaster BagMaster { get; private set; }
+        
+        public BagMaster ShopMaster { get; private set; }
 
         public RoleInfo NowSecretaryInfo => _secretaryInfo;
 

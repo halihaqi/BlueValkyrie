@@ -596,6 +596,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2795086260902121553}
   - component: {fileID: 2795086260902121552}
+  - component: {fileID: 6847474423337498065}
+  - component: {fileID: 5533242020532014268}
+  - component: {fileID: 4980444619547084465}
   m_Layer: 0
   m_Name: ShopPanel
   m_TagString: Untagged
@@ -636,6 +639,42 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2795086260902121554}
   m_CullTransparentMesh: 1
+--- !u!225 &6847474423337498065
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2795086260902121554}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &5533242020532014268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2795086260902121554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4490cb59ee8842cf9774130f7a659750, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4980444619547084465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2795086260902121554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83b3100cf48b4c8fbe28c9287c0948d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2795086261110040167
 GameObject:
   m_ObjectHideFlags: 0
@@ -1573,7 +1612,7 @@ GameObject:
   - component: {fileID: 1098283618246999005}
   - component: {fileID: 4781816856589606238}
   m_Layer: 0
-  m_Name: imgRaw_bk
+  m_Name: img0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1717,7 +1756,7 @@ GameObject:
   - component: {fileID: 206541188826928561}
   - component: {fileID: 80888125634995663}
   m_Layer: 0
-  m_Name: img_role_front
+  m_Name: img1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
