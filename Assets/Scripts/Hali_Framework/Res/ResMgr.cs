@@ -116,7 +116,10 @@ namespace Hali_Framework
                 yield break;
             }
             _loadingDic.Add(path, new Queue<Action<object>>());
-            _loadingDic[path].Enqueue(obj => { callback?.Invoke(obj as T); });
+            _loadingDic[path].Enqueue(obj =>
+            {
+                callback?.Invoke(obj as T);
+            });
             
             var rr = Resources.LoadAsync<T>(path);
             while(!rr.isDone)
@@ -126,10 +129,12 @@ namespace Hali_Framework
             if (res == null)
                 throw new Exception($"<Load Error> No path: {path}.");
 
-            for (int i = 0; i < _loadingDic[path].Count; i++)
+            while (_loadingDic[path].Count > 0)
+            {
                 _loadingDic[path].Dequeue()?.Invoke(res is GameObject
                     ? Object.Instantiate(res)
                     : res);
+            }
             _loadingDic.Remove(path);
         }
 
@@ -159,10 +164,12 @@ namespace Hali_Framework
                 _resDic[part][path] = res;
             }
 
-            for (int i = 0; i < _loadingDic[path].Count; i++)
+            while (_loadingDic[path].Count > 0)
+            {
                 _loadingDic[path].Dequeue()?.Invoke(res is GameObject
                     ? Object.Instantiate(res)
                     : res);
+            }
             _loadingDic.Remove(path);
         }
 
