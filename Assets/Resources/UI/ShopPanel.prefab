@@ -427,7 +427,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac6fb3bafea34642b7f11582ad4ffba2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultItem: {fileID: 9054206642658014927, guid: d82130b8d51485a42b67c27b24d13fbf, type: 3}
+  defaultItem: {fileID: 8709377142266436155, guid: 565ef409db609214c9aca4db6811e103, type: 3}
   defaultItemSize: {x: 300, y: 100}
   layoutType: 2
   isVirtual: 0
@@ -570,10 +570,10 @@ MonoBehaviour:
   defaultItem: {fileID: 9054206642658014927, guid: d82130b8d51485a42b67c27b24d13fbf, type: 3}
   defaultItemSize: {x: 0, y: 0}
   layoutType: 1
-  isVirtual: 0
-  space: {x: 12, y: 14.7}
-  left: 38.1
-  top: 25.1
+  isVirtual: 1
+  space: {x: 12, y: 22.6}
+  left: 35
+  top: 34.2
 --- !u!225 &2795086260890732343
 CanvasGroup:
   m_ObjectHideFlags: 0

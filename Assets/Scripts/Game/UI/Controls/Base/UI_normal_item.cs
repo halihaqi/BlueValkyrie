@@ -1,4 +1,5 @@
-﻿using Game.Model.BagModel;
+﻿using Game.Managers;
+using Game.Model.BagModel;
 using Game.Utils;
 using Hali_Framework;
 using UnityEngine;
@@ -22,7 +23,7 @@ namespace Game.UI.Controls
 
         public void SetData(int itemId)
         {
-            _info = BinaryDataMgr.Instance.GetInfo<ItemInfoContainer, int, ItemInfo>(itemId);
+            _info = ItemMgr.Instance.GetItem(itemId);
             SetNull(_info == null);
             if(_info == null) return;
             ResMgr.Instance.LoadAsync<Sprite>(GameConst.RES_GROUP_UI, ResPath.GetItemIcon(_info), img =>
@@ -30,6 +31,18 @@ namespace Game.UI.Controls
                 _imgItem.sprite = img;
             });
             _txtNum.text = "";
+        }
+        
+        public void SetData(int itemId, int num)
+        {
+            _info = ItemMgr.Instance.GetItem(itemId);
+            SetNull(_info == null);
+            if(_info == null) return;
+            ResMgr.Instance.LoadAsync<Sprite>(GameConst.RES_GROUP_UI, ResPath.GetItemIcon(_info), img =>
+            {
+                _imgItem.sprite = img;
+            });
+            _txtNum.text = num.ToXNum();
         }
 
         public void SetData(ItemInfo info)
@@ -43,6 +56,18 @@ namespace Game.UI.Controls
             });
             _txtNum.text = "";
         }
+        
+        public void SetData(ItemInfo info, int num)
+        {
+            _info = info;
+            SetNull(_info == null);
+            if(_info == null) return;
+            ResMgr.Instance.LoadAsync<Sprite>(GameConst.RES_GROUP_UI, ResPath.GetItemIcon(_info), img =>
+            {
+                _imgItem.sprite = img;
+            });
+            _txtNum.text = num.ToXNum();
+        }
 
         public void SetData(BagItemInfo bagItemInfo)
         {
@@ -51,7 +76,7 @@ namespace Game.UI.Controls
                 SetNull(true);
                 return;
             }
-            _info = BinaryDataMgr.Instance.GetInfo<ItemInfoContainer, int, ItemInfo>(bagItemInfo.id);
+            _info = ItemMgr.Instance.GetItem(bagItemInfo.id);
             SetNull(_info == null);
             if(_info == null) return;
             ResMgr.Instance.LoadAsync<Sprite>(GameConst.RES_GROUP_UI, ResPath.GetItemIcon(_info), img =>

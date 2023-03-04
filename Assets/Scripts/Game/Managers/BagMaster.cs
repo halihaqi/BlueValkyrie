@@ -9,6 +9,8 @@ namespace Game.Managers
         private readonly IBagRole _owner;
         public BagMaster(IBagRole owner) => _owner = owner;
 
+        public int BagCount => _owner.BagData.BagCount;
+
         /// <summary>
         /// 背包是否存在
         /// </summary>
@@ -28,6 +30,8 @@ namespace Game.Managers
         /// <param name="bagId"></param>
         /// <returns></returns>
         public bool RemoveBag(int bagId) => _owner.BagData.RemoveBag(bagId);
+
+        public int[] GetAllBagIds() => _owner.BagData.GetAllBagIds();
         
         /// <summary>
         /// 单个背包中道具是否存在
@@ -60,6 +64,8 @@ namespace Game.Managers
         /// <param name="itemInfo"></param>
         /// <param name="num"></param>
         public int AddItem(int bagId, ItemInfo itemInfo, int num = 1) => _owner.BagData.AddItem(bagId, itemInfo, num);
+        
+        public int AddItem(int bagId, BagItemInfo itemInfo, int num = 1) => _owner.BagData.AddItem(bagId, itemInfo, num);
 
         public bool TryGetItem(int bagId, int itemId, out BagItemInfo item)
         {

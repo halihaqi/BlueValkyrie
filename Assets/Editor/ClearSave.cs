@@ -10,21 +10,28 @@ namespace Editor
         [MenuItem("Tools/Saves/清空数据")]
         public static void ClearAllSave()
         {
-            var files = Directory.GetFiles(Application.persistentDataPath);
-            for (int i = 0; i < files.Length; i++)
-            {
-                File.Delete(files[i]);
-            }
+            ClearFilesAndDirs(Application.persistentDataPath);
         }
 
         [MenuItem("Tools/Saves/清除玩家存档")]
         public static void ClearPlayerData()
         {
-            var files = Directory.GetFiles($"{Application.persistentDataPath}/{PlayerMgr.PLAYER_DATA_KEY}");
-            for (int i = 0; i < files.Length; i++)
+            ClearFilesAndDirs($"{Application.persistentDataPath}/{PlayerMgr.PLAYER_DATA_KEY}");
+        }
+
+        private static void ClearFilesAndDirs(string parentPath)
+        {
+            if (!Directory.Exists(parentPath)) return;
+            
+            foreach (string file in Directory.GetFiles(parentPath))
             {
-                File.Delete(files[i]);
+                File.Delete(file);
             }
+            foreach (string subFolder in Directory.GetDirectories(parentPath))
+            {
+                ClearFilesAndDirs(subFolder);
+            }
+            Directory.Delete(parentPath);
         }
     }
 }

@@ -28,10 +28,10 @@ namespace Hali_Framework
         {
             if (Input.GetKeyDown(key))
                 EventMgr.Instance.TriggerEvent(ClientEvent.GET_KEY_DOWN, key);
-            if(Input.GetKeyUp(key))
-                EventMgr.Instance.TriggerEvent(ClientEvent.GET_KEY_UP, key);
             if(Input.GetKey(key))
                 EventMgr.Instance.TriggerEvent(ClientEvent.GET_KEY, key);
+            if(Input.GetKeyUp(key))
+                EventMgr.Instance.TriggerEvent(ClientEvent.GET_KEY_UP, key);
         }
 
         /// <summary>
@@ -46,6 +46,8 @@ namespace Hali_Framework
             KeyCheck(KeyCode.E);
             KeyCheck(KeyCode.Tab);
             KeyCheck(KeyCode.Escape);
+            KeyCheck(KeyCode.Space);
+            KeyCheck(KeyCode.LeftShift);
             
             _inputMouseDelta.x = Input.GetAxis("Mouse X");
             _inputMouseDelta.y = Input.GetAxis("Mouse Y");

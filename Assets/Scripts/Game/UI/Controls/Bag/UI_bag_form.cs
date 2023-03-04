@@ -23,9 +23,6 @@ namespace Game.UI.Controls
             _btnSift = GetControl<Button>("btn_sift");
             _btnSort = GetControl<Button>("btn_sort");
 
-            _list.Padding = new Vector2(51f, 30f);
-            _list.Space = new Vector2(18f, 17f);
-            
             _list.IsVirtual = true;
             _list.itemRenderer = OnItemRenderer;
             _list.onClickItem = OnItemClick;
@@ -38,6 +35,10 @@ namespace Game.UI.Controls
                 throw new Exception("Has no bag with id:{bagId}.");
 
             UpdateView();
+            
+            if(_items.Count <= 0) return;
+            EventMgr.Instance.TriggerEvent(ClientEvent.BAG_ITEM_CLICK, ItemMgr.Instance.GetItem(_items[0].id),
+                _items[0].num);
         }
 
         public void SetData(List<BagItemInfo> items)

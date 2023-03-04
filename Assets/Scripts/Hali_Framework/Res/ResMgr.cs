@@ -12,12 +12,16 @@ namespace Hali_Framework
         //资源容器
         //避免重复加载，需要在合适时机释放
         private readonly Dictionary<string, Dictionary<string, object>> _resDic;
+        private readonly Dictionary<string, Queue<Action<object>>> _loadingDic;
+        private readonly List<string> _toReleaseList;
 
         public int Priority => 0;
         
         public ResMgr()
         {
             _resDic = new Dictionary<string, Dictionary<string, object>>();
+            _loadingDic = new Dictionary<string, Queue<Action<object>>>();
+            _toReleaseList = new List<string>();
         }
         
         void IModule.Update(float elapseSeconds, float realElapseSeconds)
@@ -39,10 +43,7 @@ namespace Hali_Framework
         {
             T res = Resources.Load<T>(path);
             //如果是GameObject，先实例化再返回
-            if (res is GameObject)
-                return Object.Instantiate(res);
-            else
-                return res;
+            return res is GameObject ? Object.Instantiate(res) : res;
         }
 
         /// <summary>
@@ -68,10 +69,7 @@ namespace Hali_Framework
                 _resDic[part].Add(path, res);
             }
 
-            if (res is GameObject)
-                return Object.Instantiate(res);
-            else
-                return res;
+            return res is GameObject ? Object.Instantiate(res) : res;
         }
 
         
@@ -112,40 +110,60 @@ namespace Hali_Framework
 
         private IEnumerator AsyncLoadCoroutine<T>(string path, UnityAction<T> callback) where T : Object
         {
+            if (_loadingDic.ContainsKey(path))
+            {
+                _loadingDic[path].Enqueue(obj => { callback?.Invoke(obj as T); });
+                yield break;
+            }
+            _loadingDic.Add(path, new Queue<Action<object>>());
+            _loadingDic[path].Enqueue(obj => { callback?.Invoke(obj as T); });
+            
             var rr = Resources.LoadAsync<T>(path);
             while(!rr.isDone)
                 yield return rr.progress;
-            T res = rr.asset as T;
+            var res = rr.asset as T;
 
             if (res == null)
                 throw new Exception($"<Load Error> No path: {path}.");
 
-            if (res is GameObject)
-                callback?.Invoke(Object.Instantiate(res));
-            else
-                callback?.Invoke(res);
+            for (int i = 0; i < _loadingDic[path].Count; i++)
+                _loadingDic[path].Dequeue()?.Invoke(res is GameObject
+                    ? Object.Instantiate(res)
+                    : res);
+            _loadingDic.Remove(path);
         }
-        
+
         private IEnumerator AsyncLoadCoroutine<T>(string part, string path, UnityAction<T> callback) where T : Object
         {
-            T res;
+            if (_loadingDic.ContainsKey(path))
+            {
+                _loadingDic[path].Enqueue(obj => { callback?.Invoke(obj as T); });
+                yield break;
+            }
+            //开始加载，加入加载list
+            _loadingDic.Add(path, new Queue<Action<object>>());
+            _loadingDic[path].Enqueue(obj => { callback?.Invoke(obj as T); });
+            
+            T res = null;
             if(!_resDic.ContainsKey(part))
                 _resDic.Add(part, new Dictionary<string, object>());
             if (_resDic[part].ContainsKey(path))
                 res = _resDic[part][path] as T;
             else
             {
+                _resDic[part].Add(path, null);
                 var rr = Resources.LoadAsync<T>(path);
                 while(!rr.isDone)
                     yield return rr.progress;
                 res = rr.asset as T;
-                _resDic[part].Add(path, res);
+                _resDic[part][path] = res;
             }
 
-            if (res is GameObject)
-                callback?.Invoke(Object.Instantiate(res));
-            else
-                callback?.Invoke(res);
+            for (int i = 0; i < _loadingDic[path].Count; i++)
+                _loadingDic[path].Dequeue()?.Invoke(res is GameObject
+                    ? Object.Instantiate(res)
+                    : res);
+            _loadingDic.Remove(path);
         }
 
         #endregion

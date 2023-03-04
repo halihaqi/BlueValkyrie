@@ -39,6 +39,8 @@ namespace Game.Model
             complete = 0;
             BagData = new BagData(id);
             BagData.AddBag(0);//Player默认存在编号为0的背包
+            BagData.AddItem(0, 1, 1000);//初始金币
+            BagData.AddItem(0, 2, 300);//初始钻石
             ShopInfo = new ShopInfo(id);
         }
     }

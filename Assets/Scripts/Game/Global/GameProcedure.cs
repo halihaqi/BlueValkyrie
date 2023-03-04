@@ -12,8 +12,8 @@ namespace Game.Global
         {
             base.OnEnter(procedureOwner);
             //隐藏所有界面
-            UIMgr.Instance.HideAllLoadedPanels();
             UIMgr.Instance.HideAllLoadingPanels();
+            UIMgr.Instance.HideAllLoadedPanels();
             
             //设置Player数据
             var player = ProcedureMgr.Instance.GetData<PlayerInfo>(PlayerMgr.PLAYER_DATA_KEY);

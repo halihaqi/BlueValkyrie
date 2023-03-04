@@ -27,14 +27,18 @@ namespace Game.UI.Controls
 
         public void SetData(UnityAction onClick)
         {
+            _btnBack.onClick.RemoveListener(onClick);
+            _btnBack.onClick.AddListener(onClick);
+            UpdateView();
+        }
+
+        public void UpdateView()
+        {
             var bagMaster = PlayerMgr.Instance.BagMaster;
             _txtGold.text = bagMaster.TryGetItem
                 (0, 1, out var gold) ? gold.num.ToString() : 0.ToString();
             _txtGem.text = bagMaster.TryGetItem
                 (0, 2, out var gem) ? gem.num.ToString() : 0.ToString();
-
-            _btnBack.onClick.RemoveListener(onClick);
-            _btnBack.onClick.AddListener(onClick);
         }
     }
 }

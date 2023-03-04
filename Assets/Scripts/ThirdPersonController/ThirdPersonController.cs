@@ -11,7 +11,6 @@ public class ThirdPersonController : MonoBehaviour
     public float rotateSpeed = 50;
     public float rotateSmoothTime = 0.12f;
     public float jumpForce = 1;
-    public float jumpTimeout = 0.5f;
 
     [Header("Gravity")]
     public float gravity = -15;
@@ -38,7 +37,6 @@ public class ThirdPersonController : MonoBehaviour
     private Vector2 _inputMove;
     private float _threshold = 0.01f;//输入最低门槛
     private bool _isInputShift = false;
-    private bool _isInputJump = false;
 
     //移动参数
     private float _targetRot = 0;
@@ -48,7 +46,6 @@ public class ThirdPersonController : MonoBehaviour
     
     //跳跃参数
     private bool _isGrounded = true;
-    private float _jumpTimeoutDelta;
 
     //相机参数
     private ThirdPersonCam _thirdPersonCam;
@@ -88,29 +85,47 @@ public class ThirdPersonController : MonoBehaviour
 
         //打开输入监听
         InputMgr.Instance.Enabled = true;
+        EventMgr.Instance.AddListener<KeyCode>(ClientEvent.GET_KEY_DOWN, OnShift);
+        EventMgr.Instance.AddListener<KeyCode>(ClientEvent.GET_KEY_UP, OnShiftEnd);
+        EventMgr.Instance.AddListener<KeyCode>(ClientEvent.GET_KEY_DOWN, OnSpace);
     }
 
     protected virtual void OnDestroy()
     {
         //关闭输入监听
         InputMgr.Instance.Enabled = false;
+        EventMgr.Instance.RemoveListener<KeyCode>(ClientEvent.GET_KEY_DOWN, OnShift);
+        EventMgr.Instance.RemoveListener<KeyCode>(ClientEvent.GET_KEY_UP, OnShiftEnd);
+        EventMgr.Instance.RemoveListener<KeyCode>(ClientEvent.GET_KEY_DOWN, OnSpace);
     }
 
     protected virtual void Update()
     {
-        _hasAnim = _anim != null;
+        _hasAnim = _anim.runtimeAnimatorController != null;
         
-        JumpAndGravity();
+        Gravity();
         GroundHeadCheck();
         UpdateInput();
         Move();
         CameraTargetRotation();       
     }
-
-    private void OnInput(KeyCode key)
+    
+    private void OnShift(KeyCode key)
     {
-        _isInputShift = key == KeyCode.LeftShift;
-        _isInputJump = key == KeyCode.Space;
+        if (key == KeyCode.LeftShift)
+            _isInputShift = true;
+    }
+
+    private void OnShiftEnd(KeyCode key)
+    {
+        if(key == KeyCode.LeftShift)
+            _isInputShift = false;
+    }
+
+    private void OnSpace(KeyCode key)
+    {
+        if(key == KeyCode.Space)
+            OnJump();
     }
 
     /// <summary>
@@ -177,39 +192,29 @@ public class ThirdPersonController : MonoBehaviour
     /// <summary>
     /// 重力
     /// </summary>
-    private void JumpAndGravity()
+    private void Gravity()
+    {
+        if (_hasAnim)
+            _anim.SetBool(Ground, _isGrounded);
+        
+        if (_isGrounded && _verticalVelocity < 0)
+            _verticalVelocity = -2f;
+
+        //Gravity
+        if (_verticalVelocity < _terminalVelocity)
+            _verticalVelocity += gravity * Time.deltaTime;
+    }
+
+    private void OnJump()
     {
         //Jump
         if (_isGrounded)
         {
-            if (_hasAnim)
-                _anim.SetBool(Ground, true);
-
-            if (_verticalVelocity < 0)
-                _verticalVelocity = -2f;
+            _verticalVelocity = Mathf.Sqrt(jumpForce * -2f * gravity);
             
-            //jump
-            if (Input.GetKeyDown(KeyCode.Space) && _jumpTimeoutDelta <= 0)
-            {
-                _verticalVelocity = Mathf.Sqrt(jumpForce * -2f * gravity);
-                
-                if(_hasAnim)
-                    _anim.SetTrigger(Jump);
-            }
-
-            if (_jumpTimeoutDelta >= 0)
-                _jumpTimeoutDelta -= Time.deltaTime;
-        }
-        else
-        {
-            _jumpTimeoutDelta = jumpTimeout;
             if(_hasAnim)
-                _anim.SetBool(Ground, false);
+                _anim.SetTrigger(Jump);
         }
-        
-        //Gravity
-        if (_verticalVelocity < _terminalVelocity)
-            _verticalVelocity += gravity * Time.deltaTime;
     }
 
     /// <summary>

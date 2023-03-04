@@ -27,9 +27,8 @@ namespace Game.UI.Begin
             var dic = BinaryDataMgr.Instance.GetTable<ChooseRoleInfoContainer>().dataDic;
             _roleIdList = new List<int>(dic.Count);
             foreach (var roleInfo in dic.Values)
-            {
                 _roleIdList.Add(roleInfo.roleId);
-            }
+            
             _roleIdList.Sort();
             _selectIndex = 0;
             

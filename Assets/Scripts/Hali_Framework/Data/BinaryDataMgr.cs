@@ -150,10 +150,65 @@ namespace Hali_Framework
                     }
                     else if (info.FieldType == typeof(string))
                     {
-                        int strLength = BitConverter.ToInt32(bytes, index);
+                        int len = BitConverter.ToInt32(bytes, index);
                         index += GameConst.INT_SIZE;
-                        info.SetValue(dataObj, Encoding.UTF8.GetString(bytes, index, strLength));
-                        index += strLength;
+                        info.SetValue(dataObj, Encoding.UTF8.GetString(bytes, index, len));
+                        index += len;
+                    }
+                    //复杂类型
+                    else
+                    {
+                        int arrLength;
+                        if (info.FieldType == typeof(int[]))
+                        {
+                            arrLength = BitConverter.ToInt32(bytes, index);
+                            index += GameConst.INT_SIZE;
+                            int[] arrInt = new int[arrLength];
+                            for (int j = 0; j < arrLength; j++)
+                            {
+                                arrInt[j] = BitConverter.ToInt32(bytes, index);
+                                index += GameConst.INT_SIZE;
+                            }
+                            info.SetValue(dataObj, arrInt);
+                        }
+                        else if (info.FieldType == typeof(long[]))
+                        {
+                            arrLength = BitConverter.ToInt32(bytes, index);
+                            index += GameConst.INT_SIZE;
+                            long[] arrLong = new long[arrLength];
+                            for (int j = 0; j < arrLength; j++)
+                            {
+                                arrLong[j] = BitConverter.ToInt64(bytes, index);
+                                index += GameConst.LONG_SIZE;
+                            }
+                            info.SetValue(dataObj, arrLong);
+                        }
+                        else if (info.FieldType == typeof(float[]))
+                        {
+                            arrLength = BitConverter.ToInt32(bytes, index);
+                            index += GameConst.INT_SIZE;
+                            float[] arrFloat = new float[arrLength];
+                            for (int j = 0; j < arrLength; j++)
+                            {
+                                arrFloat[j] = BitConverter.ToSingle(bytes, index);
+                                index += GameConst.FLOAT_SIZE;
+                            }
+                            info.SetValue(dataObj, arrFloat);
+                        }
+                        else if (info.FieldType == typeof(string[]))
+                        {
+                            arrLength = BitConverter.ToInt32(bytes, index);
+                            index += GameConst.INT_SIZE;
+                            string[] arrStr = new string[arrLength];
+                            for (int j = 0; j < arrLength; j++)
+                            {
+                                int len = BitConverter.ToInt32(bytes, index);
+                                index += GameConst.INT_SIZE;
+                                arrStr[j] = Encoding.UTF8.GetString(bytes, index, len);
+                                index += len;
+                            }
+                            info.SetValue(dataObj, arrStr);
+                        }
                     }
                 }
             

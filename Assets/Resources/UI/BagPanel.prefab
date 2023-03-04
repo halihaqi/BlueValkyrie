@@ -351,6 +351,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: bag_form
       objectReference: {fileID: 0}
+    - target: {fileID: 4347329484536635285, guid: b345f80719a77a24ea4151af975f1533, type: 3}
+      propertyPath: top
+      value: 31.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4347329484536635285, guid: b345f80719a77a24ea4151af975f1533, type: 3}
+      propertyPath: left
+      value: 44.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4347329484536635285, guid: b345f80719a77a24ea4151af975f1533, type: 3}
+      propertyPath: space.x
+      value: 31.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4347329484536635285, guid: b345f80719a77a24ea4151af975f1533, type: 3}
+      propertyPath: space.y
+      value: 17.7
+      objectReference: {fileID: 0}
     - target: {fileID: 5051199927912924083, guid: b345f80719a77a24ea4151af975f1533, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -434,6 +450,14 @@ PrefabInstance:
     - target: {fileID: 5051199927912924083, guid: b345f80719a77a24ea4151af975f1533, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8556553295720783594, guid: b345f80719a77a24ea4151af975f1533, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 744.126
+      objectReference: {fileID: 0}
+    - target: {fileID: 8556553295720783594, guid: b345f80719a77a24ea4151af975f1533, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 501.22394
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b345f80719a77a24ea4151af975f1533, type: 3}

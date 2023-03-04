@@ -15,13 +15,14 @@ namespace Game.Model
         {
             this.playerId = playerId;
             BagData = new BagData(playerId);
-            var itemData = BinaryDataMgr.Instance.GetTable<ShopItemInfoContainer>().dataDic;
-            foreach (var shopItemInfo in itemData.Values)
+            var shopType = BinaryDataMgr.Instance.GetTable<ShopTypeInfoContainer>().dataDic;
+            //添加所有商店
+            foreach (var shop in shopType.Values)
             {
-                if(!BagData.HasBag(shopItemInfo.currencyId))
-                    BagData.AddBag(shopItemInfo.currencyId);
-
-                BagData.AddItem(shopItemInfo.currencyId, shopItemInfo.id, shopItemInfo.num);
+                BagData.AddBag(shop.shopBagId);
+                //给商店添加贩售道具
+                for (int i = 0; i < shop.itemList.Length; i++)
+                    BagData.AddItem(shop.shopBagId, shop.itemList[i], shop.itemInventory[i]);
             }
         }
     }

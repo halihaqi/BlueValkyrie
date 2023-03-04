@@ -19,7 +19,6 @@ namespace Game.Entity
         [SerializeField]
         private float interval = 2f;
 
-        private BagMaster _master;
         private Dialogue _dialogue;
 
         private int _panelId = -1;
@@ -29,7 +28,6 @@ namespace Game.Entity
         {
             base.Awake();
             SetRoleInfo(roleId);
-            _master = PlayerMgr.Instance.ShopMaster;
             _dialogue = new Dialogue(asset, interval);
         }
 

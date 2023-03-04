@@ -30,5 +30,6 @@
         
         //Bag
         BAG_ITEM_CLICK,
+        BUY_COMPLETE,
     }
 }

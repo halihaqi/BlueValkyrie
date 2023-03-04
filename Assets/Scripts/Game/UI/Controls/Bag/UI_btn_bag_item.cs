@@ -1,4 +1,5 @@
-﻿using Game.Utils;
+﻿using Game.Managers;
+using Game.Utils;
 using Hali_Framework;
 using UnityEngine;
 using UnityEngine.UI;
@@ -36,7 +37,7 @@ namespace Game.UI.Controls
 
         public void SetData(int itemId, int num)
         {
-            _item = BinaryDataMgr.Instance.GetInfo<ItemInfoContainer, int, ItemInfo>(itemId);
+            _item = ItemMgr.Instance.GetItem(itemId);
             _itemNum = num;
             SetNull(_item == null);
             

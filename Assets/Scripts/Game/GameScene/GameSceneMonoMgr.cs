@@ -21,7 +21,7 @@ namespace Game.GameScene
 
         private void Start()
         {
-            TestBag();
+            //TestBag();
         }
 
         private void TestBag()

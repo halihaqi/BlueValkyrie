@@ -141,6 +141,7 @@ namespace Editor.Excel
                 //3.存储所有数据
                 DataRow row;
                 DataRow rowType = GetVariableTypeRow(table);
+                string[] arrStr;
                 for (var i = READ_INDEX; i < table.Rows.Count; i++)
                 {
                     row = table.Rows[i];
@@ -165,6 +166,37 @@ namespace Editor.Excel
                                 fs.Write(BitConverter.GetBytes(bytes.Length), 0, GameConst.INT_SIZE);
                                 fs.Write(bytes, 0, bytes.Length);
                                 break;
+                            
+                            case "int[]":
+                                //{1,2,3,4}
+                                arrStr = row[j].ToString().TrimStart('{').TrimEnd('}').Split(',');
+                                fs.Write(BitConverter.GetBytes(arrStr.Length), 0, GameConst.INT_SIZE);
+                                for (int k = 0; k < arrStr.Length; k++)
+                                    fs.Write(BitConverter.GetBytes(int.Parse(arrStr[k])), 0, GameConst.INT_SIZE);
+                                break;
+                            case "long[]":
+                                arrStr = row[j].ToString().TrimStart('{').TrimEnd('}').Split(',');
+                                fs.Write(BitConverter.GetBytes(arrStr.Length), 0, GameConst.INT_SIZE);
+                                for (int k = 0; k < arrStr.Length; k++)
+                                    fs.Write(BitConverter.GetBytes(long.Parse(arrStr[k])), 0, GameConst.LONG_SIZE);
+                                break;
+                            case "float[]":
+                                arrStr = row[j].ToString().TrimStart('{').TrimEnd('}').Split(',');
+                                fs.Write(BitConverter.GetBytes(arrStr.Length), 0, GameConst.INT_SIZE);
+                                for (int k = 0; k < arrStr.Length; k++)
+                                    fs.Write(BitConverter.GetBytes(float.Parse(arrStr[k])), 0, GameConst.FLOAT_SIZE);
+                                break;
+                            case "string[]":
+                                arrStr = row[j].ToString().TrimStart('{').TrimEnd('}').Split(',');
+                                fs.Write(BitConverter.GetBytes(arrStr.Length), 0, GameConst.INT_SIZE);
+                                for (int k = 0; k < arrStr.Length; k++)
+                                {
+                                    bytes = Encoding.UTF8.GetBytes(arrStr[k]);
+                                    fs.Write(BitConverter.GetBytes(bytes.Length), 0, GameConst.INT_SIZE);
+                                    fs.Write(bytes, 0, bytes.Length);
+                                }
+                                break;
+                            
                         }
                     }
                 }

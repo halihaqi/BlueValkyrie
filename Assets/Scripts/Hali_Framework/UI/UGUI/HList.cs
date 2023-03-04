@@ -282,7 +282,6 @@ namespace Hali_Framework
             _itemSize = defaultItem.GetComponent<RectTransform>().sizeDelta;
             SetScrollEvent();
             SetColumnRow();
-            numItems = 0;
         }
 
         /// <summary>
@@ -625,7 +624,7 @@ namespace Hali_Framework
             //如果总数小于一行
             if (_numItems < _columnCount)
             {
-                posY = 0;
+                posY = -top;
                 return 0;
             }
             
@@ -672,7 +671,7 @@ namespace Hali_Framework
                         curRowPosY += _itemSize.y + space.y;
                     }
 
-                    posY = 0;
+                    posY = -top;
                     return 0;
                 }
             }
@@ -702,7 +701,7 @@ namespace Hali_Framework
             //如果总数小于一行
             if (_numItems < _columnCount)
             {
-                posX = 0;
+                posX = left;
                 return 0;
             }
             
@@ -747,7 +746,7 @@ namespace Hali_Framework
                         curColumnPosX -= _itemSize.x + space.x;
                     }
 
-                    posX = 0;
+                    posX = left;
                     return 0;
                 }
             }

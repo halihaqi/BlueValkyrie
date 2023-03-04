@@ -94,20 +94,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f25ea4f6c5b4628bb40d0f5d8301c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 3
-  sprintSpeed: 5
+  moveSpeed: 2.5
+  sprintSpeed: 4
   rotateSpeed: 50
   rotateSmoothTime: 0.12
-  jumpForce: 0.8
-  jumpTimeout: 0.3
+  jumpForce: 2
   gravity: -8
   followCamera: {fileID: 0}
   followTarget: {fileID: 1883716662}
   topClamp: 70
   bottomClamp: -30
   isFilpPitch: 1
-  groundOffset: -0.11
-  groundRadius: 0.23
+  groundOffset: -0.29
+  groundRadius: 0.37
   groundLayers:
     serializedVersion: 2
     m_Bits: 128

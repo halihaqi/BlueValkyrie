@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Hali_Framework;
 
 namespace Game.Managers
@@ -21,10 +22,12 @@ namespace Game.Managers
             {EquipType.Shoes, "MP"},
         };
 
-        public EquipInfo GetEquipInfo(int itemId)
+        public EquipInfo FindEquip(int itemId)
         {
-            return BinaryDataMgr.Instance.GetInfo<EquipInfoContainer, int, EquipInfo>(itemId);
+            var equipDic = BinaryDataMgr.Instance.GetTable<EquipInfoContainer>().dataDic;
+            return equipDic.Values.FirstOrDefault(equipInfo => equipInfo.itemId == itemId);
         }
+        
         
         public string GetAttributeName(EquipInfo equip)
         {

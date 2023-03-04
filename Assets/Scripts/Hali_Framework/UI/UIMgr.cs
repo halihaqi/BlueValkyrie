@@ -10,6 +10,7 @@ namespace Hali_Framework
     {
         private readonly Dictionary<string, UIGroup> _uiGroups;
         private readonly Dictionary<int, string> _loadingPanels;
+        private readonly List<int> _hidingPanels;
         private readonly HashSet<int> _loadingPanelsToRelease;
         private readonly Queue<PanelEntity> _recycleQueue;
         private int _cachedSerialId;
@@ -30,6 +31,7 @@ namespace Hali_Framework
         {
             _uiGroups = new Dictionary<string, UIGroup>();
             _loadingPanels = new Dictionary<int, string>();
+            _hidingPanels = new List<int>();
             _loadingPanelsToRelease = new HashSet<int>();
             _recycleQueue = new Queue<PanelEntity>();
             _cachedSerialId = 0;
@@ -305,6 +307,9 @@ namespace Hali_Framework
             if (group == null)
                 throw new Exception("UI group is invalid.");
 
+            if (_hidingPanels.Contains(panel.SerialId)) return false;
+            
+            _hidingPanels.Add(panel.SerialId);
             group.RemovePanel(panel);
             panel.OnHide(isShutdown, userData);
             
@@ -312,11 +317,10 @@ namespace Hali_Framework
             {
                 group.Refresh();
                 _recycleQueue.Enqueue(panel);
+                _hidingPanels.Remove(panel.SerialId);
             }
             else
-            {
                 panel.AddHideCompleteListener(OnPanelHideComplete);
-            }
 
             return true;
         }
@@ -431,6 +435,7 @@ namespace Hali_Framework
             panelEntity.UIGroup.Refresh();
             _recycleQueue.Enqueue(panelEntity);
             panelEntity.RemoveHideCompleteListener(OnPanelHideComplete);
+            _hidingPanels.Remove(panelEntity.SerialId);
         }
 
         private void InternalShowPanel(int serialId, string assetName, UIGroup uiGroup, GameObject obj, bool isNew,

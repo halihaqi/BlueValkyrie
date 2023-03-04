@@ -32,9 +32,9 @@ namespace Game.UI.Game
 
         private void UpdateView()
         {
-            _bagForm.SetData(_bagId);
             _infoForm.SetData(null);
             _hubForm.SetData(HideMe);
+            _bagForm.SetData(_bagId);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Game.Model.BagModel;
+﻿using Game.Managers;
+using Game.Model.BagModel;
 using Hali_Framework;
 
 namespace Game.Utils
@@ -31,6 +32,12 @@ namespace Game.Utils
         public static string GetStudentObj(RoleInfo info)
         {
             return $"Prefabs/Students/{info.school}/{info.name}";
+        }
+        
+        public static string GetItemIcon(int itemId)
+        {
+            var info = ItemMgr.Instance.GetItem(itemId);
+            return GetItemIcon(info);
         }
 
         public static string GetItemIcon(ItemInfo info)

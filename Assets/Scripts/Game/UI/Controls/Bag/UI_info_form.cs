@@ -46,7 +46,7 @@ namespace Game.UI.Controls
                 this.gameObject.SetActive(false);
                 return;
             }
-            _info = BinaryDataMgr.Instance.GetInfo<ItemInfoContainer, int, ItemInfo>(bagInfo.id);
+            _info = ItemMgr.Instance.GetItem(bagInfo.id);
             _num = bagInfo.num;
 
             UpdateView();
@@ -64,7 +64,7 @@ namespace Game.UI.Controls
             //装备才有属性
             if (_info.type == 1)
             {
-                var equip = EquipMgr.Instance.GetEquipInfo(_info.id);
+                var equip = EquipMgr.Instance.FindEquip(_info.id);
                 if (equip != null)
                 {
                     _attributeGroup.SetActive(true);
