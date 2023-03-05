@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Game.GameScene;
 using Game.Model;
 using Game.Utils;
@@ -9,7 +10,7 @@ namespace Game.Managers
 {
     public class PlayerMgr : Singleton<PlayerMgr>
     {
-        private PlayerInfo _nowPlayer;
+        private PlayerInfo _curPlayer;
         private RoleInfo _secretaryInfo;
 
         private PlayerController _playerEntity;
@@ -18,20 +19,21 @@ namespace Game.Managers
         private const string PLAYER_RES_PATH = "Prefabs/Player/Player"; 
         public const string PLAYER_DATA_KEY = "Player";
 
-        public PlayerInfo NowPlayer
+        public PlayerInfo CurPlayer
         {
-            get => _nowPlayer;
+            get => _curPlayer;
             set
             {
-                _nowPlayer = value;
-                if (_nowPlayer == null)
+                _curPlayer = value;
+                if (_curPlayer == null)
                 {
                     _secretaryInfo = null;
                     return;
                 }
-                _secretaryInfo = BinaryDataMgr.Instance.GetInfo<RoleInfoContainer, int, RoleInfo>(_nowPlayer.secretaryId);
-                BagMaster = new BagMaster(_nowPlayer);
-                ShopMaster = new BagMaster(_nowPlayer.ShopInfo);
+                _secretaryInfo = BinaryDataMgr.Instance.GetInfo<RoleInfoContainer, int, RoleInfo>(_curPlayer.secretaryId);
+                BagMaster = new BagMaster(_curPlayer);
+                ShopMaster = new BagMaster(_curPlayer.ShopInfo);
+                MonoMgr.Instance.AddUpdateListener(OnUpdate);
             }
         }
         
@@ -44,6 +46,11 @@ namespace Game.Managers
         public bool HasPlayer => _playerEntity != null;
 
         public bool HasSecretary => _secretaryEntity != null;
+
+        private void OnUpdate(float elapseSeconds, float realElapseSeconds)
+        {
+            _curPlayer.time += realElapseSeconds;
+        }
 
         public void SetPlayerPrefab(Camera followCam)
         {
@@ -83,6 +90,13 @@ namespace Game.Managers
         {
             var dic = BinaryDataMgr.Instance.Load<PlayerData>(GameConst.DATA_PART_PLAYER, "PlayerData").dataDic;
             return dic.TryGetValue(userId, out var info) ? info : null;
+        }
+        
+        public PlayerInfo LoadUser(string name)
+        {
+            var dic = BinaryDataMgr.Instance.Load<PlayerData>(GameConst.DATA_PART_PLAYER, "PlayerData").dataDic;
+            var kv = dic.FirstOrDefault(o => o.Value.name.Equals(name));
+            return kv.Value;
         }
 
         public Dictionary<int, PlayerInfo> LoadUserDic()

@@ -124,7 +124,7 @@ MonoBehaviour:
   defaultItem: {fileID: 6986362371080540088, guid: b470b3dad7e485546a25b44e049b9751, type: 3}
   defaultItemSize: {x: 0, y: 0}
   layoutType: 2
-  isVirtual: 0
+  isVirtual: 1
   space: {x: 0, y: 17.68}
   left: 15.11
   top: 30.64
@@ -173,7 +173,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0.00004637019, y: 0}
-  m_SizeDelta: {x: 799.99994, y: 866.22003}
+  m_SizeDelta: {x: 799.99994, y: 201.42001}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &4221130718724801083
 GameObject:

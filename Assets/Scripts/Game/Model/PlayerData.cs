@@ -20,7 +20,7 @@ namespace Game.Model
     {
         public int id;
         public string name;
-        public int time;
+        public float time;
         public float complete;//完成度 [0,1]
 
         public int secretaryId;

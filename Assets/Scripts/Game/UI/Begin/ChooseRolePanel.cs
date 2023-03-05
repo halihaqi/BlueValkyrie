@@ -113,9 +113,19 @@ namespace Game.UI.Begin
                 TipMgr.Instance.ShowTip("请输入用户名!");
                 return;
             }
+            if (ExistUser(str))
+            {
+                TipMgr.Instance.ShowTip("用户已存在!");
+                return;
+            }
 
             UIMgr.Instance.ShowPanel<SaveLoadPop>(GameConst.UIGROUP_POP,
-                userData: new SaveLoadParam(true, str, _roleIdList[_selectIndex]));
+                userData: new SaveLoadParam(true, str, _roleIdList[_selectIndex], true));
+        }
+
+        private bool ExistUser(string userName)
+        {
+            return PlayerMgr.Instance.LoadUser(userName) != null;
         }
     }
 }

@@ -49,5 +49,14 @@ namespace Game.Managers
             if (_curShop == null) return false;
             return Buy(_curShop, shopItemIndex, num);
         }
+
+        public int GetShopItemRealId(int shopItemId)
+        {
+            var dic = BinaryDataMgr.Instance.GetTable<ShopItemInfoContainer>().dataDic;
+            if (dic.ContainsKey(shopItemId))
+                return dic[shopItemId].itemId;
+            else
+                return -1;
+        }
     }
 }

@@ -206,7 +206,7 @@ namespace Game.Model.BagModel
         public BagItemInfo GetItem(int itemId)
         {
             var item = items.Find(i => i.id == itemId);
-            return new BagItemInfo(item);
+            return item != null ? new BagItemInfo(item) : null;
         }
 
         public BagItemInfo GetItem(ItemInfo info) => GetItem(info.id);

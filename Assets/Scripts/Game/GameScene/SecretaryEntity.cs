@@ -19,6 +19,8 @@ namespace Game.GameScene
             base.Awake();
             SetAutoBraking(true);
             MoveSpeed = 3.5f;
+            
+            UsePush = true;
         }
 
         private void Start()
@@ -31,8 +33,11 @@ namespace Game.GameScene
         {
             var velocity = agent.velocity.magnitude;
             _reactionElapseSeconds = velocity < 0.01f ? _reactionElapseSeconds + Time.deltaTime : 0;
-            if (FollowTarget != null)
+
+            if (!isPush && FollowTarget != null)
+            {
                 agent.SetDestination(FollowTarget.position);
+            }
             anim.SetFloat(Speed, velocity);
             
             if (_reactionElapseSeconds > _reactionInterval)

@@ -17,7 +17,7 @@ namespace Game.Global
             
             //设置Player数据
             var player = ProcedureMgr.Instance.GetData<PlayerInfo>(PlayerMgr.PLAYER_DATA_KEY);
-            PlayerMgr.Instance.NowPlayer = player;
+            PlayerMgr.Instance.CurPlayer = player;
             
             //进入游戏场景
             SceneMgr.Instance.LoadSceneWithPanel<LoadingPanel>(GameConst.GAME_SCENE, OnEnterScene);

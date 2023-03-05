@@ -69,6 +69,7 @@ namespace Game.UI.Game
         private void OnShopRenderer(int index, GameObject obj)
         {
             var item = obj.GetComponent<UI_shop_item>();
+            if(ShopMgr.Instance.CurShop == null) return;
             var shopItemId = ShopMgr.Instance.CurShop.itemList[index];
             var shopItemNum = ShopMgr.Instance.CurShop.itemInventory[index];
             item.SetData(shopItemId, shopItemNum);

@@ -18,7 +18,7 @@ namespace Hali_Framework
         private PanelBase _panelLogic;
         private CanvasGroup _canvasGroup;
         
-        private const float FADE_SPEED = 0.01f;
+        private const float FADE_SPEED = 0.02f;
         private bool _isFade = true;
         private float _customRecycleDelay = 0;
         

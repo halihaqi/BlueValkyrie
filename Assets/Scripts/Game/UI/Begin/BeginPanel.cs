@@ -81,7 +81,7 @@ namespace Game.UI.Begin
                     break;
                 case "btn_load":
                     UIMgr.Instance.ShowPanel<SaveLoadPop>(GameConst.UIGROUP_POP,
-                        userData: new SaveLoadParam(false));
+                        userData: new SaveLoadParam(false, true));
                     break;
                 case "btn_option":
                     break;

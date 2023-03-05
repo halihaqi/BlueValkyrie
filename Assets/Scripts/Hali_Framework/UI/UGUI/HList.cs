@@ -280,6 +280,8 @@ namespace Hali_Framework
             SetContentAnchors();
             
             _itemSize = defaultItem.GetComponent<RectTransform>().sizeDelta;
+            if (defaultItemSize.x > 0.01f && defaultItemSize.y > 0.01f)
+                _itemSize = defaultItemSize;
             SetScrollEvent();
             SetColumnRow();
         }

@@ -62,6 +62,8 @@ namespace Hali_Framework
             });
         }
 
+        public bool IsCurScene(string sceneName) => SceneManager.GetActiveScene().name == sceneName;
+
         //异步加载场景协程
         IEnumerator AsyncLoad(string name,UnityAction action)
         {

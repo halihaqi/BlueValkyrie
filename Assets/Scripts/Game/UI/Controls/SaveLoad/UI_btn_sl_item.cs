@@ -46,25 +46,39 @@ namespace Game.UI.Controls
             _slGroup = GetControl<ControlGroup>("sl_group");
         }
 
-
-        public void SetData(bool isSave, int userId, PlayerInfo info, string userName = null, int secretaryId = 0)
+        public void SetSave(int userId, PlayerInfo info)
         {
             _userId = userId;
-            _userName = userName;
-            _secretaryId = secretaryId;
             _info = info;
             
-            if (isSave)
-            {
-                _imgTitleSave.gameObject.SetActive(true);
-                _imgTitleLoad.gameObject.SetActive(false);
-            }
-            else
-            {
-                _imgTitleSave.gameObject.SetActive(false);
-                _imgTitleLoad.gameObject.SetActive(true);
-            }
+            _imgTitleSave.gameObject.SetActive(true);
+            _imgTitleLoad.gameObject.SetActive(false);
+            //更新面板
+            _txtTitle.text = $"存档{_userId + 1}";
+            UpdateView(info);
+        }
 
+        public void SetNew(int userId, PlayerInfo info, string userName, int secretaryId)
+        {
+            _userId = userId;
+            _info = info;
+            _userName = userName;
+            _secretaryId = secretaryId;
+            
+            _imgTitleSave.gameObject.SetActive(true);
+            _imgTitleLoad.gameObject.SetActive(false);
+            //更新面板
+            _txtTitle.text = $"存档{_userId + 1}";
+            UpdateView(info);
+        }
+
+        public void SetLoad(int userId, PlayerInfo info)
+        {
+            _userId = userId;
+            _info = info;
+            
+            _imgTitleSave.gameObject.SetActive(false);
+            _imgTitleLoad.gameObject.SetActive(true);
             //更新面板
             _txtTitle.text = $"存档{_userId + 1}";
             UpdateView(info);
@@ -75,10 +89,23 @@ namespace Game.UI.Controls
             string str = _info != null ? "是否覆盖存档？" : "是否创建新存档？";
             TipMgr.Instance.ShowConfirm(str, () =>
             {
+                _info = PlayerMgr.Instance.CurPlayer; 
+                PlayerMgr.Instance.SaveUser(_userId, _info);
+                UpdateView(_info);
+                
+                TipMgr.Instance.ShowTip("保存成功！");
+            });
+        }
+
+        public void OnNewClick()
+        {
+            string str = _info != null ? "是否覆盖存档？" : "是否创建新存档？";
+            TipMgr.Instance.ShowConfirm(str, () =>
+            {
                 var newPlayerInfo = new PlayerInfo(_userId, _userName, _secretaryId);
                 PlayerMgr.Instance.SaveUser(_userId, newPlayerInfo);
                 UpdateView(newPlayerInfo);
-            
+
                 //进入游戏流程
                 ProcedureMgr.Instance.SetData(PlayerMgr.PLAYER_DATA_KEY, newPlayerInfo);
                 ProcedureMgr.Instance.ChangeState<GameProcedure>();
@@ -105,7 +132,7 @@ namespace Game.UI.Controls
             {
                 _slGroup.SetActive(true);
                 _txtName.text = info.name;
-                _txtTime.text = info.time.ToTime();
+                _txtTime.text = ((int)info.time).ToTime();
                 _sldComplete.value = info.complete;
                 ResMgr.Instance.LoadAsync<Sprite>(ResPath.GetSchoolBadgeIcon(info.secretaryId), img =>
                 {

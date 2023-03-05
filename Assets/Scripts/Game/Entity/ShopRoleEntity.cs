@@ -9,51 +9,12 @@ using UnityEngine;
 
 namespace Game.Entity
 {
-    public class ShopRoleEntity : RoleBase
+    public class ShopRoleEntity : NPCBase
     {
-        [Header("Shop")]
-        [SerializeField]
-        private int roleId = 1001;
-        [SerializeField]
-        private TextAsset asset;
-        [SerializeField]
-        private float interval = 2f;
-
-        private Dialogue _dialogue;
-
-        private int _panelId = -1;
-        private static readonly int Reaction = Animator.StringToHash("reaction");
-
-        protected override void Awake()
+        protected override void OnDialogueOver()
         {
-            base.Awake();
-            SetRoleInfo(roleId);
-            _dialogue = new Dialogue(asset, interval);
-        }
-
-        private void OnTriggerEnter(Collider other)
-        {
-            if (!other.CompareTag(GameConst.PLAYER_TAG)) return;
-            if(UIMgr.Instance.HasPanel<DialoguePop>()) return;
-            
-            anim.SetTrigger(Reaction);
-            _panelId = UIMgr.Instance.ShowPanel<DialoguePop>(GameConst.UIGROUP_POP,
-                userData: new DialogueParam(roleId, _dialogue, false));
-            EventMgr.Instance.AddListener<KeyCode>(ClientEvent.GET_KEY_DOWN, OnEnterShop);
-        }
-
-        private void OnTriggerExit(Collider other)
-        {
-            if (!other.CompareTag(GameConst.PLAYER_TAG)) return;
-            
-            UIMgr.Instance.HidePanel(_panelId);
-            EventMgr.Instance.RemoveListener<KeyCode>(ClientEvent.GET_KEY_DOWN, OnEnterShop);
-        }
-
-        private void OnEnterShop(KeyCode key)
-        {
-            if (key == KeyCode.E)
-                UIMgr.Instance.ShowPanel<ShopPanel>();
+            base.OnDialogueOver();
+            UIMgr.Instance.ShowPanel<ShopPanel>();
         }
     }
 }

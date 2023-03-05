@@ -1,4 +1,5 @@
 ﻿using System;
+using Hali_Framework;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -8,6 +9,35 @@ namespace Game.Base
     public class AgentRoleBase : RoleBase
     {
         protected NavMeshAgent agent;
+        [SerializeField]
+        private float mass = 1;
+
+        protected bool isPush;
+        private bool _usePush = false;
+        private CapsuleCollider _pushTrigger;
+
+        public bool UsePush
+        {
+            get => _usePush;
+            set
+            {
+                if(_usePush == value) return;
+                _usePush = value;
+                if (_usePush)
+                {
+                    _pushTrigger ??= gameObject.AddComponent<CapsuleCollider>();
+                    _pushTrigger.enabled = true;
+                    _pushTrigger.isTrigger = true;
+                    _pushTrigger.height = roleCollider.height;
+                    _pushTrigger.radius = roleCollider.radius + 0.25f;
+                    _pushTrigger.center = roleCollider.center;
+                }
+                else
+                {
+                    _pushTrigger.enabled = false;
+                }
+            }
+        }
 
         public float MoveSpeed
         {
@@ -61,6 +91,31 @@ namespace Game.Base
         }
         
         
-        protected void SetAutoBraking(bool isAutoBraking) => agent.autoBraking = isAutoBraking; 
+        protected void SetAutoBraking(bool isAutoBraking) => agent.autoBraking = isAutoBraking;
+
+        private void OnTriggerStay(Collider other)
+        {
+            if (_usePush && other.CompareTag(GameConst.PLAYER_TAG))
+            {
+                isPush = true;
+                Push(transform.position - other.transform.position, mass);
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            isPush = false;
+        }
+
+        public void Push(Vector3 direction, float force)
+        {
+            if (!_usePush) return;
+            // 计算推动的力量
+            Vector3 pushForce = direction.normalized * force;
+            // 停止当前的导航行动
+            agent.ResetPath();
+            // 添加推力
+            agent.velocity += pushForce;
+        }
     }
 }

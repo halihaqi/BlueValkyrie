@@ -27,23 +27,22 @@ namespace Game.UI.Begin
             base.OnInit(userData);
 
             _list = GetControl<HList>("sv_sl_data");
-            _list.IsVirtual = false;
             _list.itemRenderer = OnItemRender;
             _list.onClickItem = OnItemClick;
         }
 
         protected internal override void OnShow(object userData)
         {
-            base.OnShow(userData);
-            
             if (userData is SaveLoadParam p)
             {
                 _isSave = p.isSave;
                 _nowUserName = p.userName;
                 _secretaryId = p.secretaryId;
+                IsFullScreen = p.isFullScreen;
             }
             else
                 throw new Exception($"{Name} param is invalid.");
+            base.OnShow(userData);
             
             _userDic = PlayerMgr.Instance.LoadUserDic();
             _list.numItems = GameConst.FILE_NUM;
@@ -54,14 +53,17 @@ namespace Game.UI.Begin
             var item = go.GetComponent<UI_btn_sl_item>();
             
             _userDic.TryGetValue(index, out var info);
-            item.SetData(_isSave, index, info, _nowUserName, _secretaryId);
+            if(_isSave)
+                item.SetNew(index, info, _nowUserName, _secretaryId);
+            else
+                item.SetLoad(index, info);
         }
 
         private void OnItemClick(int index, ControlBase cb)
         {
             var item = cb as UI_btn_sl_item;
             if(_isSave)
-                item.OnSaveClick();
+                item.OnNewClick();
             else
                 item.OnLoadClick();
         }
@@ -72,10 +74,17 @@ namespace Game.UI.Begin
         public bool isSave;
         public string userName;
         public int secretaryId;
+        public bool isFullScreen;
 
-        public SaveLoadParam(bool isSave, string userName, int secretaryId)
-            => (this.isSave, this.userName, this.secretaryId) = (isSave, userName, secretaryId);
+        public SaveLoadParam(bool isSave, string userName, int secretaryId, bool isFullScreen)
+            => (this.isSave, this.userName, this.secretaryId, this.isFullScreen) =
+                (isSave, userName, secretaryId, isFullScreen);
 
-        public SaveLoadParam(bool isSave) => this.isSave = isSave;
+        public SaveLoadParam(bool isSave, bool isFullScreen) =>
+            (this.isSave, this.isFullScreen) = (isSave, isFullScreen);
+
+        public SaveLoadParam(bool isSave, PlayerInfo info, bool isFullScreen) =>
+            (this.isSave, this.userName, this.secretaryId, this.isFullScreen)
+            = (isSave, info.name, info.secretaryId, isFullScreen);
     }
 }

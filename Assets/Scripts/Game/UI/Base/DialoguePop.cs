@@ -1,4 +1,5 @@
-﻿using Game.Managers;
+﻿using System;
+using Game.Managers;
 using Game.UI.Controls.Dialogue;
 using Game.Utils;
 using Hali_Framework;
@@ -12,9 +13,11 @@ namespace Game.UI.Base
         private Image _imgHead;
         private UI_dialogue_frame _dialogueFrame;
 
-        private bool _isAutoHide;
         private int _talkerId;
         private Dialogue _dialogue;
+        private bool _isAuto;
+        private bool _interactable;
+        private Action _dialogueCompleteCallback;
         
         protected internal override void OnInit(object userData)
         {
@@ -26,32 +29,33 @@ namespace Game.UI.Base
         protected internal override void OnShow(object userData)
         {
             base.OnShow(userData);
+            _dialogueCompleteCallback = null;
+            _dialogueCompleteCallback += HideMe;
             if (userData is DialogueParam p)
             {
                 _talkerId = p.roleId;
                 _dialogue = p.dialogue;
-                _isAutoHide = p.isAutoHide;
+                _isAuto = p.isAuto;
+                _interactable = p.interactable;
+                _dialogueCompleteCallback += p.dialogueCompleteCallback;
             }
-            
+            else
+                throw new Exception("Need correct dialogue.");
+
             ResMgr.Instance.LoadAsync<Sprite>(GameConst.RES_GROUP_UI, ResPath.GetStudentIcon(_talkerId), img =>
             {
                 _imgHead.sprite = img;
             });
-            _dialogueFrame.SetData(_dialogue);
-            if(_isAutoHide)
-                _dialogueFrame.AddCompleteEvent(OnDialogueComplete);
+            _dialogueFrame.SetData(_dialogue, _interactable, _isAuto);
+            
+            _dialogueFrame.AddCompleteEvent(_dialogueCompleteCallback);
         }
 
         protected internal override void OnHide(bool isShutdown, object userData)
         {
             base.OnHide(isShutdown, userData);
-            if(_isAutoHide)
-                _dialogueFrame.RemoveCompleteEvent(OnDialogueComplete);
-        }
-
-        private void OnDialogueComplete(UI_dialogue_frame control)
-        {
-            HideMe();
+            _dialogueFrame.RemoveCompleteEvent(_dialogueCompleteCallback);
+            _dialogueCompleteCallback = null;
         }
     }
 
@@ -59,9 +63,14 @@ namespace Game.UI.Base
     {
         public int roleId;
         public Dialogue dialogue;
-        public bool isAutoHide;
+        public bool isAuto;
+        public bool interactable;
+        public Action dialogueCompleteCallback;
 
-        public DialogueParam(int roleId, Dialogue dialogue, bool isAutoHide) =>
-            (this.roleId, this.dialogue, this.isAutoHide) = (roleId, dialogue, isAutoHide);
+        public DialogueParam(int roleId, Dialogue dialogue, bool isAuto, bool interactable,
+            Action dialogueCompleteCallback) =>
+            (this.roleId, this.dialogue, this.isAuto, this.interactable,
+                this.dialogueCompleteCallback) =
+            (roleId, dialogue, isAuto, interactable, dialogueCompleteCallback);
     }
 }

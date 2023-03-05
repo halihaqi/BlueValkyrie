@@ -40,6 +40,11 @@ namespace Game.Managers
             if (callbacks.ContainsKey(index))
                 callbacks[index] -= callback;
         }
-        
+
+        public void AddLastSentenceCallback(Action<string> callback) =>
+            AddSentenceCallback(callbacks.Count - 1, callback);
+
+        public void RemoveSentenceCallback(Action<string> callback) =>
+            RemoveSentenceCallback(callbacks.Count - 1, callback);
     }
 }
