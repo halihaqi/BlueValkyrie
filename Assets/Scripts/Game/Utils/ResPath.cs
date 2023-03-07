@@ -14,13 +14,13 @@ namespace Game.Utils
         
         public static string GetSchoolBadgeIcon(int id)
         {
-            RoleInfo info = BinaryDataMgr.Instance.GetInfo<RoleInfoContainer, int, RoleInfo>(id);
+            RoleInfo info = RoleMgr.Instance.GetRole(id);
             return GetSchoolBadgeIcon(info);
         }
 
         public static string GetStudentIcon(int roleId)
         {
-            RoleInfo info = BinaryDataMgr.Instance.GetInfo<RoleInfoContainer, int, RoleInfo>(roleId);
+            RoleInfo info = RoleMgr.Instance.GetRole(roleId);
             return GetStudentIcon(info);
         }
         
@@ -30,6 +30,11 @@ namespace Game.Utils
         }
 
         public static string GetStudentObj(RoleInfo info)
+        {
+            return $"Prefabs/Students/{info.school}/{info.name}";
+        }
+        
+        public static string GetStudentObj(BattleRoleInfo info)
         {
             return $"Prefabs/Students/{info.school}/{info.name}";
         }

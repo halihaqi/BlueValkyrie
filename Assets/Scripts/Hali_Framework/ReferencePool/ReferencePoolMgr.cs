@@ -4,12 +4,15 @@ namespace Hali_Framework
 {
     public class ReferencePoolMgr : Singleton<ReferencePoolMgr>, IModule
     {
-        private readonly Dictionary<string, ReferencePool> _referencePoolCollection;
+        private Dictionary<string, ReferencePool> _referencePoolCollection;
 
-        public int Priority => 0;
-        
-        public ReferencePoolMgr() => _referencePoolCollection = new Dictionary<string, ReferencePool>();
-        
+        public int Priority => 1;
+
+        void IModule.Init()
+        {
+            _referencePoolCollection = new Dictionary<string, ReferencePool>();
+        }
+
         void IModule.Update(float elapseSeconds, float realElapseSeconds)
         {
         }

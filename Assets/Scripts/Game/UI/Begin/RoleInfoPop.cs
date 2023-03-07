@@ -1,4 +1,5 @@
 ﻿using System;
+using Game.Managers;
 using Game.Utils;
 using Hali_Framework;
 using UnityEngine;
@@ -40,7 +41,7 @@ namespace Game.UI.Begin
         {
             base.OnShow(userData);
             if (userData is int id)
-                _info = BinaryDataMgr.Instance.GetInfo<RoleInfoContainer, int, RoleInfo>(id);
+                _info = RoleMgr.Instance.GetRole(id);
 
             if (_info == null)
                 throw new Exception($"{Name} find no RoleInfo.");

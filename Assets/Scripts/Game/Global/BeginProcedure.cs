@@ -10,5 +10,13 @@ namespace Game.Global
             base.OnEnter(procedureOwner);
             UIMgr.Instance.ShowPanel<BeginPanel>();
         }
+
+        protected internal override void OnLeave(IFsm<ProcedureMgr> procedureOwner, bool isShutdown)
+        {
+            base.OnLeave(procedureOwner, isShutdown);
+            //隐藏所有界面
+            UIMgr.Instance.HideAllLoadingPanels();
+            UIMgr.Instance.HideAllLoadedPanels();
+        }
     }
 }

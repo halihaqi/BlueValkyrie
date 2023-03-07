@@ -12,7 +12,8 @@ namespace Game.Global
             FrameworkEntry.Init();
             
             //开启流程
-            ProcedureMgr.Instance.Initialize(new InitProcedure(), new BeginProcedure(), new GameProcedure());
+            ProcedureMgr.Instance.Initialize(new InitProcedure(), new BeginProcedure(), new GameProcedure(),
+                new BattleProcedure());
             ProcedureMgr.Instance.StartProcedure<InitProcedure>();
         }
     }

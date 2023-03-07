@@ -1,6 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
+using Game.Managers;
 
 namespace Hali_Framework
 {
@@ -11,11 +10,11 @@ namespace Hali_Framework
 
         public static void Init()
         {
+            RegisterModule(MonoMgr.Instance);
             RegisterModule(AudioMgr.Instance);
             RegisterModule(BinaryDataMgr.Instance);
             RegisterModule(EventMgr.Instance);
             RegisterModule(FsmMgr.Instance);
-            RegisterModule(MonoMgr.Instance);
             RegisterModule(InputMgr.Instance);
             RegisterModule(ObjectPoolMgr.Instance);
             RegisterModule(ReferencePoolMgr.Instance);
@@ -23,7 +22,15 @@ namespace Hali_Framework
             RegisterModule(ResMgr.Instance);
             RegisterModule(SceneMgr.Instance);
             RegisterModule(UIMgr.Instance);
+            //GameModule
+            RegisterModule(EquipMgr.Instance);
+            RegisterModule(ItemMgr.Instance);
+            RegisterModule(PlayerMgr.Instance);
+            RegisterModule(RoleMgr.Instance);
+            RegisterModule(ShopMgr.Instance);
+            RegisterModule(BattleMgr.Instance);
             
+            InitModules();
             MonoMgr.Instance.AddUpdateListener(Update);
 
             UIMgr.Instance.AddUIGroup(GameConst.UIGROUP_PANEL, 0);
@@ -62,6 +69,26 @@ namespace Hali_Framework
             }
 
             return null;
+        }
+
+        public static void InitModules()
+        {
+            _cachedNode = _modules.First;
+            while (_cachedNode != null)
+            {
+                _cachedNode.Value.Init();
+                _cachedNode = _cachedNode.Next;
+            }
+        }
+
+        public static void DisposeModules()
+        {
+            _cachedNode = _modules.First;
+            while (_cachedNode != null)
+            {
+                _cachedNode.Value.Dispose();
+                _cachedNode = _cachedNode.Next;
+            }
         }
 
         public static void RegisterModule(IModule module)

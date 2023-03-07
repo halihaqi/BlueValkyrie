@@ -6,10 +6,18 @@ namespace Hali_Framework
 {
     public class MonoMgr : Singleton<MonoMgr>, IModule
     {
-        private readonly GlobalMono _globalMono;
+        private GlobalMono _globalMono;
 
+        //公共Mono最先启动
         public int Priority => 0;
-        
+
+        void IModule.Init()
+        {
+            GameObject obj = new GameObject("GlobalMono");
+            //GlobalMono的Start()中有过场景不销毁
+            _globalMono = obj.AddComponent<GlobalMono>();
+        }
+
         void IModule.Update(float elapseSeconds, float realElapseSeconds)
         {
         }
@@ -17,13 +25,6 @@ namespace Hali_Framework
         void IModule.Dispose()
         {
             _globalMono.Dispose();
-        }
-
-        public MonoMgr()
-        {
-            GameObject obj = new GameObject("GlobalMono");
-            //GlobalMono的Start()中有过场景不销毁
-            _globalMono = obj.AddComponent<GlobalMono>();
         }
 
         #region Update相关公共方法

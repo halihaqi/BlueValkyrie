@@ -1,4 +1,5 @@
 ﻿using System;
+using Game.Global;
 using Game.Managers;
 using Hali_Framework;
 using UnityEngine;
@@ -22,15 +23,24 @@ namespace Game.GameScene
         private void Start()
         {
             //TestBag();
+            TestBattle();
         }
 
-        private void TestBag()
+        protected override void OnDestroy()
         {
-            var bagMgr = PlayerMgr.Instance.BagMaster;
-            for (int i = 1; i <= 30; i++)
-            {
-                bagMgr.AddItem(0, i, 10);
-            }
+            base.OnDestroy();
+            EventMgr.Instance.RemoveListener<KeyCode>(ClientEvent.GET_KEY_DOWN, OnEnterBattle);
+        }
+
+        private void TestBattle()
+        {
+            EventMgr.Instance.AddListener<KeyCode>(ClientEvent.GET_KEY_DOWN, OnEnterBattle);
+        }
+
+        private void OnEnterBattle(KeyCode key)
+        {
+            if(key == KeyCode.P)
+                ProcedureMgr.Instance.ChangeState<BattleProcedure>();
         }
     }
 }

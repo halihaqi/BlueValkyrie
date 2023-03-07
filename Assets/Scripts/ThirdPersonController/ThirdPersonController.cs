@@ -20,7 +20,7 @@ public class ThirdPersonController : MonoBehaviour
     public Transform followTarget;
     public float topClamp = 70;//相机最大仰角
     public float bottomClamp = -30;//相机最大俯角
-    public bool isFilpPitch = true;
+    public bool isFlipPitch = true;
 
     [Header("GroundCheck")]
     public float groundOffset = -0.29f;
@@ -31,6 +31,11 @@ public class ThirdPersonController : MonoBehaviour
     public float headOffset = 0.29f;
     public float headRadius = 0.28f;
     public LayerMask headLayers = 1;
+
+    [Header("Switch")] 
+    public bool useSprint = true;
+    public bool useJump = true;
+    public bool useAnim = true;
 
     //输入参数
     private Vector2 _inputLook;
@@ -48,23 +53,35 @@ public class ThirdPersonController : MonoBehaviour
     private bool _isGrounded = true;
 
     //相机参数
-    private ThirdPersonCam _thirdPersonCam;
+    protected ThirdPersonCam thirdPersonCam;
     private float _camTargetYaw;
     private float _camTargetPitch;
 
     //Component
+    protected Animator anim;
+    protected CharacterController cc;
     private bool _hasAnim;
-    private Animator _anim;
-    private CharacterController _cc;
     private static readonly int Speed = Animator.StringToHash("speed");
     private static readonly int Ground = Animator.StringToHash("ground");
     private static readonly int Jump = Animator.StringToHash("jump");
-    
+
+    protected bool IsMove
+    {
+        get => _inputMove.magnitude > 0;
+        set
+        {
+            if (value) return;
+            
+            _inputLook = Vector2.zero;
+            _inputMove = Vector2.zero;
+        }
+    }
+
     protected virtual void Awake()
     {
         //获取组件
-        _anim = GetComponentInChildren<Animator>();
-        _cc = GetComponent<CharacterController>();
+        anim = GetComponentInChildren<Animator>();
+        cc = GetComponent<CharacterController>();
     }
     
     protected virtual void Start()
@@ -72,12 +89,12 @@ public class ThirdPersonController : MonoBehaviour
         //初始化跟随相机
         if (followCamera == null)
             throw new Exception("Player has no follow camera.");
-        if (!followCamera.TryGetComponent(out _thirdPersonCam))
-            _thirdPersonCam = followCamera.gameObject.AddComponent<ThirdPersonCam>();
-        if (_thirdPersonCam.followTarget == null)
+        if (!followCamera.TryGetComponent(out thirdPersonCam))
+            thirdPersonCam = followCamera.gameObject.AddComponent<ThirdPersonCam>();
+        if (thirdPersonCam.followTarget == null)
         {
-            _thirdPersonCam.followTarget = followTarget;
-            if (_thirdPersonCam.followTarget == null)
+            thirdPersonCam.followTarget = followTarget;
+            if (thirdPersonCam.followTarget == null)
                 throw new Exception("Player camera has no follow target.");
         }
 
@@ -101,7 +118,7 @@ public class ThirdPersonController : MonoBehaviour
 
     protected virtual void Update()
     {
-        _hasAnim = _anim.runtimeAnimatorController != null;
+        _hasAnim = anim.runtimeAnimatorController != null;
         
         Gravity();
         GroundHeadCheck();
@@ -110,20 +127,22 @@ public class ThirdPersonController : MonoBehaviour
         CameraTargetRotation();       
     }
     
-    private void OnShift(KeyCode key)
+    protected virtual void OnShift(KeyCode key)
     {
+        if(!useSprint) return;
         if (key == KeyCode.LeftShift)
             _isInputShift = true;
     }
 
-    private void OnShiftEnd(KeyCode key)
+    protected virtual void OnShiftEnd(KeyCode key)
     {
         if(key == KeyCode.LeftShift)
             _isInputShift = false;
     }
 
-    private void OnSpace(KeyCode key)
+    protected virtual void OnSpace(KeyCode key)
     {
+        if(!useJump) return;
         if(key == KeyCode.Space)
             OnJump();
     }
@@ -165,11 +184,11 @@ public class ThirdPersonController : MonoBehaviour
         Vector3 targetDir = Quaternion.Euler(0, _targetRot, 0) * Vector3.forward;
 
         //移动人物,加上垂直速度
-        _cc.Move(targetDir.normalized * (targetSpeed * Time.deltaTime) + Vector3.up * (_verticalVelocity * Time.deltaTime));
+        cc.Move(targetDir.normalized * (targetSpeed * Time.deltaTime) + Vector3.up * (_verticalVelocity * Time.deltaTime));
 
         //移动动画
-        if(_hasAnim)
-            _anim.SetFloat(Speed, _isInputShift ? inputDir.magnitude : inputDir.magnitude / 2);
+        if(_hasAnim && useAnim)
+            anim.SetFloat(Speed, _isInputShift ? inputDir.magnitude : inputDir.magnitude / 2);
     }
 
     /// <summary>
@@ -194,8 +213,8 @@ public class ThirdPersonController : MonoBehaviour
     /// </summary>
     private void Gravity()
     {
-        if (_hasAnim)
-            _anim.SetBool(Ground, _isGrounded);
+        if (_hasAnim && useAnim)
+            anim.SetBool(Ground, _isGrounded);
         
         if (_isGrounded && _verticalVelocity < 0)
             _verticalVelocity = -2f;
@@ -212,8 +231,8 @@ public class ThirdPersonController : MonoBehaviour
         {
             _verticalVelocity = Mathf.Sqrt(jumpForce * -2f * gravity);
             
-            if(_hasAnim)
-                _anim.SetTrigger(Jump);
+            if(_hasAnim && useAnim)
+                anim.SetTrigger(Jump);
         }
     }
 
@@ -226,13 +245,13 @@ public class ThirdPersonController : MonoBehaviour
         if (_inputLook.sqrMagnitude >= _threshold)
         {
             _camTargetYaw += _inputLook.x;
-            _camTargetPitch += _inputLook.y * (isFilpPitch ? -1 : 1);
+            _camTargetPitch += _inputLook.y * (isFlipPitch ? -1 : 1);
         }
         //限制相机角度
         _camTargetYaw = TransformUtils.ClampAngle(_camTargetYaw, float.MinValue, float.MaxValue);
         _camTargetPitch = TransformUtils.ClampAngle(_camTargetPitch, bottomClamp, topClamp);
         //移动相机目标点
-        _thirdPersonCam.followTarget.rotation = Quaternion.Euler(_camTargetPitch, _camTargetYaw, 0);
+        thirdPersonCam.followTarget.rotation = Quaternion.Euler(_camTargetPitch, _camTargetYaw, 0);
     }
 
     private void OnDrawGizmosSelected()

@@ -11,10 +11,7 @@ namespace Game.Global
         protected internal override void OnEnter(IFsm<ProcedureMgr> procedureOwner)
         {
             base.OnEnter(procedureOwner);
-            //隐藏所有界面
-            UIMgr.Instance.HideAllLoadingPanels();
-            UIMgr.Instance.HideAllLoadedPanels();
-            
+
             //设置Player数据
             var player = ProcedureMgr.Instance.GetData<PlayerInfo>(PlayerMgr.PLAYER_DATA_KEY);
             PlayerMgr.Instance.CurPlayer = player;
@@ -23,9 +20,18 @@ namespace Game.Global
             SceneMgr.Instance.LoadSceneWithPanel<LoadingPanel>(GameConst.GAME_SCENE, OnEnterScene);
         }
 
+        protected internal override void OnLeave(IFsm<ProcedureMgr> procedureOwner, bool isShutdown)
+        {
+            base.OnLeave(procedureOwner, isShutdown);
+            PlayerMgr.Instance.UnloadPlayerEntity();
+            //隐藏所有界面
+            UIMgr.Instance.HideAllLoadingPanels();
+            UIMgr.Instance.HideAllLoadedPanels();
+        }
+
         private void OnEnterScene()
         {
-            PlayerMgr.Instance.SetPlayerPrefab(Camera.main);
+            PlayerMgr.Instance.RegisterPlayerEntity(Camera.main);
         }
     }
 }

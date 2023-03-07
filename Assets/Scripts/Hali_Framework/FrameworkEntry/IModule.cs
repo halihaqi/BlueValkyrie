@@ -8,6 +8,11 @@ namespace Hali_Framework
         int Priority { get; }
 
         /// <summary>
+        /// 模块初始化
+        /// </summary>
+        internal void Init();
+
+        /// <summary>
         /// 游戏模块轮询
         /// </summary>
         /// <param name="elapseSeconds">逻辑时间</param>

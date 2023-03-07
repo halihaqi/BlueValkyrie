@@ -5,25 +5,25 @@ namespace Hali_Framework
 {
     public class FsmMgr : Singleton<FsmMgr>, IModule
     {
-        private readonly Dictionary<string, FsmBase> _mFsms;
-        private readonly List<FsmBase> _mTempFsms;
+        private Dictionary<string, FsmBase> _mFsms;
+        private List<FsmBase> _mTempFsms;
 
         /// <summary>
         /// 获取有限状态机数量。
         /// </summary>
         public int Count => _mFsms.Count;
 
-        public int Priority => 0;
+        public int Priority => 1;
         
         /// <summary>
         /// 初始化有限状态机管理器的新实例。
         /// </summary>
-        public FsmMgr()
+        void IModule.Init()
         {
             _mFsms = new Dictionary<string, FsmBase>();
             _mTempFsms = new List<FsmBase>();
         }
-        
+
         void IModule.Update(float elapseSeconds, float realElapseSeconds)
         {
             Update(elapseSeconds, realElapseSeconds);

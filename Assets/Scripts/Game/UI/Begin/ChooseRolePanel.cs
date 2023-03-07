@@ -110,12 +110,12 @@ namespace Game.UI.Begin
         {
             if (string.IsNullOrEmpty(str))
             {
-                TipMgr.Instance.ShowTip("请输入用户名!");
+                TipHelper.ShowTip("请输入用户名!");
                 return;
             }
             if (ExistUser(str))
             {
-                TipMgr.Instance.ShowTip("用户已存在!");
+                TipHelper.ShowTip("用户已存在!");
                 return;
             }
 

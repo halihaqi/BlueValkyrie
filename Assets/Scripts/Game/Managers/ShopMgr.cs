@@ -4,9 +4,10 @@ using Hali_Framework;
 
 namespace Game.Managers
 {
-    public class ShopMgr : Singleton<ShopMgr>
+    public class ShopMgr : Singleton<ShopMgr>, IModule
     {
-        private List<ShopItemInfo> _shopItems;
+        private Dictionary<int, ShopItemInfo> _shopItems;
+        private Dictionary<int, ShopTypeInfo> _shops;
         private BagMaster _playerBag;
         private BagMaster _shopBag;
         private ShopTypeInfo _curShop;
@@ -17,17 +18,38 @@ namespace Game.Managers
             set => _curShop = value;
         }
 
-        public ShopMgr()
+        public Dictionary<int, ShopItemInfo> ShopItems => _shopItems;
+        public Dictionary<int, ShopTypeInfo> Shops => _shops;
+
+        public int Priority => 2;
+
+        void IModule.Init()
         {
-            _shopItems = BinaryDataMgr.Instance.GetTable<ShopItemInfoContainer>().dataDic.Values.ToList();
+            _shopItems = BinaryDataMgr.Instance.GetTable<ShopItemInfoContainer>().dataDic;
+            _shops = BinaryDataMgr.Instance.GetTable<ShopTypeInfoContainer>().dataDic;
             _playerBag = PlayerMgr.Instance.BagMaster;
             _shopBag = PlayerMgr.Instance.ShopMaster;
+        }
+
+        void IModule.Update(float elapseSeconds, float realElapseSeconds)
+        {
+        }
+
+        void IModule.Dispose()
+        {
+            _shopItems.Clear();
+            _shops.Clear();
+            _shops = null;
+            _shopItems = null;
+            _playerBag = null;
+            _shopBag = null;
+            _curShop = null;
         }
         
         public bool Buy(ShopTypeInfo shop, int itemId, int num)
         {
             var inventoryItem = _shopBag.GetItem(shop.shopBagId, itemId);
-            var shopItemInfo = _shopItems.Find(i => i.itemId == inventoryItem.id);
+            var shopItemInfo = _shopItems.Values.FirstOrDefault(i => i.itemId == inventoryItem.id);
             //判断商品是否够
             if (inventoryItem == null || shopItemInfo == null || inventoryItem.num < num) return false;
             
@@ -52,11 +74,15 @@ namespace Game.Managers
 
         public int GetShopItemRealId(int shopItemId)
         {
-            var dic = BinaryDataMgr.Instance.GetTable<ShopItemInfoContainer>().dataDic;
-            if (dic.ContainsKey(shopItemId))
-                return dic[shopItemId].itemId;
+            if (_shopItems.ContainsKey(shopItemId))
+                return _shopItems[shopItemId].itemId;
             else
                 return -1;
+        }
+
+        public ShopItemInfo GetShopItem(int shopItemId)
+        {
+            return _shopItems.TryGetValue(shopItemId, out var shopItem) ? shopItem : null;
         }
     }
 }

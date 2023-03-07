@@ -87,20 +87,20 @@ namespace Game.UI.Controls
         public void OnSaveClick()
         {
             string str = _info != null ? "是否覆盖存档？" : "是否创建新存档？";
-            TipMgr.Instance.ShowConfirm(str, () =>
+            TipHelper.ShowConfirm(str, () =>
             {
                 _info = PlayerMgr.Instance.CurPlayer; 
                 PlayerMgr.Instance.SaveUser(_userId, _info);
                 UpdateView(_info);
                 
-                TipMgr.Instance.ShowTip("保存成功！");
+                TipHelper.ShowTip("保存成功！");
             });
         }
 
         public void OnNewClick()
         {
             string str = _info != null ? "是否覆盖存档？" : "是否创建新存档？";
-            TipMgr.Instance.ShowConfirm(str, () =>
+            TipHelper.ShowConfirm(str, () =>
             {
                 var newPlayerInfo = new PlayerInfo(_userId, _userName, _secretaryId);
                 PlayerMgr.Instance.SaveUser(_userId, newPlayerInfo);
@@ -116,7 +116,7 @@ namespace Game.UI.Controls
         {
             if (_info == null) return;
             
-            TipMgr.Instance.ShowConfirm("是否进入该存档？", () =>
+            TipHelper.ShowConfirm("是否进入该存档？", () =>
             {
                 //进入游戏流程
                 ProcedureMgr.Instance.SetData(PlayerMgr.PLAYER_DATA_KEY, _info);

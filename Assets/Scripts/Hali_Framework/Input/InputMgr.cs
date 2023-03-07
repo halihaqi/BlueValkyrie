@@ -6,10 +6,14 @@ namespace Hali_Framework
     {
         //是否开启输入检测
         private bool _enabled = false;
-        public int Priority => 0;
+        public int Priority => 1;
 
         private Vector2 _inputMouseDelta;
         private Vector2 _inputMoveDelta;
+
+        void IModule.Init()
+        {
+        }
 
         void IModule.Update(float elapseSeconds, float realElapseSeconds)
         {
@@ -44,6 +48,7 @@ namespace Hali_Framework
             KeyCheck(KeyCode.B);
             KeyCheck(KeyCode.Q);
             KeyCheck(KeyCode.E);
+            KeyCheck(KeyCode.P);
             KeyCheck(KeyCode.Tab);
             KeyCheck(KeyCode.Escape);
             KeyCheck(KeyCode.Space);

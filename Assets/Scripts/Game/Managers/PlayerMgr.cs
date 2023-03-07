@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Game.Managers
 {
-    public class PlayerMgr : Singleton<PlayerMgr>
+    public class PlayerMgr : Singleton<PlayerMgr>, IModule
     {
         private PlayerInfo _curPlayer;
         private RoleInfo _secretaryInfo;
@@ -18,6 +18,29 @@ namespace Game.Managers
 
         private const string PLAYER_RES_PATH = "Prefabs/Player/Player"; 
         public const string PLAYER_DATA_KEY = "Player";
+
+        public int Priority => 3;
+        void IModule.Init()
+        {
+        }
+
+        void IModule.Update(float elapseSeconds, float realElapseSeconds)
+        {
+            if(_curPlayer == null) return;
+            _curPlayer.time += realElapseSeconds;
+        }
+
+        void IModule.Dispose()
+        {
+            _curPlayer = null;
+            _secretaryInfo = null;
+            if(_playerEntity != null)
+                Object.DestroyImmediate(_playerEntity.gameObject);
+            if(_secretaryEntity != null)
+                Object.DestroyImmediate(_secretaryEntity.gameObject);
+            _playerEntity = null;
+            _secretaryEntity = null;
+        }
 
         public PlayerInfo CurPlayer
         {
@@ -30,10 +53,9 @@ namespace Game.Managers
                     _secretaryInfo = null;
                     return;
                 }
-                _secretaryInfo = BinaryDataMgr.Instance.GetInfo<RoleInfoContainer, int, RoleInfo>(_curPlayer.secretaryId);
+                _secretaryInfo = RoleMgr.Instance.GetRole(_curPlayer.secretaryId);
                 BagMaster = new BagMaster(_curPlayer);
                 ShopMaster = new BagMaster(_curPlayer.ShopInfo);
-                MonoMgr.Instance.AddUpdateListener(OnUpdate);
             }
         }
         
@@ -41,18 +63,13 @@ namespace Game.Managers
         
         public BagMaster ShopMaster { get; private set; }
 
-        public RoleInfo NowSecretaryInfo => _secretaryInfo;
+        public RoleInfo CurSecretaryInfo => _secretaryInfo;
 
         public bool HasPlayer => _playerEntity != null;
 
         public bool HasSecretary => _secretaryEntity != null;
 
-        private void OnUpdate(float elapseSeconds, float realElapseSeconds)
-        {
-            _curPlayer.time += realElapseSeconds;
-        }
-
-        public void SetPlayerPrefab(Camera followCam)
+        public void RegisterPlayerEntity(Camera followCam)
         {
             //加载主角
             if (_playerEntity == null)
@@ -74,6 +91,15 @@ namespace Game.Managers
                     _secretaryEntity.FollowTarget = playerTrans;
                     _secretaryEntity.SetFollowDistance(2);
                 });
+        }
+        
+        public void UnloadPlayerEntity()
+        {
+            if(_playerEntity == null) return;
+            Object.Destroy(_playerEntity.gameObject);
+            Object.Destroy(_secretaryEntity.gameObject);
+            _playerEntity = null;
+            _secretaryEntity = null;
         }
 
         public void SaveUser(int userId, PlayerInfo info)
@@ -102,15 +128,6 @@ namespace Game.Managers
         public Dictionary<int, PlayerInfo> LoadUserDic()
         {
             return BinaryDataMgr.Instance.Load<PlayerData>(GameConst.DATA_PART_PLAYER, "PlayerData").dataDic;
-        }
-
-        public void DestroyPlayerPrefab()
-        {
-            if(_playerEntity == null) return;
-            Object.Destroy(_playerEntity.gameObject);
-            Object.Destroy(_secretaryEntity.gameObject);
-            _playerEntity = null;
-            _secretaryEntity = null;
         }
     }
 }

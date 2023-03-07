@@ -8,11 +8,11 @@ namespace Hali_Framework
 {
     public class UIMgr : Singleton<UIMgr>, IModule
     {
-        private readonly Dictionary<string, UIGroup> _uiGroups;
-        private readonly Dictionary<int, string> _loadingPanels;
-        private readonly List<int> _hidingPanels;
-        private readonly HashSet<int> _loadingPanelsToRelease;
-        private readonly Queue<PanelEntity> _recycleQueue;
+        private Dictionary<string, UIGroup> _uiGroups;
+        private Dictionary<int, string> _loadingPanels;
+        private List<int> _hidingPanels;
+        private HashSet<int> _loadingPanelsToRelease;
+        private Queue<PanelEntity> _recycleQueue;
         private int _cachedSerialId;
         private CanvasEntity _canvas;
         private GameObject _eventSystem;
@@ -25,9 +25,9 @@ namespace Hali_Framework
         /// </summary>
         public int UIGroupCount => _uiGroups.Count;
 
-        public int Priority => 0;
+        public int Priority => 1;
 
-        public UIMgr()
+        void IModule.Init()
         {
             _uiGroups = new Dictionary<string, UIGroup>();
             _loadingPanels = new Dictionary<int, string>();

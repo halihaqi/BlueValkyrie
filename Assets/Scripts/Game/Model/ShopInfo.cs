@@ -16,8 +16,8 @@ namespace Game.Model
         {
             this.playerId = playerId;
             BagData = new BagData(playerId);
-            var shopType = BinaryDataMgr.Instance.GetTable<ShopTypeInfoContainer>().dataDic;
-            var shopItems = BinaryDataMgr.Instance.GetTable<ShopItemInfoContainer>().dataDic;
+            var shopType = ShopMgr.Instance.Shops;
+            var shopItems = ShopMgr.Instance.ShopItems;
 
             //添加所有商店
             foreach (var shop in shopType.Values)

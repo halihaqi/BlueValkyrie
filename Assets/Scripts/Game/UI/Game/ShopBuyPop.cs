@@ -89,11 +89,11 @@ namespace Game.UI.Game
                 case "btn_buy":
                     if (!ShopMgr.Instance.Buy(_info.itemId, _curNum))
                     {
-                        TipMgr.Instance.ShowTip("货币不够啦！");
+                        TipHelper.ShowTip("货币不够啦！");
                     }
                     else
                     {
-                        TipMgr.Instance.ShowTip("购买成功！");
+                        TipHelper.ShowTip("购买成功！");
                         HideMe();
                     }
                     break;

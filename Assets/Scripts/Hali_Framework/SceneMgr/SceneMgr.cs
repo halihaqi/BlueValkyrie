@@ -7,7 +7,11 @@ namespace Hali_Framework
 {
     public class SceneMgr : Singleton<SceneMgr>, IModule
     {
-        public int Priority => 0;
+        public int Priority => 1;
+        void IModule.Init()
+        {
+        }
+
         void IModule.Update(float elapseSeconds, float realElapseSeconds)
         {
         }

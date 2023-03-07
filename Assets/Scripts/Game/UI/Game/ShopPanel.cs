@@ -32,7 +32,7 @@ namespace Game.UI.Game
             _svShopList.onClickItem = OnShopListItemClick;
 
             _bm = PlayerMgr.Instance.ShopMaster;
-            _shops = BinaryDataMgr.Instance.GetTable<ShopTypeInfoContainer>().dataDic.Values.ToList();
+            _shops = ShopMgr.Instance.Shops.Values.ToList();
             _shopBagIds = _bm.GetAllBagIds();
         }
 

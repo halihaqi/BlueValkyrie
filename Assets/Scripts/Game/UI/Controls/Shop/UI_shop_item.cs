@@ -51,7 +51,7 @@ namespace Game.UI.Controls
 
         public void SetData(int shopItemId, int num)
         {
-            var info = BinaryDataMgr.Instance.GetInfo<ShopItemInfoContainer, int, ShopItemInfo>(shopItemId);
+            var info = ShopMgr.Instance.GetShopItem(shopItemId);
             SetData(info, num);
         }
 

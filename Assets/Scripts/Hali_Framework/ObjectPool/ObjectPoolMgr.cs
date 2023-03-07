@@ -7,14 +7,16 @@ namespace Hali_Framework
 {
     public class ObjectPoolMgr : Singleton<ObjectPoolMgr>, IModule
     {
-        private readonly Dictionary<string, ObjectPool> _objectPoolCollection;
+        private Dictionary<string, ObjectPool> _objectPoolCollection;
         private GameObject _poolCollectionObj;
 
-        public int Priority => 0;
-        
-        public ObjectPoolMgr()
-            => _objectPoolCollection = new Dictionary<string, ObjectPool>();
-        
+        public int Priority => 1;
+
+        void IModule.Init()
+        {
+            _objectPoolCollection = new Dictionary<string, ObjectPool>();
+        }
+
         void IModule.Update(float elapseSeconds, float realElapseSeconds)
         {
         }

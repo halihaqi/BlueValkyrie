@@ -13,9 +13,9 @@ namespace Hali_Framework
         //Excel二进制数据容器，键为数据容器名
         private Dictionary<string, object> _dataDic;
 
-        int IModule.Priority => 0;
+        int IModule.Priority => 1;
 
-        public BinaryDataMgr()
+        void IModule.Init()
         {
             _dataDic = new Dictionary<string, object>();
             InitTableData();

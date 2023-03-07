@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Game.Managers;
 using Game.Utils;
 using Hali_Framework;
 using UnityEngine;
@@ -52,8 +53,8 @@ namespace Game.BeginScene
                 return;
             }
             
-            var roles = BinaryDataMgr.Instance.GetTable<RoleInfoContainer>();
-            if (roles.dataDic.TryGetValue(roleId, out var roleInfo))
+            var roleInfo = RoleMgr.Instance.GetRole(roleId);
+            if (roleInfo != null)
             {
                 string path = ResPath.GetStudentObj(roleInfo);
                 ResMgr.Instance.LoadAsync<GameObject>(GameConst.RES_GROUP_BEGIN, path, obj =>
@@ -70,7 +71,6 @@ namespace Game.BeginScene
             {
                 _isChanging = false;
                 Debug.LogError($"RoleInfo table has no member with id:{roleId}.");
-                return;
             }
         }
 

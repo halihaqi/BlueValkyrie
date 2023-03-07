@@ -12,23 +12,46 @@ namespace Game.Managers
         Shoes
     }
     
-    public class EquipMgr : Singleton<EquipMgr>
+    public class EquipMgr : Singleton<EquipMgr>, IModule
     {
+        private Dictionary<int, EquipInfo> _equipDic;
+
         private static readonly Dictionary<EquipType, string> ATTRIBUTE_NAMES = new Dictionary<EquipType, string>
         {
             {EquipType.Hat, "DEF"},
             {EquipType.Gloves, "ATK"},
             {EquipType.Bag, "HP"},
-            {EquipType.Shoes, "MP"},
+            {EquipType.Shoes, "AP"},
         };
 
-        public EquipInfo FindEquip(int itemId)
+        public int Priority => 2;
+
+        void IModule.Init()
         {
-            var equipDic = BinaryDataMgr.Instance.GetTable<EquipInfoContainer>().dataDic;
-            return equipDic.Values.FirstOrDefault(equipInfo => equipInfo.itemId == itemId);
+            _equipDic = BinaryDataMgr.Instance.GetTable<EquipInfoContainer>().dataDic;
+        }
+
+        void IModule.Update(float elapseSeconds, float realElapseSeconds)
+        {
+        }
+
+        void IModule.Dispose()
+        {
+            _equipDic.Clear();
+            _equipDic = null;
+        }
+
+        public EquipInfo GetEquip(int id)
+        {
+            return _equipDic.TryGetValue(id, out var equip) ? equip : null;
         }
         
-        
+        public EquipInfo FindEquip(int itemId)
+        {
+            return _equipDic.Values.FirstOrDefault(equipInfo => equipInfo.itemId == itemId);
+        }
+
+
         public string GetAttributeName(EquipInfo equip)
         {
             return ATTRIBUTE_NAMES[(EquipType)equip.type];

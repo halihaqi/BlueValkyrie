@@ -13,13 +13,13 @@ namespace Hali_Framework
 
         //音效
         private GameObject _soundObj = null;
-        private readonly Dictionary<string, AudioSource> _soundDic;
+        private Dictionary<string, AudioSource> _soundDic;
         private float _soundVolume = 1;
         private bool _soundOn = true;
 
-        int IModule.Priority => 0;
+        int IModule.Priority => 1;
 
-        public AudioMgr()
+        void IModule.Init()
         {
             _soundDic = new Dictionary<string, AudioSource>();
             MonoMgr.Instance.AddUpdateListener(MusicUpdate);

@@ -10,7 +10,11 @@ namespace Hali_Framework
     {
         private IFsm<ProcedureMgr> _procedureFsm;
 
-        public int Priority => 0;
+        public int Priority => 1;
+
+        void IModule.Init()
+        {
+        }
 
         void IModule.Update(float elapseSeconds, float realElapseSeconds)
         {

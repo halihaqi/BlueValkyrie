@@ -8,19 +8,19 @@ namespace Hali_Framework
     public class EventMgr : Singleton<EventMgr>, IModule
     {
         //事件容器，不支持同种名称不同类型的事件监听
-        private readonly Dictionary<ClientEvent, Delegate> _eventDic;
+        private Dictionary<ClientEvent, Delegate> _eventDic;
         //用于单次监听除重
-        private readonly Dictionary<ClientEvent, Delegate> _onceEventDic;
+        private Dictionary<ClientEvent, Delegate> _onceEventDic;
         private static int ALL_EVENT_COUNT = 0;
         
-        int IModule.Priority => 0;
+        int IModule.Priority => 1;
 
-        public EventMgr()
+        void IModule.Init()
         {
             _eventDic = new Dictionary<ClientEvent, Delegate>(25);
             _onceEventDic = new Dictionary<ClientEvent, Delegate>(10);
         }
-        
+
         void IModule.Update(float elapseSeconds, float realElapseSeconds)
         {
         }

@@ -11,19 +11,19 @@ namespace Hali_Framework
     {
         //资源容器
         //避免重复加载，需要在合适时机释放
-        private readonly Dictionary<string, Dictionary<string, object>> _resDic;
-        private readonly Dictionary<string, Queue<Action<object>>> _loadingDic;
-        private readonly List<string> _toReleaseList;
+        private Dictionary<string, Dictionary<string, object>> _resDic;
+        private Dictionary<string, Queue<Action<object>>> _loadingDic;
+        private List<string> _toReleaseList;
 
-        public int Priority => 0;
-        
-        public ResMgr()
+        public int Priority => 1;
+
+        void IModule.Init()
         {
             _resDic = new Dictionary<string, Dictionary<string, object>>();
             _loadingDic = new Dictionary<string, Queue<Action<object>>>();
             _toReleaseList = new List<string>();
         }
-        
+
         void IModule.Update(float elapseSeconds, float realElapseSeconds)
         {
         }

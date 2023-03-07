@@ -31,5 +31,9 @@
         //Bag
         BAG_ITEM_CLICK,
         BUY_COMPLETE,
+        
+        //Battle
+        BATTLE_ROLE_MOVE,
+        BATTLE_ROLE_CHANGE,
     }
 }

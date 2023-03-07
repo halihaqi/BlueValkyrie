@@ -1,4 +1,5 @@
 ﻿using System;
+using Game.Managers;
 using Hali_Framework;
 using UnityEngine;
 using UnityEngine.AI;
@@ -43,7 +44,7 @@ namespace Game.Base
 
         public void SetRoleInfo(int roleId)
         {
-            var info = BinaryDataMgr.Instance.GetInfo<RoleInfoContainer, int, RoleInfo>(roleId);
+            var info = RoleMgr.Instance.GetRole(roleId);
             _roleInfo = info ?? throw new Exception("Role entity has no role info.");
         }
 

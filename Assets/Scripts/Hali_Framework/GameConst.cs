@@ -39,6 +39,7 @@ namespace Hali_Framework
         //Scene
         public const string BEGIN_SCENE = "BeginScene";
         public const string GAME_SCENE = "GameScene";
+        public const string BATTLE_SCENE = "BattleScene";
         
         //Tag
         public const string PLAYER_TAG = "Player";
