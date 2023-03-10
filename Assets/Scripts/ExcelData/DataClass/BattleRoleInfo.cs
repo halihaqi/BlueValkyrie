@@ -1,3 +1,4 @@
+[System.Serializable]
 public class BattleRoleInfo
 {
     public int id;

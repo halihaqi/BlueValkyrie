@@ -10,7 +10,7 @@ namespace Game.Managers
 {
     public class PlayerMgr : Singleton<PlayerMgr>, IModule
     {
-        private PlayerInfo _curPlayer;
+        private PlayerItem _curPlayer;
         private RoleInfo _secretaryInfo;
 
         private PlayerController _playerEntity;
@@ -19,7 +19,7 @@ namespace Game.Managers
         private const string PLAYER_RES_PATH = "Prefabs/Player/Player"; 
         public const string PLAYER_DATA_KEY = "Player";
 
-        public int Priority => 3;
+        public int Priority => 2;
         void IModule.Init()
         {
         }
@@ -42,7 +42,7 @@ namespace Game.Managers
             _secretaryEntity = null;
         }
 
-        public PlayerInfo CurPlayer
+        public PlayerItem CurPlayer
         {
             get => _curPlayer;
             set
@@ -55,7 +55,7 @@ namespace Game.Managers
                 }
                 _secretaryInfo = RoleMgr.Instance.GetRole(_curPlayer.secretaryId);
                 BagMaster = new BagMaster(_curPlayer);
-                ShopMaster = new BagMaster(_curPlayer.ShopInfo);
+                ShopMaster = new BagMaster(_curPlayer.ShopItem);
             }
         }
         
@@ -102,30 +102,30 @@ namespace Game.Managers
             _secretaryEntity = null;
         }
 
-        public void SaveUser(int userId, PlayerInfo info)
+        public void SaveUser(int userId, PlayerItem item)
         {
             var playerData = BinaryDataMgr.Instance.Load<PlayerData>(GameConst.DATA_PART_PLAYER, "PlayerData");
             if(playerData.dataDic.ContainsKey(userId))
-                playerData.dataDic[userId] = info;
+                playerData.dataDic[userId] = item;
             else
-                playerData.dataDic.Add(userId, info);
+                playerData.dataDic.Add(userId, item);
             BinaryDataMgr.Instance.Save(GameConst.DATA_PART_PLAYER, "PlayerData", playerData);
         }
 
-        public PlayerInfo LoadUser(int userId)
+        public PlayerItem LoadUser(int userId)
         {
             var dic = BinaryDataMgr.Instance.Load<PlayerData>(GameConst.DATA_PART_PLAYER, "PlayerData").dataDic;
             return dic.TryGetValue(userId, out var info) ? info : null;
         }
         
-        public PlayerInfo LoadUser(string name)
+        public PlayerItem LoadUser(string name)
         {
             var dic = BinaryDataMgr.Instance.Load<PlayerData>(GameConst.DATA_PART_PLAYER, "PlayerData").dataDic;
             var kv = dic.FirstOrDefault(o => o.Value.name.Equals(name));
             return kv.Value;
         }
 
-        public Dictionary<int, PlayerInfo> LoadUserDic()
+        public Dictionary<int, PlayerItem> LoadUserDic()
         {
             return BinaryDataMgr.Instance.Load<PlayerData>(GameConst.DATA_PART_PLAYER, "PlayerData").dataDic;
         }

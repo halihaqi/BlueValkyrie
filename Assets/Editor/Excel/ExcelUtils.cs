@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Excel;
 using Hali_Framework;
 using UnityEditor;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Editor.Excel
 {
@@ -26,6 +28,8 @@ namespace Editor.Excel
         [MenuItem("Tools/Excel/GenerateExcel")]
         private static void GenerateExcelInfo()
         {
+            Stopwatch sw = Stopwatch.StartNew();
+
             //创建或获取源文件夹
             DirectoryInfo dirInfo = Directory.CreateDirectory(EXCEL_PATH);
             FileInfo[] fileInfos = dirInfo.GetFiles();
@@ -54,6 +58,8 @@ namespace Editor.Excel
             }
             
             AssetDatabase.Refresh();
+            Debug.Log($"数据生成完成，耗时：{sw.ElapsedMilliseconds}ms");
+            sw.Stop();
         }
 
         
@@ -71,6 +77,7 @@ namespace Editor.Excel
             Directory.CreateDirectory(DATA_CLASS_PATH);
             
             StringBuilder content = new StringBuilder();
+            content.Append("[System.Serializable]\n");
             content.Append($"public class {table.TableName}\n{{\n");
             //添加变量
             for (var i = 0; i < table.Columns.Count; i++)

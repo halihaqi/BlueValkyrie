@@ -1,3 +1,4 @@
+[System.Serializable]
 public class ItemInfo
 {
     public int id;

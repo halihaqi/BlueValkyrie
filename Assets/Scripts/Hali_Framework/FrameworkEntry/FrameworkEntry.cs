@@ -29,6 +29,7 @@ namespace Hali_Framework
             RegisterModule(RoleMgr.Instance);
             RegisterModule(ShopMgr.Instance);
             RegisterModule(BattleMgr.Instance);
+            RegisterModule(StudentMgr.Instance);
             
             InitModules();
             MonoMgr.Instance.AddUpdateListener(Update);

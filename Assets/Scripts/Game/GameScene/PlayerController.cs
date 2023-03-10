@@ -27,7 +27,7 @@ namespace Game.GameScene
             if (KeyCode.Tab == key)
             {
                 if(!UIMgr.Instance.HasPanel<BagPanel>())
-                    UIMgr.Instance.ShowPanel<BagPanel>(userData:0);
+                    UIMgr.Instance.ShowPanel<BagPanel>();
             }
         }
     }

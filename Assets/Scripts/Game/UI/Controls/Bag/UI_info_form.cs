@@ -29,8 +29,6 @@ namespace Game.UI.Controls
             _txtNum = GetControl<Text>("txt_num");
             _txtAttribute = GetControl<Text>("txt_attribute");
             _txtAttributeNum = GetControl<Text>("txt_attribute_num");
-            
-            EventMgr.Instance.AddListener<ItemInfo, int>(ClientEvent.BAG_ITEM_CLICK, OnItemClick);
         }
 
         protected internal override void OnRecycle()
@@ -41,11 +39,13 @@ namespace Game.UI.Controls
 
         public void SetData(BagItemInfo bagInfo)
         {
+            EventMgr.Instance.AddListener<ItemInfo, int>(ClientEvent.BAG_ITEM_CLICK, OnItemClick);
             if (bagInfo == null)
             {
                 this.gameObject.SetActive(false);
                 return;
             }
+            
             _info = ItemMgr.Instance.GetItem(bagInfo.id);
             _num = bagInfo.num;
 
@@ -68,7 +68,7 @@ namespace Game.UI.Controls
                 if (equip != null)
                 {
                     _attributeGroup.SetActive(true);
-                    _txtAttribute.text = EquipMgr.Instance.GetAttributeName(equip);
+                    _txtAttribute.text = EquipMgr.GetAttributeName(equip.type);
                     _txtAttributeNum.text = equip.attribute.ToString();
                 }
                 else

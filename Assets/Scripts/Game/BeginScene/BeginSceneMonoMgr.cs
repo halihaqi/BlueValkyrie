@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Game.Entity;
 using Game.Managers;
 using Game.Utils;
 using Hali_Framework;

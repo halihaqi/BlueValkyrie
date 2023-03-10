@@ -25,5 +25,7 @@ namespace Hali_Framework
         /// <param name="i"></param>
         /// <returns></returns>
         public static string ToXNum(this int i) => $"x{i}";
+
+        public static string ToLv(this int i) => $"Lv.{i}";
     }
 }

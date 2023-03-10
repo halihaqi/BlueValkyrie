@@ -13,7 +13,7 @@ namespace Game.Global
             base.OnEnter(procedureOwner);
 
             //设置Player数据
-            var player = ProcedureMgr.Instance.GetData<PlayerInfo>(PlayerMgr.PLAYER_DATA_KEY);
+            var player = ProcedureMgr.Instance.GetData<PlayerItem>(PlayerMgr.PLAYER_DATA_KEY);
             PlayerMgr.Instance.CurPlayer = player;
             
             //进入游戏场景

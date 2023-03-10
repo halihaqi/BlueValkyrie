@@ -8,8 +8,6 @@ namespace Game.Managers
     {
         private Dictionary<int, ShopItemInfo> _shopItems;
         private Dictionary<int, ShopTypeInfo> _shops;
-        private BagMaster _playerBag;
-        private BagMaster _shopBag;
         private ShopTypeInfo _curShop;
 
         public ShopTypeInfo CurShop
@@ -27,8 +25,6 @@ namespace Game.Managers
         {
             _shopItems = BinaryDataMgr.Instance.GetTable<ShopItemInfoContainer>().dataDic;
             _shops = BinaryDataMgr.Instance.GetTable<ShopTypeInfoContainer>().dataDic;
-            _playerBag = PlayerMgr.Instance.BagMaster;
-            _shopBag = PlayerMgr.Instance.ShopMaster;
         }
 
         void IModule.Update(float elapseSeconds, float realElapseSeconds)
@@ -41,27 +37,27 @@ namespace Game.Managers
             _shops.Clear();
             _shops = null;
             _shopItems = null;
-            _playerBag = null;
-            _shopBag = null;
             _curShop = null;
         }
         
         public bool Buy(ShopTypeInfo shop, int itemId, int num)
         {
-            var inventoryItem = _shopBag.GetItem(shop.shopBagId, itemId);
+            var shopMaster = PlayerMgr.Instance.ShopMaster;
+            var bagMaster = PlayerMgr.Instance.BagMaster;
+            var inventoryItem = shopMaster.GetItem(shop.shopBagId, itemId);
             var shopItemInfo = _shopItems.Values.FirstOrDefault(i => i.itemId == inventoryItem.id);
             //判断商品是否够
             if (inventoryItem == null || shopItemInfo == null || inventoryItem.num < num) return false;
             
             //判断货币是否够
-            var costItem = _playerBag.GetItem(0, shopItemInfo.currencyId);
+            var costItem = PlayerMgr.Instance.BagMaster.GetItem(0, shopItemInfo.currencyId);
             if (costItem == null || costItem.num < shopItemInfo.price) return false;
             
             //购买
             //商店减 人物加 货币扣
-            _shopBag.AddItem(shop.shopBagId, inventoryItem, -num);
-            _playerBag.AddItem(0, costItem, -shopItemInfo.price);
-            _playerBag.AddItem(0, inventoryItem, num);
+            shopMaster.AddItem(shop.shopBagId, inventoryItem, -num);
+            bagMaster.AddItem(0, costItem, -shopItemInfo.price);
+            bagMaster.AddItem(0, inventoryItem, num);
             EventMgr.Instance.TriggerEvent(ClientEvent.BUY_COMPLETE);
             return true;
         }

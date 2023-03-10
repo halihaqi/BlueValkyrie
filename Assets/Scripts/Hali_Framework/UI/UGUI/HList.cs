@@ -138,10 +138,8 @@ namespace Hali_Framework
                     else
                     {
                         for (int i = value; i < count; i++)
-                        {
                             PushToPool(_children[i]);
-                            _children.RemoveAt(i);
-                        }
+                        _children.RemoveRange(value, count - value);
                     }
                     SetContentSize();
                     RefreshNormalList();
@@ -190,14 +188,15 @@ namespace Hali_Framework
 
         protected override void OnValidate()
         {
-            _sv ??= GetComponent<ScrollRect>();
-            _children ??= new List<GameObject>();
-            _sv.horizontal = layoutType == ListLayoutType.Horizontal || layoutType == ListLayoutType.SingleRow;
-            _sv.vertical = layoutType == ListLayoutType.Vertical || layoutType == ListLayoutType.SingleColumn;
-            SetContentAnchors();
-            if(Content.childCount <= 0) return;
+            if(defaultItem == null) return;
             EditorApplication.delayCall = () =>
             {
+                _sv ??= GetComponent<ScrollRect>();
+                _children ??= new List<GameObject>();
+                _sv.horizontal = layoutType == ListLayoutType.Horizontal || layoutType == ListLayoutType.SingleRow;
+                _sv.vertical = layoutType == ListLayoutType.Vertical || layoutType == ListLayoutType.SingleColumn;
+                SetContentAnchors();
+                if(Content.childCount <= 0) return;
                 _children.Clear();
                 for (int i = 0; i < Content.childCount; i++)
                     _children.Add(Content.GetChild(i).gameObject);
@@ -220,7 +219,7 @@ namespace Hali_Framework
         /// <summary>
         /// 强制重新渲染List
         /// </summary>
-        public void RefreshList()
+        public void RefreshList(bool isMoveTop = true)
         {
             SetColumnRow();
             SetContentSize();

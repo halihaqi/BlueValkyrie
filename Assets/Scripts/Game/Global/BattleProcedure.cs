@@ -18,12 +18,14 @@ namespace Game.Global
         
         private void OnEnterScene()
         {
-            var formation = new List<BattleRoleInfo>();
-            formation.Add(RoleMgr.Instance.GetBattleRole(1002));
-            formation.Add(RoleMgr.Instance.GetBattleRole(1003));
-            formation.Add(RoleMgr.Instance.GetBattleRole(1005));
-            formation.Add(RoleMgr.Instance.GetBattleRole(1011));
-            formation.Add(RoleMgr.Instance.GetBattleRole(1013));
+            var formation = new List<BattleRoleInfo>
+            {
+                RoleMgr.Instance.GetBattleRole(1002),
+                RoleMgr.Instance.GetBattleRole(1003),
+                RoleMgr.Instance.GetBattleRole(1005),
+                RoleMgr.Instance.GetBattleRole(1011),
+                RoleMgr.Instance.GetBattleRole(1013)
+            };
             BattleSceneMonoMgr.Instance.InitFormationEntity(formation, Camera.main);
         }
     }

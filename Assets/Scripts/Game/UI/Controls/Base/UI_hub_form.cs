@@ -23,11 +23,16 @@ namespace Game.UI.Controls
         {
             base.OnRecycle();
             _btnBack.onClick.RemoveAllListeners();
+            EventMgr.Instance.RemoveListener(ClientEvent.EXP_UP, UpdateView);
+            EventMgr.Instance.RemoveListener(ClientEvent.STAR_UP, UpdateView);
+
         }
 
         public void SetData(UnityAction onClick)
         {
-            _btnBack.onClick.RemoveListener(onClick);
+            EventMgr.Instance.AddListener(ClientEvent.EXP_UP, UpdateView);
+            EventMgr.Instance.AddListener(ClientEvent.STAR_UP, UpdateView);
+
             _btnBack.onClick.AddListener(onClick);
             UpdateView();
         }

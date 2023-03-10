@@ -23,6 +23,13 @@ namespace Game.Managers
             {EquipType.Bag, "HP"},
             {EquipType.Shoes, "AP"},
         };
+        private static readonly Dictionary<EquipType, string> EQUIP_NAMES = new Dictionary<EquipType, string>
+        {
+            {EquipType.Hat, "帽子"},
+            {EquipType.Gloves, "手套"},
+            {EquipType.Bag, "书包"},
+            {EquipType.Shoes, "鞋子"},
+        };
 
         public int Priority => 2;
 
@@ -51,20 +58,25 @@ namespace Game.Managers
             return _equipDic.Values.FirstOrDefault(equipInfo => equipInfo.itemId == itemId);
         }
 
-
-        public string GetAttributeName(EquipInfo equip)
-        {
-            return ATTRIBUTE_NAMES[(EquipType)equip.type];
-        }
-
-        public string GetAttributeName(int equipType)
+        
+        public static string GetAttributeName(int equipType)
         {
             return ATTRIBUTE_NAMES[(EquipType)equipType];
         }
         
-        public string GetAttributeName(EquipType equipType)
+        public static string GetAttributeName(EquipType equipType)
         {
             return ATTRIBUTE_NAMES[equipType];
+        }
+        
+        public static string GetEquipName(int equipType)
+        {
+            return EQUIP_NAMES[(EquipType)equipType];
+        }
+
+        public static string GetEquipName(EquipType equipType)
+        {
+            return EQUIP_NAMES[equipType];
         }
     }
 }

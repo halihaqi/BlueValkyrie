@@ -44,9 +44,6 @@ namespace Game.UI.Battle
             _txtAmmo = GetControl<Text>("txt_ammo");
             _txtRound = GetControl<Text>("txt_round");
             _txtRoundNum = GetControl<Text>("txt_round_num");
-            
-            _sldHp.onValueChanged.AddListener(OnHpChanged);
-            _sldAp.onValueChanged.AddListener(OnApChanged);
         }
 
         protected internal override void OnRecycle()
@@ -59,6 +56,9 @@ namespace Game.UI.Battle
         protected internal override void OnShow(object userData)
         {
             base.OnShow(userData);
+            _sldHp.onValueChanged.AddListener(OnHpChanged);
+            _sldAp.onValueChanged.AddListener(OnApChanged);
+            
             if (userData is BattleRoleInfo p)
             {
                 _info = p;

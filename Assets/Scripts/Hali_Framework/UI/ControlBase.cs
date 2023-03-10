@@ -28,6 +28,14 @@ namespace Hali_Framework
 
         protected internal virtual void OnRecycle()
         {
+            foreach (var controlList in _controlDic.Values)
+            {
+                foreach (var control in controlList)
+                {
+                    if(control is ControlBase cb)
+                        cb.OnRecycle();
+                }
+            }
             RecycleAddCustomControls();
         }
 
@@ -175,7 +183,10 @@ namespace Hali_Framework
                 var removeCbs = _addControlDic[cbType];
                 _addControlDic.Remove(cbType);
                 foreach (var cb in removeCbs)
+                {
                     cb.OnRecycle();
+                    Destroy(cb.gameObject);
+                }
                 return true;
             }
 
@@ -187,10 +198,9 @@ namespace Hali_Framework
         /// </summary>
         private void RecycleAddCustomControls()
         {
-            foreach (var cbList in _addControlDic.Values)
+            foreach (var type in _addControlDic.Keys)
             {
-                foreach (var control in cbList)
-                    control.OnRecycle();
+                RemoveCustomControl(type);
             }
             _addControlDic.Clear();
         }

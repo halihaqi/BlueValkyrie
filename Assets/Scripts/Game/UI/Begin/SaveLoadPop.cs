@@ -19,7 +19,7 @@ namespace Game.UI.Begin
         
         private HList _list;
 
-        private Dictionary<int, PlayerInfo> _userDic;
+        private Dictionary<int, PlayerItem> _userDic;
 
         protected internal override void OnInit(object userData)
         {
@@ -83,8 +83,8 @@ namespace Game.UI.Begin
         public SaveLoadParam(bool isSave, bool isFullScreen) =>
             (this.isSave, this.isFullScreen) = (isSave, isFullScreen);
 
-        public SaveLoadParam(bool isSave, PlayerInfo info, bool isFullScreen) =>
+        public SaveLoadParam(bool isSave, PlayerItem item, bool isFullScreen) =>
             (this.isSave, this.userName, this.secretaryId, this.isFullScreen)
-            = (isSave, info.name, info.secretaryId, isFullScreen);
+            = (isSave, item.name, item.secretaryId, isFullScreen);
     }
 }

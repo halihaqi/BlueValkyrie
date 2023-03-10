@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Hali_Framework;
 
 namespace Game.Managers
@@ -7,6 +8,7 @@ namespace Game.Managers
     {
         private Dictionary<int, RoleInfo> _roleDic;
         private Dictionary<int, BattleRoleInfo> _battleRoleDic;
+
         public int Priority => 2;
 
         void IModule.Init()
@@ -40,6 +42,16 @@ namespace Game.Managers
         public BattleRoleInfo GetBattleRole(RoleInfo info)
         {
             return _battleRoleDic.TryGetValue(info.id, out var role) ? role : null;
+        }
+
+        public List<BattleRoleInfo> GetBattleRoles()
+        {
+            return _battleRoleDic.Values.ToList();
+        }
+
+        public int GetRolePieceId(int roleId)
+        {
+            return BinaryDataMgr.Instance.GetInfo<RolePieceInfoContainer, int, RolePieceInfo>(roleId).pieceId;
         }
     }
 }

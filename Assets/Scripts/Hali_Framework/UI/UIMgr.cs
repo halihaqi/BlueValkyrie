@@ -14,8 +14,10 @@ namespace Hali_Framework
         private HashSet<int> _loadingPanelsToRelease;
         private Queue<PanelEntity> _recycleQueue;
         private int _cachedSerialId;
+        
         private CanvasEntity _canvas;
-        private GameObject _eventSystem;
+        private EventSystemEntity _eventSystem;
+        private UIStageEntity _uiStage; 
 
         public const string PANEL_PATH = "UI/";
         public const string CONTROL_PATH = "UI/Controls/";
@@ -63,14 +65,9 @@ namespace Hali_Framework
         
         private void InitCanvas()
         {
-            if (_canvas == null)
-                _canvas = new GameObject("Canvas").AddComponent<CanvasEntity>();
-
-            if (_eventSystem == null)
-            {
-                _eventSystem = new GameObject("EventSystem");
-                _eventSystem.AddComponent<EventSystemEntity>();
-            }
+            _canvas ??= new GameObject("Canvas").AddComponent<CanvasEntity>();
+            _eventSystem ??= new GameObject("EventSystem").AddComponent<EventSystemEntity>();
+            _uiStage ??= ResMgr.Instance.Load<GameObject>("UI/UIStage").GetComponent<UIStageEntity>();
         }
 
         #region UIGroup
@@ -581,6 +578,21 @@ namespace Hali_Framework
             for (int i = 0; i < controls.Count; i++)
                 RemoveAllCustomEvents(controls[i]);
         }
+
+        #endregion
+
+        #region UI Model
+
+        /// <summary>
+        /// 在UI_rt显示模型，只能显示一个模型
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="callback"></param>
+        public void ShowModel(string path, UnityAction<GameObject> callback) => _uiStage.ShowObj(path, callback);
+
+        public void HideModel() => _uiStage.HideCurObj();
+
+        public void ClearModel() => _uiStage.ClearObj();
 
         #endregion
     }

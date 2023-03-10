@@ -1,3 +1,4 @@
+[System.Serializable]
 public class ShopItemInfo
 {
     public int id;
@@ -5,5 +6,4 @@ public class ShopItemInfo
     public string name;
     public int currencyId;
     public int price;
-    public int num;
 }

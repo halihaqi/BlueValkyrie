@@ -19,8 +19,6 @@ namespace Game.UI.Controls.Dialogue
         [SerializeField]
         private float offset = 160;
         [SerializeField]
-        private float arrowOffset = 10;
-        [SerializeField]
         private float skipCd = 0.3f;
 
         private RectTransform _rect;
@@ -55,16 +53,12 @@ namespace Game.UI.Controls.Dialogue
             
             _arrow = GetControl<Image>("img_next").rectTransform;
             _rect = this.transform as RectTransform;
-
-            _textQueue = new Queue<string>();
-            EventMgr.Instance.AddListener<KeyCode>(ClientEvent.GET_KEY_DOWN, OnInteraction);
         }
 
         protected internal override void OnRecycle()
         {
             base.OnRecycle();
             StopAllCoroutines();
-            SetArrowActive(false);
             EventMgr.Instance.RemoveListener<KeyCode>(ClientEvent.GET_KEY_DOWN, OnInteraction);
         }
 
@@ -75,6 +69,8 @@ namespace Game.UI.Controls.Dialogue
 
         public void SetData(string[] strs, float sentenceInterval, bool interactable, bool isAuto)
         {
+            _textQueue = new Queue<string>();
+            EventMgr.Instance.AddListener<KeyCode>(ClientEvent.GET_KEY_DOWN, OnInteraction);
             if (_isShowing)
                 Skip();
             _textQueue.Clear();
@@ -143,20 +139,6 @@ namespace Game.UI.Controls.Dialogue
         private void SetArrowActive(bool enable)
         {
             _arrow.gameObject.SetActive(enable);
-            if (enable)
-            {
-                _arrowTween?.Kill();
-                _arrowOriY = _arrow.anchoredPosition.y;
-                _arrowTween = DOTween.Sequence();
-                _arrowTween.Append(_arrow.DOAnchorPosY(_arrowOriY + arrowOffset, 0.3f));
-                _arrowTween.Append(_arrow.DOAnchorPosY(_arrowOriY, 1));
-                _arrowTween.SetLoops(-1);
-            }
-            else
-            {
-                _arrowTween?.Kill();
-                _arrowTween = null;
-            }
         }
 
         private IEnumerator VerbatimShowSentences()

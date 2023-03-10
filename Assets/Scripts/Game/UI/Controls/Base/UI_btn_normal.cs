@@ -19,12 +19,6 @@ namespace Game.UI.Controls
             _oriColor = _txtName.color;
         }
 
-        protected internal override void OnRecycle()
-        {
-            base.OnRecycle();
-            _btn.onClick.RemoveAllListeners();
-        }
-
         public void SetData(string btnName)
         {
             _txtName.text = btnName;

@@ -28,7 +28,6 @@ namespace Game.UI.Controls
 
             _list.itemRenderer = OnItemRenderer;
             _list.onClickItem = OnItemClick;
-            _btnSort.onClick.AddListener(OnSortClick);
         }
 
         protected internal override void OnRecycle()
@@ -39,6 +38,8 @@ namespace Game.UI.Controls
 
         public void SetData(int bagId)
         {
+            _btnSort.onClick.RemoveListener(OnSortClick);
+            _btnSort.onClick.AddListener(OnSortClick);
             _bagId = bagId;
             _items = PlayerMgr.Instance.BagMaster.GetAllVisibleItems(bagId);
             if (_items == null)
@@ -53,6 +54,7 @@ namespace Game.UI.Controls
 
         public void SetData(List<BagItemInfo> items)
         {
+            _btnSort.onClick.AddListener(OnSortClick);
             _items = items ?? throw new Exception("Has no bag with id:{bagId}.");
             UpdateView();
         }

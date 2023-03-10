@@ -32,7 +32,11 @@ namespace Game.UI.Begin
             _img = GetControl<Image>("group_btn");
             _btns = GetControls<Button>();
             _btnLoad = _btns.Find(b => b.name == "btn_load");
-            
+        }
+
+        protected internal override void OnShow(object userData)
+        {
+            base.OnShow(userData);
             //添加动效
             UIMgr.AddCustomEventListener(_img, EventTriggerType.PointerEnter,
                 OnPointEnterBtnGroup);
@@ -42,11 +46,6 @@ namespace Game.UI.Begin
                 OnPointEnterBtn);
             UIMgr.AddCustomEventListener(_btns, EventTriggerType.PointerExit,
                 OnPointExitBtn);
-        }
-
-        protected internal override void OnShow(object userData)
-        {
-            base.OnShow(userData);
             
             if (!BinaryDataMgr.Instance.HasData(GameConst.DATA_PART_PLAYER, "PlayerData"))
                 //隐藏Load按钮

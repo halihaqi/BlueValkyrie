@@ -22,16 +22,6 @@ namespace Game.UI.Begin
         protected internal override void OnInit(object userData)
         {
             base.OnInit(userData);
-            
-            //初始化数据
-            var dic = BinaryDataMgr.Instance.GetTable<ChooseRoleInfoContainer>().dataDic;
-            _roleIdList = new List<int>(dic.Count);
-            foreach (var roleInfo in dic.Values)
-                _roleIdList.Add(roleInfo.roleId);
-            
-            _roleIdList.Sort();
-            _selectIndex = 0;
-            
             //获取控件
             _btnLeft = GetControl<Button>("btn_left");
             _btnRight = GetControl<Button>("btn_right");
@@ -43,6 +33,16 @@ namespace Game.UI.Begin
         protected internal override void OnShow(object userData)
         {
             base.OnShow(userData);
+            
+            //初始化数据
+            var dic = BinaryDataMgr.Instance.GetTable<ChooseRoleInfoContainer>().dataDic;
+            _roleIdList = new List<int>(dic.Count);
+            foreach (var roleInfo in dic.Values)
+                _roleIdList.Add(roleInfo.roleId);
+            
+            _roleIdList.Sort();
+            _selectIndex = 0;
+            
             EventMgr.Instance.AddListener(ClientEvent.ROLE_CHANGE_BEGIN, OnRoleChange);
             EventMgr.Instance.AddListener(ClientEvent.ROLE_SHOW_INFO, OnRoleShowInfo);
             EventMgr.Instance.AddListener(ClientEvent.ROLE_CHANGE_COMPLETE, OnRoleChangeComplete);

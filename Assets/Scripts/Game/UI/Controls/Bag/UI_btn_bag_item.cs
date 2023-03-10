@@ -24,9 +24,6 @@ namespace Game.UI.Controls
             _imgItem = GetControl<Image>("img_item");
             _imgChoose = GetControl<Image>("img_choose");
             _txtNum = GetControl<Text>("txt_num");
-            _imgChoose.gameObject.SetActive(false);
-            
-            EventMgr.Instance.AddListener<ItemInfo, int>(ClientEvent.BAG_ITEM_CLICK, OnItemClick);
         }
 
         protected internal override void OnRecycle()
@@ -37,6 +34,9 @@ namespace Game.UI.Controls
 
         public void SetData(int itemId, int num)
         {
+            _imgChoose.gameObject.SetActive(false);
+            EventMgr.Instance.AddListener<ItemInfo, int>(ClientEvent.BAG_ITEM_CLICK, OnItemClick);
+            
             _item = ItemMgr.Instance.GetItem(itemId);
             _itemNum = num;
             SetNull(_item == null);

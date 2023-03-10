@@ -1,3 +1,4 @@
+[System.Serializable]
 public class RoleInfo
 {
     public int id;

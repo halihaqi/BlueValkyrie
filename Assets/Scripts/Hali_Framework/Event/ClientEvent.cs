@@ -31,6 +31,12 @@
         //Bag
         BAG_ITEM_CLICK,
         BUY_COMPLETE,
+        EXP_ADD,
+        EXP_UP,
+        LEVEL_PRE_UP,
+        STAR_PRE_UP,
+        WEAR_EQUIP,
+        STAR_UP,
         
         //Battle
         BATTLE_ROLE_MOVE,

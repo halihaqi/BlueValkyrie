@@ -14,14 +14,14 @@ namespace Game.UI.Base
             base.OnInit(userData);
             _txtPoint = GetControl<Text>("txt_point");
             _sldLoad = GetControl<Slider>("sld_load");
-            _sldLoad.maxValue = 100;
-            _sldLoad.minValue = 0;
-            _sldLoad.value = 0;
         }
 
         protected internal override void OnShow(object userData)
         {
             base.OnShow(userData);
+            _sldLoad.maxValue = 100;
+            _sldLoad.minValue = 0;
+            _sldLoad.value = 0;
             _txtPoint.text = _lastPoint = "";
             _sldLoad.value = 0;
             DelayUtils.Instance.Loop(0.3f, LoopPoint);

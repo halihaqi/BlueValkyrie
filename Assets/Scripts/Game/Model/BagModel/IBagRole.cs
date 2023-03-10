@@ -2,6 +2,6 @@
 {
     public interface IBagRole
     {
-        BagData BagData { get; set; }
+        Inventory Inventory { get; set; }
     }
 }

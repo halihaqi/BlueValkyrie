@@ -15,7 +15,7 @@ namespace Game.UI.Game
         private Button _btnSave;
         private Button _btnLoad;
         
-        private Dictionary<int, PlayerInfo> _userDic;
+        private Dictionary<int, PlayerItem> _userDic;
         private bool _isSave;
         private int _saveBtnIndex;
         private int _loadBtnIndex;
@@ -30,12 +30,13 @@ namespace Game.UI.Game
             
             _svSlData.itemRenderer = OnItemRender;
             _svSlData.onClickItem = OnItemClick;
-            _loadBtnIndex = _btnLoad.transform.GetSiblingIndex();
         }
 
         protected internal override void OnShow(object userData)
         {
             base.OnShow(userData);
+            _loadBtnIndex = _btnLoad.transform.GetSiblingIndex();
+
             _hubForm.SetData(HideMe);
             _userDic = PlayerMgr.Instance.LoadUserDic();
             OnSlClick(true);

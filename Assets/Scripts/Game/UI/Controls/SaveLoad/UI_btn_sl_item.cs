@@ -28,7 +28,7 @@ namespace Game.UI.Controls
         private string _userName;
         private int _secretaryId;
 
-        private PlayerInfo _info;
+        private PlayerItem _item;
 
         protected internal override void OnInit()
         {
@@ -46,22 +46,22 @@ namespace Game.UI.Controls
             _slGroup = GetControl<ControlGroup>("sl_group");
         }
 
-        public void SetSave(int userId, PlayerInfo info)
+        public void SetSave(int userId, PlayerItem item)
         {
             _userId = userId;
-            _info = info;
+            _item = item;
             
             _imgTitleSave.gameObject.SetActive(true);
             _imgTitleLoad.gameObject.SetActive(false);
             //更新面板
             _txtTitle.text = $"存档{_userId + 1}";
-            UpdateView(info);
+            UpdateView(item);
         }
 
-        public void SetNew(int userId, PlayerInfo info, string userName, int secretaryId)
+        public void SetNew(int userId, PlayerItem item, string userName, int secretaryId)
         {
             _userId = userId;
-            _info = info;
+            _item = item;
             _userName = userName;
             _secretaryId = secretaryId;
             
@@ -69,29 +69,29 @@ namespace Game.UI.Controls
             _imgTitleLoad.gameObject.SetActive(false);
             //更新面板
             _txtTitle.text = $"存档{_userId + 1}";
-            UpdateView(info);
+            UpdateView(item);
         }
 
-        public void SetLoad(int userId, PlayerInfo info)
+        public void SetLoad(int userId, PlayerItem item)
         {
             _userId = userId;
-            _info = info;
+            _item = item;
             
             _imgTitleSave.gameObject.SetActive(false);
             _imgTitleLoad.gameObject.SetActive(true);
             //更新面板
             _txtTitle.text = $"存档{_userId + 1}";
-            UpdateView(info);
+            UpdateView(item);
         }
 
         public void OnSaveClick()
         {
-            string str = _info != null ? "是否覆盖存档？" : "是否创建新存档？";
+            string str = _item != null ? "是否覆盖存档？" : "是否创建新存档？";
             TipHelper.ShowConfirm(str, () =>
             {
-                _info = PlayerMgr.Instance.CurPlayer; 
-                PlayerMgr.Instance.SaveUser(_userId, _info);
-                UpdateView(_info);
+                _item = PlayerMgr.Instance.CurPlayer; 
+                PlayerMgr.Instance.SaveUser(_userId, _item);
+                UpdateView(_item);
                 
                 TipHelper.ShowTip("保存成功！");
             });
@@ -99,10 +99,10 @@ namespace Game.UI.Controls
 
         public void OnNewClick()
         {
-            string str = _info != null ? "是否覆盖存档？" : "是否创建新存档？";
+            string str = _item != null ? "是否覆盖存档？" : "是否创建新存档？";
             TipHelper.ShowConfirm(str, () =>
             {
-                var newPlayerInfo = new PlayerInfo(_userId, _userName, _secretaryId);
+                var newPlayerInfo = new PlayerItem(_userId, _userName, _secretaryId);
                 PlayerMgr.Instance.SaveUser(_userId, newPlayerInfo);
                 UpdateView(newPlayerInfo);
 
@@ -114,27 +114,27 @@ namespace Game.UI.Controls
 
         public void OnLoadClick()
         {
-            if (_info == null) return;
+            if (_item == null) return;
             
             TipHelper.ShowConfirm("是否进入该存档？", () =>
             {
                 //进入游戏流程
-                ProcedureMgr.Instance.SetData(PlayerMgr.PLAYER_DATA_KEY, _info);
+                ProcedureMgr.Instance.SetData(PlayerMgr.PLAYER_DATA_KEY, _item);
                 ProcedureMgr.Instance.ChangeState<GameProcedure>();
             });
         }
 
-        private void UpdateView(PlayerInfo info)
+        private void UpdateView(PlayerItem item)
         {
-            if (info == null)
+            if (item == null)
                 _slGroup.SetActive(false);
             else
             {
                 _slGroup.SetActive(true);
-                _txtName.text = info.name;
-                _txtTime.text = ((int)info.time).ToTime();
-                _sldComplete.value = info.complete;
-                ResMgr.Instance.LoadAsync<Sprite>(ResPath.GetSchoolBadgeIcon(info.secretaryId), img =>
+                _txtName.text = item.name;
+                _txtTime.text = ((int)item.time).ToTime();
+                _sldComplete.value = item.complete;
+                ResMgr.Instance.LoadAsync<Sprite>(ResPath.GetSchoolBadgeIcon(item.secretaryId), img =>
                 {
                     _imgBadge.sprite = img;
                 });

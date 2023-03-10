@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Hali_Framework;
 
 namespace Game.Managers
@@ -30,6 +31,16 @@ namespace Game.Managers
                 return _itemDic[itemId];
 
             return null;
+        }
+
+        public List<ItemInfo> GetItems()
+        {
+            return _itemDic.Values.ToList();
+        }
+
+        public List<int> GetItemIds()
+        {
+            return _itemDic.Keys.ToList();
         }
     }
 }

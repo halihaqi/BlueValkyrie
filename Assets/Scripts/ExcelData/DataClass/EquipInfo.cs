@@ -1,3 +1,4 @@
+[System.Serializable]
 public class EquipInfo
 {
     public int id;
