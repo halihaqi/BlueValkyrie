@@ -9,4 +9,6 @@ public class BattleRoleInfo
     public int baseHp;
     public int baseAmmo;
     public int baseAp;
+    public int atkType;
+    public int atkRange;
 }

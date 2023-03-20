@@ -27,6 +27,7 @@ namespace Hali_Framework
             rect.anchorMin = Vector2.zero;
             rect.anchorMax = Vector2.one;
             rect.sizeDelta = Vector2.zero;
+            gameObject.layer = LayerMask.NameToLayer("UI");
         }
         
         public void BindUIGroup(UIGroup group)

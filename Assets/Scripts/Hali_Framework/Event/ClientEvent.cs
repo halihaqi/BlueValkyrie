@@ -37,9 +37,19 @@
         STAR_PRE_UP,
         WEAR_EQUIP,
         STAR_UP,
-        
+
         //Battle
-        BATTLE_ROLE_MOVE,
+        CHESS_CLICK,
+        CHESS_AUTO_CLICK,
         BATTLE_ROLE_CHANGE,
+        BATTLE_ROLE_AIM,
+        BATTLE_ROLE_ACTION,
+        BATTLE_ROLE_REST,
+        BATTLE_ROLE_RELOAD,
+        BATTLE_BULLET_SHOOT,
+        BATTLE_STEP_OVER,
+        BATTLE_ROUND_RUN,
+        BATTLE_HALF_ROUND_OVER,
+        BATTLE_ROUND_OVER,
     }
 }

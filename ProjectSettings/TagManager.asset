@@ -5,8 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - NavTarget
-  - Role
   - Shelter
+  - Enemy
+  - Student
   layers:
   - Default
   - TransparentFX

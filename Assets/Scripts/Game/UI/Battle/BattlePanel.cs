@@ -1,4 +1,6 @@
-﻿using Game.Managers;
+﻿using Game.BattleScene;
+using Game.Entity;
+using Game.Managers;
 using Game.UI.Controls.Battle;
 using Game.Utils;
 using Hali_Framework;
@@ -9,100 +11,170 @@ namespace Game.UI.Battle
 {
     public class BattlePanel : PanelBase
     {
-        private Text _txtName;
+        public float sizeDelta = 0.03f;
+        
+        private UI_move_group _moveGroup;
+        private UI_shoot_group _shootGroup;
         private Image _imgHead;
+        private Image _imgHeadEnemy;
+        private Text _txtName;
         private Slider _sldHp;
-        private Slider _sldAp;
+        private Slider _sldTargetHp;
         private Text _txtHp;
-        private Text _txtAp;
-        
-        private Text _txtAmmo;
-        private Text _txtMaxAmmo;
-        private Image _imgGun;
         private Text _txtRound;
-        private Text _txtRoundNum;
-        
-        private UI_battle_role_info _nextRole;
-        private UI_battle_role_info _secondRole;
 
-        private BattleRoleInfo _info;
+        private BattleRoleEntity _battleRole;
         private RoleInfo _roleInfo;
+        private BattleMaster _bm;
+        private BattleRoleEntity _target;
+
+        public bool IsAim
+        {
+            get => !_moveGroup.gameObject.activeSelf && _shootGroup.gameObject.activeSelf;
+            set
+            {
+                _moveGroup.SetActive(!value);
+                _shootGroup.SetActive(value);
+            }
+        }
 
         protected internal override void OnInit(object userData)
         {
             base.OnInit(userData);
+            _moveGroup = GetControl<UI_move_group>("move_group");
+            _shootGroup = GetControl<UI_shoot_group>("shoot_group");
             _imgHead = GetControl<Image>("img_head");
-            _imgGun = GetControl<Image>("img_gun");
-            _nextRole = GetControl<UI_battle_role_info>("next_role");
-            _secondRole = GetControl<UI_battle_role_info>("second_role");
+            _imgHeadEnemy = GetControl<Image>("img_head_enemy");
             _sldHp = GetControl<Slider>("sld_hp");
-            _sldAp = GetControl<Slider>("sld_ap");
+            _sldTargetHp = GetControl<Slider>("sld_target_hp");
             _txtHp = GetControl<Text>("txt_hp");
-            _txtAp = GetControl<Text>("txt_ap");
             _txtName = GetControl<Text>("txt_name");
-            _txtMaxAmmo = GetControl<Text>("txt_max_ammo");
-            _txtAmmo = GetControl<Text>("txt_ammo");
             _txtRound = GetControl<Text>("txt_round");
-            _txtRoundNum = GetControl<Text>("txt_round_num");
-        }
-
-        protected internal override void OnRecycle()
-        {
-            base.OnRecycle();
-            _sldHp.onValueChanged.RemoveListener(OnHpChanged);
-            _sldAp.onValueChanged.RemoveListener(OnApChanged);
+            PanelEntity.SetCustomFade(0);
         }
 
         protected internal override void OnShow(object userData)
         {
             base.OnShow(userData);
-            _sldHp.onValueChanged.AddListener(OnHpChanged);
-            _sldAp.onValueChanged.AddListener(OnApChanged);
-            
-            if (userData is BattleRoleInfo p)
-            {
-                _info = p;
-                _roleInfo = RoleMgr.Instance.GetRole(_info.id);
-            }
+            _bm = FsmMgr.Instance.GetFsm<BattleMaster>(BattleConst.BATTLE_FSM).Owner;
+            Visible = false;
+        }
 
-            UpdateView();
-            EventMgr.Instance.AddListener<float>(ClientEvent.BATTLE_ROLE_MOVE, OnMove);
-            EventMgr.Instance.AddListener<BattleRoleInfo>(ClientEvent.BATTLE_ROLE_CHANGE, OnRoleChange);
+        protected internal override void OnCover()
+        {
+            base.OnCover();
+            Visible = false;
+            EventMgr.Instance.RemoveListener(ClientEvent.BATTLE_ROLE_AIM, OnAim);
+            EventMgr.Instance.RemoveListener(ClientEvent.BATTLE_ROLE_RELOAD, OnReload);
+        }
+
+        protected internal override void OnRefocus(object userData)
+        {
+            base.OnRefocus(userData);
+            Visible = true;
+            PanelEntity.Fade(true);
+            if (userData is BattleRoleEntity role)
+            {
+                _battleRole = role;
+                if(!_battleRole.IsEnemy)
+                    _roleInfo = RoleMgr.Instance.GetRole(((BattleStudentEntity)_battleRole).Student.roleId);
+                UpdateView();
+            }
+            EventMgr.Instance.AddListener(ClientEvent.BATTLE_ROLE_AIM, OnAim);
+            EventMgr.Instance.AddListener(ClientEvent.BATTLE_ROLE_RELOAD, OnReload);
+        }
+        
+        protected internal override void OnUpdate(float elapseSeconds, float realElapseSeconds)
+        {
+            base.OnUpdate(elapseSeconds, realElapseSeconds);
+            if(!Visible) return;
+            if (!IsAim)
+                _moveGroup.OnMove();
+            
+            if (_sldTargetHp.gameObject.activeSelf && _target != null)
+            {
+                _sldTargetHp.value = Mathf.Lerp(_sldTargetHp.value, _target.CurHp, Time.deltaTime * 3);
+
+                //设置显示位置
+                var targetPos = _target.followTarget.position;
+                var screenPos = _bm.cam.WorldToScreenPoint(targetPos + Vector3.up * 1);
+                var trans = (RectTransform)_sldTargetHp.transform;
+                float distance = Vector3.Distance(targetPos + Vector3.up * 1, _bm.cam.transform.position);
+                trans.position = (Vector2)screenPos;
+                trans.localScale = Mathf.Clamp(1 - distance * sizeDelta, 0.3f, 1f) * Vector3.one;
+            }
         }
 
         protected internal override void OnHide(bool isShutdown, object userData)
         {
             base.OnHide(isShutdown, userData);
-            EventMgr.Instance.RemoveListener<float>(ClientEvent.BATTLE_ROLE_MOVE, OnMove);
-            EventMgr.Instance.RemoveListener<BattleRoleInfo>(ClientEvent.BATTLE_ROLE_CHANGE, OnRoleChange);
+            EventMgr.Instance.RemoveListener(ClientEvent.BATTLE_ROLE_AIM, OnAim);
+            EventMgr.Instance.RemoveListener(ClientEvent.BATTLE_ROLE_RELOAD, OnReload);
         }
-
+        
         private void UpdateView()
         {
-            _txtName.text = _roleInfo.fullName;
-            _txtAmmo.text = _txtMaxAmmo.text = _info.baseAmmo.ToString();
-            ResMgr.Instance.LoadAsync<Sprite>(GameConst.RES_GROUP_UI, ResPath.GetStudentIcon(_roleInfo), img =>
+            if (_battleRole.IsEnemy)
             {
-                _imgHead.sprite = img;
-            });
-            _sldHp.value = _sldHp.maxValue = _info.baseHp;
-            _sldAp.value = _sldAp.maxValue = _info.baseAp;
+                var enemy = (BattleEnemyEntity)_battleRole;
+                _txtName.text = enemy.EnemyInfo.roleName;
+                _imgHeadEnemy.gameObject.SetActive(true);
+                _imgHead.gameObject.SetActive(false);
+                ResMgr.Instance.LoadAsync<Sprite>(GameConst.RES_GROUP_UI, ResPath.GetEnemyIcon(enemy.EnemyInfo.roleName), img =>
+                {
+                    _imgHead.sprite = img;
+                });
+                _txtRound.text = "<color=red>敌方回合</color>";
+            }
+            else
+            {
+                _txtName.text = _roleInfo.fullName.Split(' ')[1];
+                _imgHeadEnemy.gameObject.SetActive(false);
+                _imgHead.gameObject.SetActive(true);
+                ResMgr.Instance.LoadAsync<Sprite>(GameConst.RES_GROUP_UI, ResPath.GetStudentIcon(_roleInfo), img =>
+                {
+                    _imgHead.sprite = img;
+                });
+                _txtRound.text = "<color=blue>我方回合</color>";
+            }
+            
+            _sldTargetHp.gameObject.SetActive(false);
+            _sldHp.maxValue = _battleRole.MaxHp;
+            _sldHp.value = _battleRole.CurHp;
+            _txtHp.text = $"{_battleRole.CurHp}/{_battleRole.MaxHp}";
+            IsAim = false;
+            _moveGroup.SetData(_battleRole);
+            _shootGroup.SetData(_battleRole);
         }
 
-        private void OnRoleChange(BattleRoleInfo curRole)
+        private void OnAim()
         {
-            _info = curRole;
-            _roleInfo = RoleMgr.Instance.GetRole(_info.id);
-            UpdateView();
+            IsAim = true;
         }
 
-        private void OnMove(float val)
+        private void OnReload()
         {
-            _sldAp.value = val;
+            _shootGroup.SetData(_battleRole);
         }
 
-        private void OnHpChanged(float val) => _txtHp.text = $"{(int)val}/{_info.baseHp}";
-        
-        private void OnApChanged(float val) => _txtAp.text = $"{(int)val}/{_info.baseAp}";
+        public void SwitchArrow(bool isFocus) => _shootGroup.SwitchArrow(isFocus);
+
+        public void ShowTargetHp(BattleRoleEntity role)
+        {
+            _target = role;
+            _sldTargetHp.maxValue = role.MaxHp;
+            _sldTargetHp.value = role.CurHp;
+            _sldTargetHp.gameObject.SetActive(true);
+        }
+
+        public void HideTargetHp()
+        {
+            _sldTargetHp.gameObject.SetActive(false);
+        }
+
+        public void SetFlagTipActive(bool isActive)
+        {
+            _moveGroup.SetFlagTip(isActive);
+        }
     }
 }

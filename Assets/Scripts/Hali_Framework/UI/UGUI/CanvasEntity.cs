@@ -1,16 +1,19 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Hali_Framework
 {
+    [RequireComponent(typeof(Canvas))]
+    [RequireComponent(typeof(CanvasScaler))]
+    [RequireComponent(typeof(GraphicRaycaster))]
     public class CanvasEntity : MonoBehaviour
     {
         private Canvas _canvas;
         private CanvasScaler _canvasScaler;
         
         //Canvas
-        public RenderMode renderMode = RenderMode.ScreenSpaceOverlay;
+        public RenderMode renderMode = RenderMode.ScreenSpaceCamera;
+        public Camera renderCamera;
         public int sortOrder = 0;
         
         //CanvasScaler
@@ -22,12 +25,9 @@ namespace Hali_Framework
         private void Awake()
         {
             DontDestroyOnLoad(this);
-            if(!gameObject.TryGetComponent(out _canvas))
-                _canvas = gameObject.AddComponent<Canvas>();
-            if(!gameObject.TryGetComponent(out _canvasScaler))
-                _canvasScaler = gameObject.AddComponent<CanvasScaler>();
-            if(gameObject.GetComponent<GraphicRaycaster>() == null)
-                gameObject.AddComponent<GraphicRaycaster>();
+            _canvas = GetComponent<Canvas>();
+            _canvasScaler = GetComponent<CanvasScaler>();
+            _canvas.gameObject.layer = LayerMask.NameToLayer("UI");
             UpdateConfig();
         }
 
@@ -35,6 +35,9 @@ namespace Hali_Framework
         {
             //Canvas
             _canvas.renderMode = renderMode;
+            if (renderMode == RenderMode.ScreenSpaceCamera)
+                _canvas.worldCamera = renderCamera;
+            
             _canvas.sortingOrder = sortOrder;
             
             //CanvasScaler

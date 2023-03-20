@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Hali_Framework
 {
@@ -17,6 +18,7 @@ namespace Hali_Framework
         
         private CanvasEntity _canvas;
         private EventSystemEntity _eventSystem;
+        private UICameraEntity _uiCamera;
         private UIStageEntity _uiStage; 
 
         public const string PANEL_PATH = "UI/";
@@ -67,6 +69,9 @@ namespace Hali_Framework
         {
             _canvas ??= new GameObject("Canvas").AddComponent<CanvasEntity>();
             _eventSystem ??= new GameObject("EventSystem").AddComponent<EventSystemEntity>();
+            _uiCamera ??= new GameObject("UICamera").AddComponent<UICameraEntity>();
+            _canvas.renderCamera = _uiCamera.Camera;
+            _canvas.UpdateConfig();
             _uiStage ??= ResMgr.Instance.Load<GameObject>("UI/UIStage").GetComponent<UIStageEntity>();
         }
 
@@ -126,7 +131,7 @@ namespace Hali_Framework
 
         #region Panel
 
-                /// <summary>
+        /// <summary>
         /// 是否拥有界面
         /// </summary>
         /// <param name="serialId"></param>
@@ -163,6 +168,18 @@ namespace Hali_Framework
             foreach (var group in _uiGroups.Values)
             {
                 var panel = group.GetPanel(serialId);
+                if (panel != null)
+                    return panel;
+            }
+
+            return null;
+        }
+        
+        public PanelEntity GetPanel<T>() where T : PanelBase
+        {
+            foreach (var group in _uiGroups.Values)
+            {
+                var panel = group.GetPanel<T>();
                 if (panel != null)
                     return panel;
             }
@@ -421,7 +438,7 @@ namespace Hali_Framework
             if (group == null)
                 throw new Exception("UI group is invalid.");
             
-            group.RefocusPanel(panel, userData);
+            group.RefocusPanel(panel);
             group.Refresh();
             panel.OnRefocus(userData);
         }
@@ -584,15 +601,32 @@ namespace Hali_Framework
         #region UI Model
 
         /// <summary>
-        /// 在UI_rt显示模型，只能显示一个模型
+        /// 在uiStage显示模型，只能显示一个模型
         /// </summary>
         /// <param name="path"></param>
         /// <param name="callback"></param>
         public void ShowModel(string path, UnityAction<GameObject> callback) => _uiStage.ShowObj(path, callback);
 
-        public void HideModel() => _uiStage.HideCurObj();
+        public void BindStageRT(RawImage raw)
+        {
+            var rect = raw.rectTransform.rect;
+            raw.texture = _uiStage.BindRT((int)rect.width, (int)rect.height, 1);
+        }
 
-        public void ClearModel() => _uiStage.ClearObj();
+        public void SetStageSize(float size)
+        {
+            _uiStage.SetCameraSize(size);
+        }
+
+        public void RecycleModel(string path) => _uiStage.RecycleObj(path);
+
+        public void RecycleAllModel() => _uiStage.RecycleAll();
+
+        public void ClearModel() => _uiStage.Clear();
+
+        public RenderTexture StageRT => _uiStage.RT;
+
+        public Camera StageCamera => _uiStage.StageCamera;
 
         #endregion
     }

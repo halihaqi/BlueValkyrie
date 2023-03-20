@@ -71,8 +71,6 @@ namespace Game.UI.Controls.Dialogue
         {
             _textQueue = new Queue<string>();
             EventMgr.Instance.AddListener<KeyCode>(ClientEvent.GET_KEY_DOWN, OnInteraction);
-            if (_isShowing)
-                Skip();
             _textQueue.Clear();
             foreach (var str in strs)
                 _textQueue.Enqueue(str);

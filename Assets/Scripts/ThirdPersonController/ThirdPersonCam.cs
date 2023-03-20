@@ -30,8 +30,9 @@ public class ThirdPersonCam : MonoBehaviour
     private Vector3 _offset;
     private Vector3 _targetFollowPos;
     private Vector3 _targetLookPos;
+    private Vector3 _lastRotation;
     private bool _isTransmit = false;
-
+    
     private void LateUpdate()
     {
         if (followTarget == null)
@@ -59,9 +60,7 @@ public class ThirdPersonCam : MonoBehaviour
 
         //移动和旋转相机
         transform.position = Vector3.Lerp(transform.position, _targetFollowPos, sensitive * Time.deltaTime);
-        //transform.LookAt(targetLookPos);
         transform.rotation = Quaternion.LookRotation(_targetLookPos - transform.position, Vector3.up);
-        
     }
 
     /// <summary>

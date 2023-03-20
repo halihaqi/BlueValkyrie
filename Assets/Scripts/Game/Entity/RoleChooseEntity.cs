@@ -11,7 +11,7 @@ namespace Game.Entity
     public class RoleChooseEntity : RoleBase
     {
         [SerializeField]
-        private float pickedSpeed = 3;
+        private float pickedSpeed = 5;
 
         private Transform _showPos;
         private Transform _hidePos;
@@ -67,9 +67,10 @@ namespace Game.Entity
                     mousePos.z = Mathf.Abs(Camera.main.transform.position.x - transform.position.x);
                     Vector3 targetPos = Camera.main.ScreenToWorldPoint(mousePos);
                     targetPos.x = transform.position.x;
-                    if (targetPos.y < _showPos.transform.position.y)
-                        targetPos.y = _showPos.transform.position.y;
-                    transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime * pickedSpeed);
+                    if (targetPos.y < _showPos.transform.position.y + 1)
+                        targetPos.y = _showPos.transform.position.y + 1;
+                    //锚点在脚下，减去一半身高
+                    transform.position = Vector3.Lerp(transform.position, targetPos - Vector3.up, Time.deltaTime * pickedSpeed);
                 }
                 else if (Input.GetMouseButtonUp(0))
                 {

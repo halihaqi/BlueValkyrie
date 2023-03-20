@@ -2,6 +2,7 @@
 using System.Linq;
 using Game.GameScene;
 using Game.Model;
+using Game.Model.BattleModel;
 using Game.Utils;
 using Hali_Framework;
 using UnityEngine;
@@ -11,6 +12,7 @@ namespace Game.Managers
     public class PlayerMgr : Singleton<PlayerMgr>, IModule
     {
         private PlayerItem _curPlayer;
+        private int _curFormationIndex = 0;
         private RoleInfo _secretaryInfo;
 
         private PlayerController _playerEntity;
@@ -58,7 +60,15 @@ namespace Game.Managers
                 ShopMaster = new BagMaster(_curPlayer.ShopItem);
             }
         }
-        
+
+        public FormationItem CurFormation => CurPlayer.Formation[_curFormationIndex];
+
+        public int CurFormationIndex
+        {
+            get => _curFormationIndex;
+            set => _curFormationIndex = value;
+        }
+
         public BagMaster BagMaster { get; private set; }
         
         public BagMaster ShopMaster { get; private set; }

@@ -89,6 +89,17 @@ namespace Hali_Framework
 
             return null;
         }
+        
+        public PanelEntity GetPanel<T>() where T : PanelBase
+        {
+            foreach (var info in _panelInfos)
+            {
+                if (info.PanelEntity.Logic.GetType() == typeof(T))
+                    return info.PanelEntity;
+            }
+
+            return null;
+        }
 
         private PanelInfo GetPanelInfo(PanelEntity panelEntity)
         {
@@ -171,9 +182,8 @@ namespace Hali_Framework
         /// 激活界面
         /// </summary>
         /// <param name="panelEntity"></param>
-        /// <param name="userData"></param>
         /// <exception cref="Exception"></exception>
-        internal void RefocusPanel(PanelEntity panelEntity, object userData)
+        internal void RefocusPanel(PanelEntity panelEntity)
         {
             var info = GetPanelInfo(panelEntity);
             if (info == null)

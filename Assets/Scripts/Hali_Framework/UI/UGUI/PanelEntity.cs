@@ -210,6 +210,12 @@ namespace Hali_Framework
             _customRecycleDelay = 0;
         }
 
+        public void Fade(bool isShow)
+        {
+            StopAllCoroutines();
+            StartCoroutine(FadeInOut(isShow));
+        }
+
         internal void AddAlphaUpdateListener(Action<float> callback)
         {
             _alphaUpdateEvent -= callback;

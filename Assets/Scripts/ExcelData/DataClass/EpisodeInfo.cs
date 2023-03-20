@@ -8,5 +8,8 @@ public class EpisodeInfo
     public int[] rareItems;
     public int[] rareItemNum;
     public int round;
-    public int prefectRound;
+    public int perfectRound;
+    public int perfectTime;
+    public int perfectDieCount;
+    public int[] enemy;
 }

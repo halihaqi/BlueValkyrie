@@ -4,6 +4,16 @@ using Hali_Framework;
 
 namespace Game.Model
 {
+    public enum AtkType
+    {
+        Null,
+        SMG,
+        MG,
+        SG,
+        SR,
+        RL
+    }
+    
     [Serializable]
     public class StudentItem
     {
@@ -16,6 +26,8 @@ namespace Game.Model
         public int baseAtk;
         public int baseDef;
         public int baseAmmo;
+        public int atkType;
+        public int atkRange;
         
         public int lv;
         public int star;
@@ -32,6 +44,8 @@ namespace Game.Model
         public int Ap => baseAp + equips[3]?.attribute ?? baseAp;
 
         public int Ammo => baseAmmo;
+
+        public AtkType AtkType => (AtkType)atkType;
         
         public StudentItem(){}
 
@@ -43,6 +57,8 @@ namespace Game.Model
             baseAtk = info.baseAtk;
             baseDef = info.baseDef;
             baseAmmo = info.baseAmmo;
+            atkType = info.atkType;
+            atkRange = info.atkRange;
 
             lv = 1;
             star = 1;
@@ -62,6 +78,8 @@ namespace Game.Model
             baseAtk = info.baseAtk;
             baseDef = info.baseDef;
             baseAmmo = info.baseAmmo;
+            atkType = info.atkType;
+            atkRange = info.atkRange;
 
             lv = 1;
             star = 1;

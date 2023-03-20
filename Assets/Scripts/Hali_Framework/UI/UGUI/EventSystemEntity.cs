@@ -4,6 +4,8 @@ using UnityEngine.EventSystems;
 
 namespace Hali_Framework
 {
+    [RequireComponent(typeof(EventSystem))]
+    [RequireComponent(typeof(StandaloneInputModule))]
     public class EventSystemEntity : MonoBehaviour
     {
         private EventSystem _eventSystem;
@@ -12,10 +14,9 @@ namespace Hali_Framework
         private void Awake()
         {
             DontDestroyOnLoad(this);
-            if (!gameObject.TryGetComponent(out _eventSystem))
-                _eventSystem = gameObject.AddComponent<EventSystem>();
-            if (!gameObject.TryGetComponent(out _standaloneInputModule))
-                _standaloneInputModule = gameObject.AddComponent<StandaloneInputModule>();
+            _eventSystem = GetComponent<EventSystem>();
+            _standaloneInputModule = GetComponent<StandaloneInputModule>();
+            gameObject.layer = LayerMask.NameToLayer("UI");
         }
     }
 }

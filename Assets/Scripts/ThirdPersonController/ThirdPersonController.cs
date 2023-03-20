@@ -8,7 +8,6 @@ public class ThirdPersonController : MonoBehaviour
     [Header("Base")]
     public float moveSpeed = 3;
     public float sprintSpeed = 5;
-    public float rotateSpeed = 50;
     public float rotateSmoothTime = 0.12f;
     public float jumpForce = 1;
 
@@ -36,6 +35,9 @@ public class ThirdPersonController : MonoBehaviour
     public bool useSprint = true;
     public bool useJump = true;
     public bool useAnim = true;
+    public bool useMove = true;
+    public bool useRotate = true;
+    public bool useGravity = true;
 
     //输入参数
     private Vector2 _inputLook;
@@ -53,29 +55,19 @@ public class ThirdPersonController : MonoBehaviour
     private bool _isGrounded = true;
 
     //相机参数
-    protected ThirdPersonCam thirdPersonCam;
+    [HideInInspector] public ThirdPersonCam thirdPersonCam;
     private float _camTargetYaw;
     private float _camTargetPitch;
 
     //Component
-    protected Animator anim;
-    protected CharacterController cc;
+    [HideInInspector] public Animator anim;
+    [HideInInspector] public CharacterController cc;
     private bool _hasAnim;
     private static readonly int Speed = Animator.StringToHash("speed");
     private static readonly int Ground = Animator.StringToHash("ground");
     private static readonly int Jump = Animator.StringToHash("jump");
 
-    protected bool IsMove
-    {
-        get => _inputMove.magnitude > 0;
-        set
-        {
-            if (value) return;
-            
-            _inputLook = Vector2.zero;
-            _inputMove = Vector2.zero;
-        }
-    }
+    public bool IsMove => useMove && InputMgr.Instance.Enabled && _inputMove.magnitude > 0;
 
     protected virtual void Awake()
     {
@@ -97,8 +89,6 @@ public class ThirdPersonController : MonoBehaviour
             if (thirdPersonCam.followTarget == null)
                 throw new Exception("Player camera has no follow target.");
         }
-
-        followCamera.transform.position = this.transform.position - this.transform.forward;
 
         //打开输入监听
         InputMgr.Instance.Enabled = true;
@@ -152,8 +142,8 @@ public class ThirdPersonController : MonoBehaviour
     /// </summary>
     private void UpdateInput()
     {
-        _inputLook = InputMgr.Instance.GetInputLook;
-        _inputMove = InputMgr.Instance.GetInputMove;
+        _inputLook = InputMgr.Instance.InputLook;
+        _inputMove = InputMgr.Instance.InputMove;
     }
 
     /// <summary>
@@ -161,6 +151,12 @@ public class ThirdPersonController : MonoBehaviour
     /// </summary>
     private void Move()
     {
+        if(!useMove)
+        {
+            if(_hasAnim && useAnim)
+                anim.SetFloat(Speed, 0);
+            return;
+        }
         //判断是否为冲刺速度
         float targetSpeed = _isInputShift ? sprintSpeed : moveSpeed;
 
@@ -196,6 +192,7 @@ public class ThirdPersonController : MonoBehaviour
     /// </summary>
     private void GroundHeadCheck()
     {
+        if(!useGravity) return;
         var pos = transform.position;
         Vector3 feetPosition =
             new Vector3(pos.x, pos.y - groundOffset, pos.z);
@@ -213,6 +210,11 @@ public class ThirdPersonController : MonoBehaviour
     /// </summary>
     private void Gravity()
     {
+        if (!useGravity)
+        {
+            _isGrounded = true;
+            return;
+        }
         if (_hasAnim && useAnim)
             anim.SetBool(Ground, _isGrounded);
         
@@ -241,6 +243,7 @@ public class ThirdPersonController : MonoBehaviour
     /// </summary>
     private void CameraTargetRotation()
     {
+        if(!useRotate) return;
         //如果输入大于阈值
         if (_inputLook.sqrMagnitude >= _threshold)
         {
@@ -251,7 +254,7 @@ public class ThirdPersonController : MonoBehaviour
         _camTargetYaw = TransformUtils.ClampAngle(_camTargetYaw, float.MinValue, float.MaxValue);
         _camTargetPitch = TransformUtils.ClampAngle(_camTargetPitch, bottomClamp, topClamp);
         //移动相机目标点
-        thirdPersonCam.followTarget.rotation = Quaternion.Euler(_camTargetPitch, _camTargetYaw, 0);
+        followTarget.rotation = Quaternion.Euler(_camTargetPitch, _camTargetYaw, 0);
     }
 
     private void OnDrawGizmosSelected()

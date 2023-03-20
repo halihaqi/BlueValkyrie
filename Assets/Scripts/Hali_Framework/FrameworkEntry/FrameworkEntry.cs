@@ -30,10 +30,12 @@ namespace Hali_Framework
             RegisterModule(ShopMgr.Instance);
             RegisterModule(BattleMgr.Instance);
             RegisterModule(StudentMgr.Instance);
+            RegisterModule(EpisodeMgr.Instance);
             
             InitModules();
             MonoMgr.Instance.AddUpdateListener(Update);
 
+            UIMgr.Instance.AddUIGroup(GameConst.UIGROUP_WORLD, -1);
             UIMgr.Instance.AddUIGroup(GameConst.UIGROUP_PANEL, 0);
             UIMgr.Instance.AddUIGroup(GameConst.UIGROUP_POP, 1);
             UIMgr.Instance.AddUIGroup(GameConst.UIGROUP_TIP, 2);

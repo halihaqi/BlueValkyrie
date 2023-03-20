@@ -87,7 +87,15 @@ namespace Hali_Framework
                 return fsm;
             return null;
         }
-        
+
+        /// <summary>
+        /// 获取有限状态机。
+        /// </summary>
+        /// <param name="name">要获取的有限状态机。</param>
+        /// <typeparam name="T">状态机持有者类型。</typeparam>
+        /// <returns></returns>
+        public Fsm<T> GetFsm<T>(string name) where T : class => GetFsm(name) as Fsm<T>;
+
         /// <summary>
         /// 获取所有有限状态机。
         /// </summary>

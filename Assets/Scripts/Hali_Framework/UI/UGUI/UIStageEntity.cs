@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -8,109 +8,156 @@ namespace Hali_Framework
     public class UIStageEntity : MonoBehaviour
     {
         [SerializeField] private Transform container;
-        [SerializeField] private Camera uiCamera;
+        [SerializeField] private Camera stageCamera;
         [SerializeField] private Transform pool;
 
-        private Dictionary<string, GameObject> _pool;
-        private Dictionary<string, UnityAction<GameObject>> _loadingDic;
-        private string _curPath;
-        private GameObject _curObj;
+        private Dictionary<string, GameObject> _poolObjs;
+        private Dictionary<string, GameObject> _showObjs;
+        private List<string> _recycleList;
+        private List<string> _removeList;
+        private bool _isClearing = false;
+        private RenderTexture _rt;
 
-        public GameObject CurObj => _curObj;
+        public RenderTexture RT => _rt;
+
+        public Camera StageCamera => stageCamera;
 
         private void Awake()
         {
             DontDestroyOnLoad(this.gameObject);
-            _pool = new Dictionary<string, GameObject>();
-            _loadingDic = new Dictionary<string, UnityAction<GameObject>>();
-            uiCamera.gameObject.SetActive(false);
+            _poolObjs = new Dictionary<string, GameObject>();
+            _showObjs = new Dictionary<string, GameObject>();
+            _recycleList = new List<string>();
+            _removeList = new List<string>();
+            stageCamera.gameObject.SetActive(false);
+        }
+
+        private void Update()
+        {
+            for (int i = 0; i < _recycleList.Count; i++)
+            {
+                var path = _recycleList[i];
+                if(_showObjs[path] == null) continue;
+                PushObj(path);
+                _removeList.Add(path);
+            }
+
+            for (int i = 0; i < _removeList.Count; i++)
+                _recycleList.Remove(_removeList[i]);
+            _removeList.Clear();
         }
 
 
         public void ShowObj(string path, UnityAction<GameObject> callback)
         {
-            //先隐藏当前的再显示
-            HideCurObj();
-            uiCamera.gameObject.SetActive(true);
+            if(_isClearing) return;
+            
+            //如果还未回收但是进入回收队列，移出回收队列
+            if (_recycleList.Contains(path))
+                _recycleList.Remove(path);
+            
+            stageCamera.gameObject.SetActive(true);
+            //如果show完了又show，相当于更新
+            //如果没加载完又show，直接返回
+            if (_showObjs.ContainsKey(path))
+            {
+                if(_showObjs[path] != null)
+                    callback?.Invoke(_showObjs[path]);
+                return;
+            }
             PopObj(path, callback);
         }
 
-        public void HideCurObj()
+        public void RecycleObj(string path)
         {
-            uiCamera.gameObject.SetActive(false);
-            if(string.IsNullOrEmpty(_curPath)) return;
-            //如果正在加载，加载完成后Push进池
-            if (_curObj == null)
-            {
-                _loadingDic[_curPath] += obj =>
-                {
-                    PushObj(_curPath, obj);
-                    _curObj = null;
-                    _curPath = null;
-                };
-                return;
-            }
-            
-            PushObj(_curPath, _curObj);
-            _curObj = null;
-            _curPath = null;
+            if(_isClearing) return;
+            if(_showObjs.ContainsKey(path) && !_recycleList.Contains(path))
+                _recycleList.Add(path);
         }
 
-        public void ClearObj()
+        public void RecycleAll()
         {
-            HideCurObj();
-            uiCamera.gameObject.SetActive(false);
-            foreach (var obj in _pool.Values)
+            if(_isClearing) return;
+            foreach (var path in _showObjs.Keys)
             {
-                Destroy(obj);
+                if(!_recycleList.Contains(path))
+                    _recycleList.Add(path);
             }
-            _pool.Clear();
-            foreach (var path in _loadingDic.Keys)
-            {
-                _loadingDic[path] += obj => Destroy(obj);
-            }
-            _loadingDic.Clear();
+        }
+
+        public void Clear()
+        {
+            if(_isClearing) return;
+            StartCoroutine(ClearCoroutine());
+        }
+
+        public RenderTexture BindRT(int width, int height, int depth)
+        {
+            if (_rt != null && _rt.width == width && _rt.height == height)
+                return _rt;
+
+            _rt = new RenderTexture(width, height, depth);
+            stageCamera.targetTexture = _rt;
+            return _rt;
+        }
+
+        public void SetCameraSize(float size)
+        {
+            stageCamera.orthographicSize = size;
         }
 
         private void PopObj(string path, UnityAction<GameObject> callback)
         {
-            //防止重复加载
-            if(_loadingDic.ContainsKey(path)) return;
-
-            _curObj = null;
-            if (_pool.ContainsKey(path))
+            if (_poolObjs.ContainsKey(path))
             {
-                _curObj = _pool[path];
-                _curPath = path;
-                _pool.Remove(path);
-                _curObj.transform.SetParent(container, false);
-                _curObj.SetActive(true);
-                callback?.Invoke(_curObj);
+                var obj = _poolObjs[path];
+                _poolObjs.Remove(path);
+                _showObjs.Add(path, obj);
+                obj.transform.SetParent(container, false);
+                obj.SetActive(true);
+                callback?.Invoke(obj);
                 return;
             }
-
-            _curPath = path;
-            _loadingDic.Add(path, callback);
-            ResMgr.Instance.LoadAsync<GameObject>(path, obj =>
+            
+            _showObjs.Add(path, null);
+            ResMgr.Instance.LoadAsync<GameObject>(path, go =>
             {
-                _curObj = obj;
-                obj.SetActive(true);
-                obj.transform.SetParent(container, false);
-                _loadingDic[path]?.Invoke(obj);
-                _loadingDic.Remove(path);
+                _showObjs[path] = go;
+                go.SetActive(true);
+                go.transform.SetParent(container, false);
+                callback?.Invoke(go);
             });
         }
 
-        private void PushObj(string path, GameObject obj)
+        private void PushObj(string path)
         {
-            if (_pool.ContainsKey(path))
-            {
-                Destroy(obj);
-                return;
-            }
+            var obj = _showObjs[path];
+            _showObjs.Remove(path);
             obj.SetActive(false);
             obj.transform.SetParent(pool, false);
-            _pool.Add(path, obj);
+            _poolObjs.Add(path, obj);
+        }
+
+        private IEnumerator ClearCoroutine()
+        {
+            //先全部入池
+            RecycleAll();
+            _isClearing = true;
+            stageCamera.gameObject.SetActive(false);
+            while (_recycleList.Count > 0)
+            {
+                yield return null;
+            }
+            
+            //再将池清空
+            foreach (var poolObj in _poolObjs.Values)
+            {
+                Destroy(poolObj);
+            }
+            _poolObjs.Clear();
+            _showObjs.Clear();
+            _recycleList.Clear();
+            _isClearing = false;
         }
     }
 }

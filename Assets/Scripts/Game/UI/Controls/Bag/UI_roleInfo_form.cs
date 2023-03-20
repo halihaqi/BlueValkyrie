@@ -11,7 +11,8 @@ namespace Game.UI.Controls
     public class UI_roleInfo_form : ControlBase
     {
         private const int STAR_WIDTH = 147;
-        
+
+        private RawImage _roleContainer;
         private Image _imgStar;
         private Slider _sldExp;
         private Text _txtSchool;
@@ -31,6 +32,7 @@ namespace Game.UI.Controls
             _txtExp = GetControl<Text>("txt_exp");
             _sldExp = GetControl<Slider>("sld_exp");
             _imgStar = GetControl<Image>("img_star");
+            _roleContainer = GetControl<RawImage>("role_container");
         }
 
         protected internal override void OnRecycle()
@@ -50,7 +52,10 @@ namespace Game.UI.Controls
             _roleInfo = RoleMgr.Instance.GetRole(student.roleId);
             _txtName.text = _roleInfo.fullName;
             _txtSchool.text = _roleInfo.belong;
+            UIMgr.Instance.BindStageRT(_roleContainer);
+            UIMgr.Instance.SetStageSize(1.08f);
             UpdateView();
+            UIMgr.Instance.RecycleAllModel();
             UIMgr.Instance.ShowModel(ResPath.GetStudentObj(_roleInfo), OnRoleLoad);
         }
 

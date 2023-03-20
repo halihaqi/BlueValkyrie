@@ -18,6 +18,7 @@ namespace Hali_Framework
         
         //UI
         //UI组名
+        public const string UIGROUP_WORLD = "World";
         public const string UIGROUP_PANEL = "Panel";
         public const string UIGROUP_POP = "Pop";
         public const string UIGROUP_TIP = "Tip";
@@ -43,5 +44,8 @@ namespace Hali_Framework
         
         //Tag
         public const string PLAYER_TAG = "Player";
+        public const string STUDENT_TAG = "Student";
+        public const string ENEMY_TAG = "Enemy";
+        public const string SHELTER_TAG = "Shelter";
     }
 }

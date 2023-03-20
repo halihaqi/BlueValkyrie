@@ -7,6 +7,9 @@ namespace Hali_Framework
 {
     public class SceneMgr : Singleton<SceneMgr>, IModule
     {
+        private bool _isManualControlLoad = false;
+        private bool _isManualCompleteLoad = false;
+        
         public int Priority => 1;
         void IModule.Init()
         {
@@ -54,16 +57,24 @@ namespace Hali_Framework
         /// </summary>
         /// <param name="sceneName">场景名</param>
         /// <param name="callback">加载完成的回调</param>
-        public void LoadSceneWithPanel<T>(string sceneName, UnityAction callback) where T : PanelBase
+        /// <param name="isAutoHide">是否自动隐藏Loading界面</param>
+        public void LoadSceneWithPanel<T>(string sceneName, UnityAction callback, bool isAutoHide = true) where T : PanelBase
         {
+            _isManualControlLoad = !isAutoHide;
             //先显示LoadingUI
             UIMgr.Instance.ShowPanel<T>(GameConst.UIGROUP_SYS, callback: panel =>
             {
                 //显示完后开始切换场景
                 ResMgr.Instance.ClearAllRes();
                 ObjectPoolMgr.Instance.Clear();
-                MonoMgr.Instance.StartCoroutine(AsyncLoadWithPanel(sceneName, panel, callback));
+                MonoMgr.Instance.StartCoroutine(AsyncLoadWithPanel(sceneName, panel, callback, isAutoHide));
             });
+        }
+
+        public void ManualCompleteLoad()
+        {
+            if(!_isManualControlLoad) return;
+            _isManualCompleteLoad = true;
         }
 
         public bool IsCurScene(string sceneName) => SceneManager.GetActiveScene().name == sceneName;
@@ -83,7 +94,7 @@ namespace Hali_Framework
         }
 
         //异步加载场景协程(有UI遮挡)
-        IEnumerator AsyncLoadWithPanel(string name, PanelBase panel, UnityAction callback)
+        IEnumerator AsyncLoadWithPanel(string name, PanelBase panel, UnityAction callback, bool isAutoHide)
         {
             //申明toProgress表示假的加载进度
             //因为ao.progress在加载小场景时变化太快，效果不好
@@ -115,12 +126,21 @@ namespace Hali_Framework
                 EventMgr.Instance.TriggerEvent(ClientEvent.LOADING, toProgress);
                 yield return toProgress;
             }
-            toProgress = 100;
-            EventMgr.Instance.TriggerEvent(ClientEvent.LOADING, toProgress);
             //等一帧，为界面更新提供时机
             yield return null;
-            callback?.Invoke();
+            if (!isAutoHide)
+            {
+                while (!_isManualCompleteLoad)
+                    yield return null;
+            }
+
+            _isManualControlLoad = false;
+            _isManualCompleteLoad = false;
+            
+            toProgress = 100;
+            EventMgr.Instance.TriggerEvent(ClientEvent.LOADING, toProgress);
             UIMgr.Instance.HidePanel(panel);
+            callback?.Invoke();
             EventMgr.Instance.TriggerEvent(ClientEvent.LOAD_COMPLETE);
         }
     }

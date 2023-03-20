@@ -45,9 +45,16 @@ namespace Hali_Framework
         {
             if (!_enabled) return;
             
+            KeyCheck(KeyCode.W);
+            KeyCheck(KeyCode.A);
+            KeyCheck(KeyCode.S);
+            KeyCheck(KeyCode.D);
+            
             KeyCheck(KeyCode.B);
             KeyCheck(KeyCode.Q);
             KeyCheck(KeyCode.E);
+            KeyCheck(KeyCode.F);
+            KeyCheck(KeyCode.R);
             KeyCheck(KeyCode.P);
             KeyCheck(KeyCode.Tab);
             KeyCheck(KeyCode.Escape);
@@ -77,9 +84,9 @@ namespace Hali_Framework
             }
         }
 
-        public Vector2 GetInputMove => _inputMoveDelta;
+        public Vector2 InputMove => _inputMoveDelta;
 
-        public Vector2 GetInputLook => _inputMouseDelta;
+        public Vector2 InputLook => _inputMouseDelta;
 
         #endregion
     }

@@ -200,7 +200,14 @@ namespace Hali_Framework
         {
             foreach (var type in _addControlDic.Keys)
             {
-                RemoveCustomControl(type);
+                if (_addControlDic.ContainsKey(type))
+                {
+                    foreach (var cb in _addControlDic[type])
+                    {
+                        cb.OnRecycle();
+                        Destroy(cb.gameObject);
+                    }
+                }
             }
             _addControlDic.Clear();
         }

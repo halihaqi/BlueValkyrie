@@ -35,13 +35,15 @@ namespace Game.BeginScene
         protected override void Awake()
         {
             base.Awake();
-            
+            _cachedRoles = new Dictionary<int, RoleChooseEntity>();
+        }
+
+        private void Start()
+        {
             //设置开始人物动画
             var animators = beginPos.GetComponentsInChildren<Animator>();
             for (var i = 0; i < animators.Length; i++)
                 animators[i].SetLayerWeight(1, 1);
-
-            _cachedRoles = new Dictionary<int, RoleChooseEntity>();
         }
 
         private void BornRole(int roleId)
