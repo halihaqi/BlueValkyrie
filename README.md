@@ -1,4 +1,5 @@
-# BlueValkyrie （施工中。。。）
+# BlueValkyrie 
+![](https://img.shields.io/badge/version-0.3.1-blue)
 ## 目前实现功能：
 - 选角
 - 存读档
