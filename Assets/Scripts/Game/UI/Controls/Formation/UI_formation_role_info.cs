@@ -3,9 +3,9 @@ using Game.Model;
 using Hali_Framework;
 using UnityEngine.UI;
 
-namespace Game.UI.Controls.Formation
+namespace Game.UI.Controls
 {
-    public class UI_formation_role_info : ControlBase
+    public partial class UI_formation_role_info : ControlBase
     {
         private Text _txtStar;
         private Text _txtLv;

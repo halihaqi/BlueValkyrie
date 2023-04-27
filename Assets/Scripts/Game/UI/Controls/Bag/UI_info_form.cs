@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace Game.UI.Controls
 {
-    public class UI_info_form : ControlBase
+    public partial class UI_info_form : ControlBase
     {
         private Image _imgItem;
         private ControlGroup _attributeGroup;

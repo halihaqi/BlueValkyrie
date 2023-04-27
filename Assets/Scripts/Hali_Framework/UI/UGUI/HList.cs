@@ -66,11 +66,7 @@ namespace Hali_Framework
         private int _firstIndex;
         private int _lastIndex;
         private uint _itemInfoVer;//用来标志item是否在本次处理中已被重用
-        
-        //Custom Drag
-        private Vector2 _pointerStartLocalCursor;
-        private Vector2 _contentStartPosition;
-        
+
 
         public RectTransform Content => _sv.content;
         

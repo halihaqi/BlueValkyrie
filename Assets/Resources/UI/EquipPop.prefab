@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6622039256449873487}
   - component: {fileID: 6820947317539284805}
   - component: {fileID: 3401801757793446795}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: EquipPop
   m_TagString: Untagged
   m_Icon: {fileID: 0}

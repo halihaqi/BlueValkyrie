@@ -8,38 +8,28 @@ using UnityEngine.UI;
 
 namespace Game.UI.Controls
 {
-    public class UI_bag_form : ControlBase
+    public partial class UI_bag_form : ControlBase
     {
         private List<BagItemInfo> _items;
         private int _bagId;
 
-        private HList _list;
-        private Button _btnSift;
-        private Button _btnSort;
-        private Image _imgSortArrow;
-
         protected internal override void OnInit()
         {
             base.OnInit();
-            _list = GetControl<HList>("sv_bag");
-            _btnSift = GetControl<Button>("btn_sift");
-            _btnSort = GetControl<Button>("btn_sort");
-            _imgSortArrow = GetControl<Image>("img_sort_arrow");
-
-            _list.itemRenderer = OnItemRenderer;
-            _list.onClickItem = OnItemClick;
+            sv_bag.itemRenderer = OnItemRenderer;
+            sv_bag.onClickItem = OnItemClick;
         }
 
         protected internal override void OnRecycle()
         {
             base.OnRecycle();
-            _btnSort.onClick.RemoveListener(OnSortClick);
+            btn_sort.onClick.RemoveListener(OnSortClick);
         }
 
         public void SetData(int bagId)
         {
-            _btnSort.onClick.RemoveListener(OnSortClick);
-            _btnSort.onClick.AddListener(OnSortClick);
+            btn_sort.onClick.RemoveListener(OnSortClick);
+            btn_sort.onClick.AddListener(OnSortClick);
             _bagId = bagId;
             _items = PlayerMgr.Instance.BagMaster.GetAllVisibleItems(bagId);
             if (_items == null)
@@ -54,14 +44,14 @@ namespace Game.UI.Controls
 
         public void SetData(List<BagItemInfo> items)
         {
-            _btnSort.onClick.AddListener(OnSortClick);
+            btn_sort.onClick.AddListener(OnSortClick);
             _items = items ?? throw new Exception("Has no bag with id:{bagId}.");
             UpdateView();
         }
 
         private void UpdateView()
         {
-            _list.numItems = _items.Count;
+            sv_bag.numItems = _items.Count;
         }
 
         private void OnItemRenderer(int index, GameObject obj)
@@ -80,13 +70,13 @@ namespace Game.UI.Controls
 
         private void OnSortClick()
         {
-            Vector3 newScale = _imgSortArrow.rectTransform.localScale;
+            Vector3 newScale = img_sort_arrow.rectTransform.localScale;
             newScale.y = -newScale.y;
-            _imgSortArrow.rectTransform.localScale = newScale;
+            img_sort_arrow.rectTransform.localScale = newScale;
             
             PlayerMgr.Instance.BagMaster.SortBagById(_bagId, newScale.y < 0);
             _items = PlayerMgr.Instance.BagMaster.GetAllVisibleItems(_bagId);
-            _list.RefreshList();
+            sv_bag.RefreshList();
         }
     }
 }

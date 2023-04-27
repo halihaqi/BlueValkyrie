@@ -11,7 +11,7 @@ using UnityEngine.UI;
 
 namespace Game.UI.Controls.LevelUp
 {
-    public class UI_lv_group : ControlBase
+    public partial class UI_lv_group : ControlBase
     {
         private Slider _sldExp;
         private Slider _sldExpAdd;

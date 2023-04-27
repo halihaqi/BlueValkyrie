@@ -5,7 +5,6 @@ using Game.Global;
 using Game.Managers;
 using Game.Model;
 using Game.UI.Controls;
-using Game.UI.Controls.Formation;
 using Game.Utils;
 using Hali_Framework;
 using UnityEngine;
@@ -19,8 +18,8 @@ namespace Game.UI.Game
     {
         private static readonly Vector3[] _rolePos =
         {
-            new Vector3(1.88f, 0, 0), new Vector3(0.53f, 0, 0), 
-            new Vector3(-0.82f, 0, 0), new Vector3(-2.17f, 0, 0)
+            new Vector3(2.28f, -0.11f, 0), new Vector3(0.62f, -0.11f, 0), 
+            new Vector3(-1.04f, -0.11f, 0), new Vector3(-2.7f, -0.11f, 0)
         };
 
         private UI_hub_form _hubForm;
@@ -66,7 +65,7 @@ namespace Game.UI.Game
             _hubForm.SetData(HideMe);
             _svFormationList.numItems = PlayerMgr.Instance.CurPlayer.Formation.Count;
             UIMgr.Instance.BindStageRT(_roleContainer);
-            UIMgr.Instance.SetStageSize(1.5f);
+            UIMgr.Instance.SetStageSize(1.68f);
             UpdateView();
         }
 

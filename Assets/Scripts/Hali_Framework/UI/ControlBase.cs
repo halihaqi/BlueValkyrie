@@ -11,7 +11,6 @@ namespace Hali_Framework
     public abstract class ControlBase : UIBehaviour
     {
         private const char KEY = '_';
-        protected Selectable selectable;
         protected CanvasGroup canvasGroup;
         private Dictionary<string, List<UIBehaviour>> _controlDic;//控件名为键
         private Dictionary<Type, List<ControlBase>> _addControlDic;//自定义控件类为键
@@ -20,10 +19,10 @@ namespace Hali_Framework
         {
             _controlDic = new Dictionary<string, List<UIBehaviour>>();
             _addControlDic = new Dictionary<Type, List<ControlBase>>();
-            selectable = GetComponent<Selectable>();
             canvasGroup = GetComponent<CanvasGroup>();
             //搜索UI组件添加到容器中
             FindChildrenControls(this.transform);
+            BindControls();//用于自动生成控件的成员绑定
         }
 
         protected internal virtual void OnRecycle()
@@ -121,16 +120,15 @@ namespace Hali_Framework
             }
         }
 
-        public void SetSelectableInteractable(bool isInteractable)
-        {
-            if (selectable != null)
-                selectable.interactable = isInteractable;
-        }
+        public void SetInteractable(bool isInteractable)
+            => canvasGroup.interactable = isInteractable;
 
         public void SetBlocksRaycasts(bool enable)
         {
             canvasGroup.blocksRaycasts = enable;
         }
+
+        protected virtual void BindControls(){}
 
         #region CustomControl
 

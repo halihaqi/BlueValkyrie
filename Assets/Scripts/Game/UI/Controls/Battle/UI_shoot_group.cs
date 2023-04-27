@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace Game.UI.Controls.Battle
 {
-    public class UI_shoot_group : ControlBase
+    public partial class UI_shoot_group : ControlBase
     {
         private Image _imgGun;
         private Image _imgNormalPoint;

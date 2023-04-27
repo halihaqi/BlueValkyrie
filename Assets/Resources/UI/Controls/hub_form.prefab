@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7874899317413391243}
   - component: {fileID: 1731370782571895242}
   - component: {fileID: 7852859448708876856}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: imgSplit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -86,7 +86,7 @@ GameObject:
   - component: {fileID: 4308698828025417044}
   - component: {fileID: 6000220262678499491}
   - component: {fileID: 5371113464414206725}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -165,7 +165,7 @@ GameObject:
   - component: {fileID: 2479895710925689033}
   - component: {fileID: 1551959480737014572}
   - component: {fileID: 6766295198949910367}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txtBack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -246,7 +246,7 @@ GameObject:
   - component: {fileID: 6144903479383900800}
   - component: {fileID: 4036826526839551763}
   - component: {fileID: 3334863278376453533}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: btn_back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -380,7 +380,7 @@ GameObject:
   - component: {fileID: 3112742240063706775}
   - component: {fileID: 914247008218092805}
   - component: {fileID: 2380331889028521653}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: imgGem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -455,7 +455,7 @@ GameObject:
   - component: {fileID: 3694754482105114831}
   - component: {fileID: 8348167534073699351}
   - component: {fileID: 2472306585350606235}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: hub_form
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -525,7 +525,7 @@ GameObject:
   - component: {fileID: 3685612410092673889}
   - component: {fileID: 4276619832633340539}
   - component: {fileID: 6331565995843184499}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -600,7 +600,7 @@ GameObject:
   - component: {fileID: 8862718885737941828}
   - component: {fileID: 2012284074624319672}
   - component: {fileID: 4502157497848246996}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: imgGold
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -675,7 +675,7 @@ GameObject:
   - component: {fileID: 5772887663364555888}
   - component: {fileID: 6461299940744149699}
   - component: {fileID: 5620531000292782862}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txt_gem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -754,7 +754,7 @@ GameObject:
   - component: {fileID: 3097506285517587542}
   - component: {fileID: 5865665327377139614}
   - component: {fileID: 1279291113104874039}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: imgBk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -829,7 +829,7 @@ GameObject:
   - component: {fileID: 5397497123251327621}
   - component: {fileID: 4236877484822644839}
   - component: {fileID: 6161607874017539432}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txt_gold
   m_TagString: Untagged
   m_Icon: {fileID: 0}

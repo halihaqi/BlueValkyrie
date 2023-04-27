@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3109110205635545934}
   - component: {fileID: 7469326333835269971}
   - component: {fileID: 8260165977493376144}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ConfirmPop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 2334161257415050973}
   - component: {fileID: 7721687415143128448}
   - component: {fileID: 8255026436756851884}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txt_tip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -179,7 +179,7 @@ GameObject:
   - component: {fileID: 5598510124927407201}
   - component: {fileID: 2397800772790648733}
   - component: {fileID: 765262717822502285}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: imgBk1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -254,7 +254,7 @@ GameObject:
   - component: {fileID: 4093299008601370171}
   - component: {fileID: 8739520613942405658}
   - component: {fileID: 1132570914422034821}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: img1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -329,7 +329,7 @@ GameObject:
   - component: {fileID: 7055673435200299460}
   - component: {fileID: 316921442250804650}
   - component: {fileID: 6053390140463424775}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -409,7 +409,7 @@ GameObject:
   - component: {fileID: 5319385218153136546}
   - component: {fileID: 1770185320242985681}
   - component: {fileID: 2647345459533607375}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: btn_sure
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -529,7 +529,7 @@ GameObject:
   - component: {fileID: 8282978904971524853}
   - component: {fileID: 1804570265918473007}
   - component: {fileID: 7079499385827248014}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -609,7 +609,7 @@ GameObject:
   - component: {fileID: 6030932951790584025}
   - component: {fileID: 3521030382572379616}
   - component: {fileID: 1047622715260114319}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: btn_cancel
   m_TagString: Untagged
   m_Icon: {fileID: 0}

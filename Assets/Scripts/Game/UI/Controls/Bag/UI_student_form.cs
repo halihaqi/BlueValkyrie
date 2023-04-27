@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace Game.UI.Controls
 {
-    public class UI_student_form : ControlBase
+    public partial class UI_student_form : ControlBase
     {
         private Toggle _togEquip;
         private Toggle _togLvl;

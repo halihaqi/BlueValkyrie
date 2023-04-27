@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7718871549114717766}
   - component: {fileID: 2191410031469009904}
   - component: {fileID: 4500309484345951759}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: imgTip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -86,7 +86,7 @@ GameObject:
   - component: {fileID: 1939321878887078832}
   - component: {fileID: 8716357596971904887}
   - component: {fileID: 5378301006888303162}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: img_full
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -165,7 +165,7 @@ GameObject:
   - component: {fileID: 6838794460309567686}
   - component: {fileID: 5532078079183399696}
   - component: {fileID: 8592168581592640228}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: split2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -240,7 +240,7 @@ GameObject:
   - component: {fileID: 8712053294304703023}
   - component: {fileID: 4065304767802982077}
   - component: {fileID: 9209670541918686092}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txt_attri_num
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -319,7 +319,7 @@ GameObject:
   - component: {fileID: 1659786728729857294}
   - component: {fileID: 3077979243189558905}
   - component: {fileID: 789672621089912573}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txt_attri
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -398,7 +398,7 @@ GameObject:
   - component: {fileID: 3579638186057522508}
   - component: {fileID: 134852139942555695}
   - component: {fileID: 5792260565649785526}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: img_empty
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -474,7 +474,7 @@ GameObject:
   - component: {fileID: 3623014479622183455}
   - component: {fileID: 891980705861952272}
   - component: {fileID: 5903441506585738757}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txt_equip_type
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -553,7 +553,7 @@ GameObject:
   - component: {fileID: 8578658494267544640}
   - component: {fileID: 3887783520997810046}
   - component: {fileID: 3461752671399271327}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: equip_item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -618,7 +618,7 @@ GameObject:
   - component: {fileID: 8851320672393716235}
   - component: {fileID: 2898953440769225373}
   - component: {fileID: 4775331622684740022}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: split1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

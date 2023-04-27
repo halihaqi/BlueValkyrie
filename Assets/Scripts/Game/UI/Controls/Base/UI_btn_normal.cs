@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Game.UI.Controls
 {
-    public class UI_btn_normal : ControlBase
+    public partial class UI_btn_normal : ControlBase
     {
         private Button _btn;
         private Text _txtName;

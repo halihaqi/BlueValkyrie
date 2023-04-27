@@ -11,6 +11,7 @@ namespace Game.UI.Battle
 {
     public class BattleRoundPanel : PanelBase
     {
+        [SerializeField] private RectTransform chessTrans;
         private const int CP_WIDTH = 167;
 
         private Image _imgCp;
@@ -26,8 +27,10 @@ namespace Game.UI.Battle
         private Image _imgMask;
 
         private BattleMaster _bm;
+        private bool _isFirstRound;
 
         public RectTransform Map => (RectTransform)_rawMap.transform;
+        public RectTransform ChessTrans => chessTrans;
 
         protected internal override void OnInit(object userData)
         {
@@ -54,15 +57,25 @@ namespace Game.UI.Battle
             base.OnShow(userData);
             _bm = FsmMgr.Instance.GetFsm<BattleMaster>(BattleConst.BATTLE_FSM).Owner;
             Visible = false;
+            EventMgr.Instance.AddListener<bool, int>(ClientEvent.CHESS_CLICK, OnChessClick);
+            EventMgr.Instance.AddListener(ClientEvent.BATTLE_ROUND_RUN, OnRoundRun);
+            EventMgr.Instance.AddListener(ClientEvent.BATTLE_HALF_ROUND_OVER, OnHalfRoundOver);
+            _isFirstRound = true;
+        }
+
+        protected internal override void OnHide(bool isShutdown, object userData)
+        {
+            base.OnHide(isShutdown, userData);
+            EventMgr.Instance.RemoveListener<bool, int>(ClientEvent.CHESS_CLICK, OnChessClick);
+            EventMgr.Instance.RemoveListener(ClientEvent.BATTLE_ROUND_RUN, OnRoundRun);
+            EventMgr.Instance.RemoveListener(ClientEvent.BATTLE_HALF_ROUND_OVER, OnHalfRoundOver);
+            _isFirstRound = false;
         }
 
         protected internal override void OnCover()
         {
             base.OnCover();
             Visible = false;
-            EventMgr.Instance.RemoveListener<bool, int>(ClientEvent.CHESS_CLICK, OnChessClick);
-            EventMgr.Instance.RemoveListener(ClientEvent.BATTLE_ROUND_RUN, OnRoundRun);
-            EventMgr.Instance.RemoveListener(ClientEvent.BATTLE_HALF_ROUND_OVER, OnHalfRoundOver);
         }
 
         protected internal override void OnRefocus(object userData)
@@ -71,16 +84,25 @@ namespace Game.UI.Battle
             Visible = true;
             PanelEntity.Fade(true);
             UpdateView(_bm.RoundEngine);
-            
+            if (_isFirstRound)
+            {
+                _imgMask.gameObject.SetActive(true);
+                _roundTipForm.ShowTip(RoundTipType.BattleStart, () =>
+                {
+                    if (_bm.RoundEngine.IsEnemy)
+                        StartCoroutine(AutoRound());
+                    else
+                        _imgMask.gameObject.SetActive(false);
+                });
+                _isFirstRound = false;
+                return;
+            }
+
             _imgMask.gameObject.SetActive(true);
             if (_bm.RoundEngine.IsEnemy)
                 StartCoroutine(AutoRound());
             else
                 _imgMask.gameObject.SetActive(false);
-            
-            EventMgr.Instance.AddListener<bool, int>(ClientEvent.CHESS_CLICK, OnChessClick);
-            EventMgr.Instance.AddListener(ClientEvent.BATTLE_ROUND_RUN, OnRoundRun);
-            EventMgr.Instance.AddListener(ClientEvent.BATTLE_HALF_ROUND_OVER, OnHalfRoundOver);
         }
 
         protected internal override void OnRecycle()
@@ -89,7 +111,6 @@ namespace Game.UI.Battle
             EventMgr.Instance.RemoveListener<bool, int>(ClientEvent.CHESS_CLICK, OnChessClick);
             EventMgr.Instance.RemoveListener(ClientEvent.BATTLE_ROUND_RUN, OnRoundRun);
             EventMgr.Instance.RemoveListener(ClientEvent.BATTLE_HALF_ROUND_OVER, OnHalfRoundOver);
-            UIMgr.RemoveCustomEventListener(_rawMap, EventTriggerType.PointerClick, OnMapClick);
         }
 
         private void OnChessClick(bool isEnemy, int roleIndex)

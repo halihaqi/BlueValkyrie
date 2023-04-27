@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace Game.UI.Controls.Battle
 {
-    public class UI_battle_student_form : ControlBase
+    public partial class UI_battle_student_form : ControlBase
     {
         private Image _imgHead;
         private Image _imgAtkType;

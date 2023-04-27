@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6334296219684679908}
   - component: {fileID: 6988603874484151950}
   - component: {fileID: 4468333609819034122}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: img01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -86,7 +86,7 @@ GameObject:
   - component: {fileID: 2756720277495511704}
   - component: {fileID: 5286444375398283929}
   - component: {fileID: 4045126215034305018}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: img05
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -161,7 +161,7 @@ GameObject:
   - component: {fileID: 8274818753632972994}
   - component: {fileID: 8395189920261019010}
   - component: {fileID: 8787408796906362082}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: img04
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -236,7 +236,7 @@ GameObject:
   - component: {fileID: 5843760768432092080}
   - component: {fileID: 6659380745574046302}
   - component: {fileID: 5525493664076438176}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: img_cost_item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -311,7 +311,7 @@ GameObject:
   - component: {fileID: 1511513578501942812}
   - component: {fileID: 1120958711171235363}
   - component: {fileID: 6977146278743910106}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txt_cost_num
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -390,7 +390,7 @@ GameObject:
   - component: {fileID: 875449649343403119}
   - component: {fileID: 7212358733285633139}
   - component: {fileID: 2265442928103718458}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txt01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -471,7 +471,7 @@ GameObject:
   - component: {fileID: 8328376980145802076}
   - component: {fileID: 5168920993902597969}
   - component: {fileID: 5831880492323510850}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: btn_buy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -607,7 +607,7 @@ GameObject:
   - component: {fileID: 1161911417520535831}
   - component: {fileID: 1479471312666795543}
   - component: {fileID: 1229716090643564528}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txt_name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -689,7 +689,7 @@ GameObject:
   - component: {fileID: 2328715808906338592}
   - component: {fileID: 8846434288921704500}
   - component: {fileID: 2149517000734324196}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: shop_item
   m_TagString: Untagged
   m_Icon: {fileID: 0}

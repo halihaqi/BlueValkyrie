@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Game.UI.Controls
 {
-    public class UI_attribute_group : ControlBase
+    public partial class UI_attribute_group : ControlBase
     {
         private Text _txtHp;
         private Text _txtAp;

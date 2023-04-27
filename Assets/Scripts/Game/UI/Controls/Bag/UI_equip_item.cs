@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace Game.UI.Controls
 {
-    public class UI_equip_item : ControlBase
+    public partial class UI_equip_item : ControlBase
     {
         private UI_normal_item _normalItem;
         private Text _txtAttri;

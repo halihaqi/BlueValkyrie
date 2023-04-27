@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3453519257385588708}
   - component: {fileID: 1397002368212137139}
   - component: {fileID: 278830743484466175}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: btn_big
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -173,7 +173,7 @@ GameObject:
   - component: {fileID: 2330022836002335512}
   - component: {fileID: 5988353802620195802}
   - component: {fileID: 8880767281661442434}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txt_name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -220,7 +220,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.0693307, g: 0.24283703, b: 0.7735849, a: 1}
+  m_Color: {r: 0.77254903, g: 0.1890402, b: 0.07058821, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -252,7 +252,7 @@ GameObject:
   - component: {fileID: 8894314370056843033}
   - component: {fileID: 8894314370056843035}
   - component: {fileID: 8894314370056843032}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: img_alpha
   m_TagString: Untagged
   m_Icon: {fileID: 0}

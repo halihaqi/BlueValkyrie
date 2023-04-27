@@ -1,8 +1,6 @@
 ﻿using Game.BattleScene;
-using Game.Global;
 using Game.Managers;
 using Game.UI.Controls;
-using Game.UI.Controls.Episode;
 using Game.Utils;
 using Hali_Framework;
 using UnityEngine;

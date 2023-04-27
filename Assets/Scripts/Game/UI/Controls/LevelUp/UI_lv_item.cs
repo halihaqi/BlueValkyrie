@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Game.UI.Controls.LevelUp
 {
-    public class UI_lv_item : ControlBase
+    public partial class UI_lv_item : ControlBase
     {
         private UI_normal_item _normalItem;
         private Text _txtNum;

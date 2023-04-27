@@ -94,7 +94,7 @@ namespace Hali_Framework
         /// <param name="name">要获取的有限状态机。</param>
         /// <typeparam name="T">状态机持有者类型。</typeparam>
         /// <returns></returns>
-        public Fsm<T> GetFsm<T>(string name) where T : class => GetFsm(name) as Fsm<T>;
+        public IFsm<T> GetFsm<T>(string name) where T : class => GetFsm(name) as IFsm<T>;
 
         /// <summary>
         /// 获取所有有限状态机。

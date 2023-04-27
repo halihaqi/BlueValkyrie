@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace Game.UI.Controls
 {
-    public class UI_roleInfo_form : ControlBase
+    public partial class UI_roleInfo_form : ControlBase
     {
         private const int STAR_WIDTH = 147;
 

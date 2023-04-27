@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3393101392627541976}
   - component: {fileID: 6276591786592616564}
   - component: {fileID: 382004876037463167}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: student_chess
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -86,7 +86,7 @@ GameObject:
   - component: {fileID: 1640741696046523843}
   - component: {fileID: 705014507062992128}
   - component: {fileID: 8198818967437119964}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: flag_chess
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -150,7 +150,7 @@ GameObject:
   - component: {fileID: 2421136519922982822}
   - component: {fileID: 4148744518925805873}
   - component: {fileID: 6902217782514352112}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: enemy_chess
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -225,7 +225,7 @@ GameObject:
   - component: {fileID: 5439605318764720524}
   - component: {fileID: 9197956990730073819}
   - component: {fileID: 5977403091211471922}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: none_chess
   m_TagString: Untagged
   m_Icon: {fileID: 0}

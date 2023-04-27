@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4360024009856311186}
   - component: {fileID: 1076163059813496026}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: sld_hp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,7 +102,7 @@ GameObject:
   - component: {fileID: 3448280677593693292}
   - component: {fileID: 2664802222661890891}
   - component: {fileID: 5712251315017095190}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: BattleHpSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -184,7 +184,7 @@ GameObject:
   - component: {fileID: 7643025339117084913}
   - component: {fileID: 7487911563883914442}
   - component: {fileID: 7782219669986881448}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -257,7 +257,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4761625188902701668}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -295,7 +295,7 @@ GameObject:
   - component: {fileID: 5926906153229411256}
   - component: {fileID: 4274633972359934308}
   - component: {fileID: 9011510276394918371}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}

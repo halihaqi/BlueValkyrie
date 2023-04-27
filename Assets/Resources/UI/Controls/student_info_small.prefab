@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3443684971445879934}
   - component: {fileID: 7277480627959478893}
   - component: {fileID: 7513035226855517190}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 5325741402837475712}
   - component: {fileID: 6991813621811367360}
   - component: {fileID: 5802597619792590779}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: img_head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -277,7 +277,7 @@ GameObject:
   - component: {fileID: 4276557236730478879}
   - component: {fileID: 5813843249833266741}
   - component: {fileID: 478870860153817584}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txt_star
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -357,7 +357,7 @@ GameObject:
   - component: {fileID: 644339813589692527}
   - component: {fileID: 5264718843136013649}
   - component: {fileID: 7359068806292851317}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txt_lv
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -451,7 +451,7 @@ GameObject:
   - component: {fileID: 1716549484655774299}
   - component: {fileID: 15371284396283191}
   - component: {fileID: 6011751028159048174}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: imgAlpha
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -527,7 +527,7 @@ GameObject:
   - component: {fileID: 3195483330414396244}
   - component: {fileID: 7525699079574611301}
   - component: {fileID: 6750348333605150698}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: imgMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}

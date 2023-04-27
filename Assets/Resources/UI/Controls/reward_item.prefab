@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6285313424708686246}
   - component: {fileID: 7575445955221058618}
   - component: {fileID: 2334407774082843211}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: reward_item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -74,7 +74,7 @@ GameObject:
   - component: {fileID: 6457859165690639360}
   - component: {fileID: 3722759340713774261}
   - component: {fileID: 6437479551974696725}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -153,7 +153,7 @@ GameObject:
   - component: {fileID: 3531092097361376764}
   - component: {fileID: 3812038639743861230}
   - component: {fileID: 3018875205460751828}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: img_rare
   m_TagString: Untagged
   m_Icon: {fileID: 0}

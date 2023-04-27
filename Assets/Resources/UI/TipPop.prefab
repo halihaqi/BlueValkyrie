@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5628018256349969218}
   - component: {fileID: 639866168457206694}
   - component: {fileID: 4704441707994957454}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: img_bk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 5096328913494889546}
   - component: {fileID: 7019102171447851751}
   - component: {fileID: 8863726510468209506}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txt_tip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -168,7 +168,7 @@ GameObject:
   - component: {fileID: 9122358966584957845}
   - component: {fileID: 2651398330870790020}
   - component: {fileID: 4772250017442144826}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: TipPop
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -87,6 +87,7 @@ namespace Game.BattleScene
         {
             _isGenerateChessOver = false;
             var map = panel.Map;
+            var parent = panel.ChessTrans;
             Dictionary<int, Vector2> chessPosDic;
             Dictionary<int, float> chessRotationDic;
             float camOffset = bm.mapCam.transform.eulerAngles.y;
@@ -102,7 +103,7 @@ namespace Game.BattleScene
                     item.OnInit();
                     item.SetData(bm.flagEntitys[kv.Key].FlagType);
                     var trans = (RectTransform)item.transform;
-                    trans.SetParent(map, false);
+                    trans.SetParent(parent, false);
                     trans.anchoredPosition = kv.Value;
                     flagChesses.Add(obj);
                     ++completeNum;
@@ -126,9 +127,9 @@ namespace Game.BattleScene
                     item.OnInit();
                     item.SetRole(bm.GetStudentEntity(kv.Key));
                     var trans = (RectTransform)item.transform;
-                    trans.SetParent(map, false);
+                    trans.SetParent(parent, false);
                     trans.anchoredPosition = kv.Value;
-                    trans.localRotation = Quaternion.Euler(0, 0, chessRotationDic[kv.Key] + camOffset);
+                    item.rotRect.localRotation = Quaternion.Euler(0, 0, chessRotationDic[kv.Key] + camOffset);
                     studentChesses.Add(obj);
                     ++completeNum;
                 });
@@ -151,9 +152,9 @@ namespace Game.BattleScene
                     item.OnInit();
                     item.SetRole(bm.GetEnemyEntity(kv.Key));
                     var trans = (RectTransform)item.transform;
-                    trans.SetParent(map, false);
+                    trans.SetParent(parent, false);
                     trans.anchoredPosition = kv.Value;
-                    trans.localRotation = Quaternion.Euler(0, 0, chessRotationDic[kv.Key] + camOffset);
+                    item.rotRect.localRotation = Quaternion.Euler(0, 0, chessRotationDic[kv.Key] + camOffset);
                     enemyChesses.Add(obj);
                     ++completeNum;
                 });

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Game.UI.Controls.Battle
 {
-    public class UI_move_group : ControlBase
+    public partial class UI_move_group : ControlBase
     {
         private BattleRoleEntity _curRole;
         private Slider _sldAp;

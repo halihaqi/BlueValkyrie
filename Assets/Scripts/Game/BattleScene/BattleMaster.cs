@@ -213,8 +213,10 @@ namespace Game.BattleScene
                 int def = defer.Student.Def;
                 int hit = Mathf.Max(atk - def, 0);
                 defer.SubHp(hit);
+                Debug.Log($"{atker.name} 对 {defer.name} 造成 {hit} 点伤害.");
                 if (defer.IsDead)
                 {
+                    Debug.Log($"{defer.name} 死亡.");
                     DelayUtils.Instance.Delay(3,1, obj =>
                     {
                         KillRole(true, deferIndex);
@@ -229,10 +231,12 @@ namespace Game.BattleScene
                 int def = defer.EnemyInfo.def;
                 int hit = Mathf.Max(atk - def, 0);
                 defer.SubHp(hit);
+                Debug.Log($"{atker.name} 对 {defer.name} 造成 {hit} 点伤害.");
                 if (defer.IsDead)
                 {
                     DelayUtils.Instance.Delay(3,1, obj =>
                     {
+                        Debug.Log($"{defer.name} 死亡.");
                         KillRole(false, deferIndex);
                     });
                 }

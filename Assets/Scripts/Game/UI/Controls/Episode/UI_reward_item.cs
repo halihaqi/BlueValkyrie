@@ -1,9 +1,9 @@
 ﻿using Hali_Framework;
 using UnityEngine.UI;
 
-namespace Game.UI.Controls.Episode
+namespace Game.UI.Controls
 {
-    public class UI_reward_item : ControlBase
+    public partial class UI_reward_item : ControlBase
     {
         private UI_normal_item _normalItem;
         private Image _imgRare;

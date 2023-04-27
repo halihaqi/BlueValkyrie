@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 namespace Game.UI.Controls.Dialogue
 {
-    public class UI_dialogue_frame : ControlBase
+    public partial class UI_dialogue_frame : ControlBase
     {
         //逐字显示间隔
         private const float INTERVAL = 0.1f;

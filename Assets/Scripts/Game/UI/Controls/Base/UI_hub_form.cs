@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Game.UI.Controls
 {
-    public class UI_hub_form : ControlBase
+    public partial class UI_hub_form : ControlBase
     {
         private Text _txtGold;
         private Text _txtGem;

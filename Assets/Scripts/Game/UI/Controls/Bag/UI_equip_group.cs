@@ -5,7 +5,7 @@ using Hali_Framework;
 
 namespace Game.UI.Controls
 {
-    public class UI_equip_group : ControlBase
+    public partial class UI_equip_group : ControlBase
     {
         private UI_equip_item _equipHat;
         private UI_equip_item _equipBag;

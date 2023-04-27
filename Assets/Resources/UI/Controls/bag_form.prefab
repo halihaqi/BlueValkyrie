@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3226850184204897566}
   - component: {fileID: 2408907724237279544}
   - component: {fileID: 281165866324937858}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Viewport
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: 967318672565071202}
   - component: {fileID: 4347329484536635285}
   - component: {fileID: 3818940596704272015}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: sv_bag
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -214,7 +214,7 @@ MonoBehaviour:
   defaultItem: {fileID: 6778356869862581562, guid: fdc835bce4c1a7e42b4fa62f3b97f839, type: 3}
   defaultItemSize: {x: 0, y: 0}
   layoutType: 1
-  isVirtual: 0
+  isVirtual: 1
   space: {x: 1.9, y: 16.94}
   left: 28.02
   top: 32.3
@@ -241,7 +241,7 @@ GameObject:
   - component: {fileID: 4237008609769773907}
   - component: {fileID: 5451179045291379752}
   - component: {fileID: 1455636939712357379}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: imgBk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -316,7 +316,7 @@ GameObject:
   - component: {fileID: 160435525423613869}
   - component: {fileID: 4163443286588183921}
   - component: {fileID: 8555953817971059967}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: imgTop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -391,7 +391,7 @@ GameObject:
   - component: {fileID: 5051199927912924083}
   - component: {fileID: 4903483416885085804}
   - component: {fileID: 9190518893418552197}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: bag_form
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -458,7 +458,7 @@ GameObject:
   - component: {fileID: 8960813357612424751}
   - component: {fileID: 7768745035905575674}
   - component: {fileID: 3668126184445778945}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: img0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -533,7 +533,7 @@ GameObject:
   - component: {fileID: 7612152821720109017}
   - component: {fileID: 5980029299434776740}
   - component: {fileID: 3174388951684665393}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: img1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -608,7 +608,7 @@ GameObject:
   - component: {fileID: 2610320676218309538}
   - component: {fileID: 7405714622813450691}
   - component: {fileID: 3540081262012660795}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: img_sort_arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -684,7 +684,7 @@ GameObject:
   - component: {fileID: 2030414782611061967}
   - component: {fileID: 1822342399099253386}
   - component: {fileID: 5364007896810690758}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txt_bag_title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -779,7 +779,7 @@ GameObject:
   - component: {fileID: 1758526709481240248}
   - component: {fileID: 8460760343393125636}
   - component: {fileID: 8929806320817622154}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: btn_sift
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -901,7 +901,7 @@ GameObject:
   - component: {fileID: 1038352489340252610}
   - component: {fileID: 993135849579619473}
   - component: {fileID: 1590269907557014665}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: btn_sort
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1020,7 +1020,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8556553295720783594}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1044,7 +1044,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 860, y: 966.7879}
+  m_SizeDelta: {x: 860, y: 343.79596}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &9159290140382214032
 GameObject:
@@ -1058,7 +1058,7 @@ GameObject:
   - component: {fileID: 5853061394650589523}
   - component: {fileID: 8901803242406538899}
   - component: {fileID: 2248454660564846301}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txtSift
   m_TagString: Untagged
   m_Icon: {fileID: 0}

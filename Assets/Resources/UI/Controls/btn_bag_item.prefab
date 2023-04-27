@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5189433938342836899}
   - component: {fileID: 2163212026648313757}
   - component: {fileID: 7693498384320667933}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: imgAlpha
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 930935773276405324}
   - component: {fileID: 6855154724351959802}
   - component: {fileID: 490962041610575482}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: img_choose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -195,7 +195,7 @@ GameObject:
   - component: {fileID: 2388964870571316474}
   - component: {fileID: 5808063012621530307}
   - component: {fileID: 553689613867905102}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txt_num
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -292,7 +292,7 @@ GameObject:
   - component: {fileID: 1177805847026853400}
   - component: {fileID: 3735314962192459624}
   - component: {fileID: 5225371139412373128}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: btn_bag_item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -438,7 +438,7 @@ GameObject:
   - component: {fileID: 4900896983560100040}
   - component: {fileID: 1680353102707276545}
   - component: {fileID: 2852372955282330229}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: imgMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -529,7 +529,7 @@ GameObject:
   - component: {fileID: 8539112160217281472}
   - component: {fileID: 3594019176868380537}
   - component: {fileID: 4610552686081911601}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: img_item
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8011206352678691929}
   - component: {fileID: 1114831772280251097}
   - component: {fileID: 6383963677136701787}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: img_next
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -101,7 +101,7 @@ GameObject:
   - component: {fileID: 228539353341610768}
   - component: {fileID: 1957570551267704285}
   - component: {fileID: 874121835954779518}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: dialogue_frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +157,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   text: "\u793A\u8303\u6587\u5B57"
   offset: 160
-  arrowOffset: 10
   skipCd: 0.3
 --- !u!1 &1771669874365965818
 GameObject:
@@ -170,7 +169,7 @@ GameObject:
   - component: {fileID: 8792753132337992784}
   - component: {fileID: 7199071691206439933}
   - component: {fileID: 6426653134084441755}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txt_dialogue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -249,7 +248,7 @@ GameObject:
   - component: {fileID: 4059696084880128837}
   - component: {fileID: 1534502615616793104}
   - component: {fileID: 2442843823634834985}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: imgBk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -324,7 +323,7 @@ GameObject:
   - component: {fileID: 4528198013353851092}
   - component: {fileID: 2831937179853413167}
   - component: {fileID: 6489708424059028387}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txt_hide
   m_TagString: Untagged
   m_Icon: {fileID: 0}

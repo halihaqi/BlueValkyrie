@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Game.UI.Controls.StarUp
 {
-    public class UI_star_group : ControlBase
+    public partial class UI_star_group : ControlBase
     {
         private const int STAR_WIDTH = 146;
 

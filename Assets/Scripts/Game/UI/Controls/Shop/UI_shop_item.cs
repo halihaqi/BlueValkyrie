@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace Game.UI.Controls
 {
-    public class UI_shop_item : ControlBase
+    public partial class UI_shop_item : ControlBase
     {
         private Button _btnBuy;
         private Text _txtName;

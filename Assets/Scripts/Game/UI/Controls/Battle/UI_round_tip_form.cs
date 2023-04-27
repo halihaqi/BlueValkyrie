@@ -13,9 +13,10 @@ namespace Game.UI.Controls.Battle
         EnemyRound,
         StudentWin,
         EnemyWin,
+        BattleStart,
     }
     
-    public class UI_round_tip_form : ControlBase
+    public partial class UI_round_tip_form : ControlBase
     {
         [SerializeField]
         private Color studentColor;
@@ -30,6 +31,7 @@ namespace Game.UI.Controls.Battle
             { RoundTipType.EnemyRound, "敌方回合" },
             { RoundTipType.StudentWin, "己方胜利" },
             { RoundTipType.EnemyWin, "敌方胜利" },
+            { RoundTipType.BattleStart, "游戏开始" }
         };
 
         protected internal override void OnInit()

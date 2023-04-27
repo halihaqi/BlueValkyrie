@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 namespace Game.UI.Controls
 {
-    public class UI_btn_sl_item : ControlBase
+    public partial class UI_btn_sl_item : ControlBase
     {
         private Image _imgBadge;
         private Image _imgTitleSave;

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Game.UI.Controls.StarUp
 {
-    public class UI_star_item : ControlBase
+    public partial class UI_star_item : ControlBase
     {
         private UI_normal_item _normalItem;
         private Image _imgEmpty;

@@ -6,25 +6,13 @@ using UnityEngine.UI;
 
 namespace Game.UI.Controls
 {
-    public class UI_btn_bag_item : ControlBase
+    public partial class UI_btn_bag_item : ControlBase
     {
         private ItemInfo _item;
         private int _itemNum;
-        
-        private Image _imgItem;
-        private Image _imgChoose;
-        private Text _txtNum;
 
         public ItemInfo Item => _item;
         public int ItemNum => _itemNum;
-
-        protected internal override void OnInit()
-        {
-            base.OnInit();
-            _imgItem = GetControl<Image>("img_item");
-            _imgChoose = GetControl<Image>("img_choose");
-            _txtNum = GetControl<Text>("txt_num");
-        }
 
         protected internal override void OnRecycle()
         {
@@ -34,7 +22,7 @@ namespace Game.UI.Controls
 
         public void SetData(int itemId, int num)
         {
-            _imgChoose.gameObject.SetActive(false);
+            img_choose.gameObject.SetActive(false);
             EventMgr.Instance.AddListener<ItemInfo, int>(ClientEvent.BAG_ITEM_CLICK, OnItemClick);
             
             _item = ItemMgr.Instance.GetItem(itemId);
@@ -44,20 +32,20 @@ namespace Game.UI.Controls
             if(_item == null) return;
             ResMgr.Instance.LoadAsync<Sprite>(GameConst.RES_GROUP_UI, ResPath.GetItemIcon(_item), img =>
             {
-                _imgItem.sprite = img;
+                img_item.sprite = img;
             });
-            _txtNum.text = num.ToXNum();
+            txt_num.text = num.ToXNum();
         }
 
         private void SetNull(bool isNull)
         {
-            _imgItem.gameObject.SetActive(!isNull);
-            _txtNum.gameObject.SetActive(!isNull);
+            img_item.gameObject.SetActive(!isNull);
+            txt_num.gameObject.SetActive(!isNull);
         }
         
         private void OnItemClick(ItemInfo info, int num)
         {
-            _imgChoose.gameObject.SetActive(info.id == _item.id);
+            img_choose.gameObject.SetActive(info.id == _item.id);
         }
     }
 }

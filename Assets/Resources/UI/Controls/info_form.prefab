@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8376547470508500964}
   - component: {fileID: 4804992162063725334}
   - component: {fileID: 7286935219375719174}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txtTip2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 6228614913324287641}
   - component: {fileID: 7257493239934808862}
   - component: {fileID: 4170210885855854688}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txtTip1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,7 +171,7 @@ GameObject:
   - component: {fileID: 3245449579360960691}
   - component: {fileID: 4579272124129879415}
   - component: {fileID: 4671013727089336791}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: attribute_group
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -273,7 +273,7 @@ GameObject:
   - component: {fileID: 3035226214864913939}
   - component: {fileID: 6162737593095195742}
   - component: {fileID: 5831139874032041110}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: info_form
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -344,7 +344,7 @@ GameObject:
   - component: {fileID: 4551899227963222396}
   - component: {fileID: 2372763173695641273}
   - component: {fileID: 2976032198067351008}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: img_item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -419,7 +419,7 @@ GameObject:
   - component: {fileID: 7941381996236149059}
   - component: {fileID: 1878754270135180938}
   - component: {fileID: 933776561774324793}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: imgBk4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -494,7 +494,7 @@ GameObject:
   - component: {fileID: 8799116097989829429}
   - component: {fileID: 1428394201556089444}
   - component: {fileID: 8905416297240263492}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txt_attribute_num
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -573,7 +573,7 @@ GameObject:
   - component: {fileID: 4560839440800807698}
   - component: {fileID: 5659093798050958031}
   - component: {fileID: 2882762304623954635}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: imgBk2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -649,7 +649,7 @@ GameObject:
   - component: {fileID: 5430708537786127866}
   - component: {fileID: 339021099965325052}
   - component: {fileID: 9057483972595692766}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: imgBk1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -724,7 +724,7 @@ GameObject:
   - component: {fileID: 6981683216546925537}
   - component: {fileID: 7046066138632939550}
   - component: {fileID: 313000542717547140}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txt_attribute
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -803,7 +803,7 @@ GameObject:
   - component: {fileID: 8792705514033730033}
   - component: {fileID: 267575359762422027}
   - component: {fileID: 6495644971438519931}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: imgBk3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -879,7 +879,7 @@ GameObject:
   - component: {fileID: 1289389623575907306}
   - component: {fileID: 604667324757131721}
   - component: {fileID: 7966994186332992475}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: imgMask1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -968,7 +968,7 @@ GameObject:
   - component: {fileID: 1575290353358981458}
   - component: {fileID: 1084018665374974070}
   - component: {fileID: 6109695493352071556}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txt_info_tip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1047,7 +1047,7 @@ GameObject:
   - component: {fileID: 1606277632890010891}
   - component: {fileID: 4141404302831702616}
   - component: {fileID: 334518734958781958}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txt_info
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1126,7 +1126,7 @@ GameObject:
   - component: {fileID: 5768900296292685197}
   - component: {fileID: 6220294460666226466}
   - component: {fileID: 7382776031780933097}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: txt_num
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1205,7 +1205,7 @@ GameObject:
   - component: {fileID: 5267264588824415063}
   - component: {fileID: 4224960368793595938}
   - component: {fileID: 2827813220026352415}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: imgAlpha1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

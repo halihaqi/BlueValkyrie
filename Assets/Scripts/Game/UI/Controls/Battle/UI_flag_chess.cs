@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Game.UI.Controls.Battle
 {
-    public class UI_flag_chess : ControlBase
+    public partial class UI_flag_chess : ControlBase
     {
         private Image _noneChess;
         private Image _studentChess;
