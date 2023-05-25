@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using Game.BattleScene;
-using Game.Model;
+﻿using Game.Model;
 using Hali_Framework;
 using UnityEngine;
 

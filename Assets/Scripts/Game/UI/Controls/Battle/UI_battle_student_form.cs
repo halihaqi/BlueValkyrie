@@ -41,7 +41,7 @@ namespace Game.UI.Controls.Battle
         public void SetData(int roleIndex)
         {
             var bm = FsmMgr.Instance.GetFsm<BattleMaster>(BattleConst.BATTLE_FSM).Owner;
-            _student = bm.GetStudentEntity(roleIndex);
+            _student = bm.GetStudent(roleIndex);
 
             ResMgr.Instance.LoadAsync<Sprite>(GameConst.RES_GROUP_UI, ResPath.GetStudentIcon(_student.Student.roleId),
                 spr =>

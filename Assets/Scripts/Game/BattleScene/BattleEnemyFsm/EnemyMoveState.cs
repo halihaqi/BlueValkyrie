@@ -65,10 +65,10 @@ namespace Game.BattleScene.BattleEnemyFsm
 
         private Vector3 CalcMoveTarget(BattleEnemyEntity enemy, BattleMaster bm)
         {
-            var enemys = bm.enemyEntitys;
-            var students = bm.studentEntitys;
+            var enemys = bm.enemies;
+            var students = bm.students;
             var shelters = bm.shelterPos;
-            var flags = bm.flagEntitys;
+            var flags = bm.flags;
             
             //首先寻找最近旗帜
             FlagEntity nearestFlag = flags[0];
@@ -136,7 +136,7 @@ namespace Game.BattleScene.BattleEnemyFsm
 
             BattleStudentEntity target = null;
             float minDis = enemyAtkRange;
-            foreach (var student in bm.studentEntitys)
+            foreach (var student in bm.students)
             {
                 var dis = Vector3.Distance(enemyPos, student.transform.position);
                 if (dis <= minDis)

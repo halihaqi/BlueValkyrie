@@ -16,7 +16,7 @@ namespace Game.BattleScene
             var bm = fsm.Owner;
             bm.overMapEntity.gameObject.SetActive(true);
             bm.cam.gameObject.SetActive(false);
-            foreach (var student in bm.studentEntitys)
+            foreach (var student in bm.students)
             {
                 student.Fsm.ChangeState<StudentRestState>();
                 student.transform.SetParent(bm.overMapEntity.showPos[student.RoleIndex]);

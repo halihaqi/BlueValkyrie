@@ -78,7 +78,7 @@ namespace Game.BattleScene.BattleStudentFsm
             var ray = _role.followCamera.ScreenPointToRay(new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0));
             if (Physics.Raycast(ray, out var hit, _role.AtkRange, ~0, QueryTriggerInteraction.Ignore))
             {
-                _role.Target = _bm.GetEnemyEntity(hit.collider.gameObject);
+                _role.Target = _bm.GetEnemy(hit.collider.gameObject);
                 
                 _bm.BattlePanel.SwitchArrow(_role.Target != null);
                 if(_role.Target != null)

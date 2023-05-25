@@ -13,6 +13,12 @@ namespace Game.Model
         SR,
         RL
     }
+
+    public enum RoleType
+    {
+        Student,
+        Enemy,
+    }
     
     [Serializable]
     public class StudentItem

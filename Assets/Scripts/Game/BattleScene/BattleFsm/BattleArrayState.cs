@@ -101,7 +101,7 @@ namespace Game.BattleScene
                 {
                     var item = obj.GetComponent<UI_flag_chess>();
                     item.OnInit();
-                    item.SetData(bm.flagEntitys[kv.Key].FlagType);
+                    item.SetData(bm.flags[kv.Key].FlagType);
                     var trans = (RectTransform)item.transform;
                     trans.SetParent(parent, false);
                     trans.anchoredPosition = kv.Value;
@@ -125,7 +125,7 @@ namespace Game.BattleScene
                 {
                     var item = obj.GetComponent<UI_battle_chess>();
                     item.OnInit();
-                    item.SetRole(bm.GetStudentEntity(kv.Key));
+                    item.SetRole(bm.GetStudent(kv.Key));
                     var trans = (RectTransform)item.transform;
                     trans.SetParent(parent, false);
                     trans.anchoredPosition = kv.Value;
@@ -150,7 +150,7 @@ namespace Game.BattleScene
                 {
                     var item = obj.GetComponent<UI_battle_chess>();
                     item.OnInit();
-                    item.SetRole(bm.GetEnemyEntity(kv.Key));
+                    item.SetRole(bm.GetEnemy(kv.Key));
                     var trans = (RectTransform)item.transform;
                     trans.SetParent(parent, false);
                     trans.anchoredPosition = kv.Value;

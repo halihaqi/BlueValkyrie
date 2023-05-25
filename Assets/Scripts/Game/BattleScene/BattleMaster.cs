@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using Game.BattleScene.BattleRole;
 using Game.Entity;
+using Game.Model;
 using Game.UI.Battle;
 using Hali_Framework;
 using UnityEngine;
@@ -14,20 +16,31 @@ namespace Game.BattleScene
         Draw,
         ShutDown,
     }
-    
+
+    public class CampInfo
+    {
+        public RoleType campType;
+        public List<FlagEntity> flags;
+        public IBattleRole commander;//指挥官
+        public List<IBattleRole> soldiers;
+    }
+
     public class BattleMaster : MonoBehaviour
     {
         private RoundEngine _roundEngine;
         private IFsm<BattleMaster> _battleFsm;
-        private bool _isCurRoleEnemy; 
-        private int _curRoleIndex = 0;
         private BattleOverType _overType = BattleOverType.NotOver;
+        
+        private IBattleRole _curRole;
+        private int _curRoleIndex = 0;
 
-        public BattleStudentEntity[] studentEntitys;
-        public BattleEnemyEntity[] enemyEntitys;
-        public FlagEntity[] flagEntitys;
-        public Transform[] shelterPos;
-        public OverMapEntity overMapEntity;
+        //战斗阵营
+        private Dictionary<RoleType, CampInfo> _camps;
+        private IBattleRole[] students;
+        private IBattleRole[] enemies;
+        private FlagEntity[] flags;
+        private Transform[] shelterPos;
+        private OverMapEntity overMapEntity;
 
         public Camera mapCam;
         public Camera cam;
@@ -36,12 +49,12 @@ namespace Game.BattleScene
         public BattlePanel BattlePanel { get; set; }
         public BattleRoundPanel BattleRoundPanel { get; set; }
 
-        public BattleRoleEntity CurRole =>
-            _isCurRoleEnemy ? enemyEntitys[_curRoleIndex] : studentEntitys[_curRoleIndex] as BattleRoleEntity;
+        public IBattleRole CurRole => _curRole;
 
         public RoundEngine RoundEngine => _roundEngine;
 
         public BattleOverType OverType => _overType;
+        
         private void Awake()
         {
             //初始化回合
@@ -74,15 +87,29 @@ namespace Game.BattleScene
             cam = null;
             followCam = null;
             mapCam = null;
-            studentEntitys = null;
-            enemyEntitys = null;
+            students = null;
+            enemies = null;
+        }
+
+        /// <summary>
+        /// 添加作战阵营
+        /// </summary>
+        /// <param name="camp"></param>
+        public bool AddCamp(CampInfo camp)
+        {
+            if (!_camps.ContainsKey(camp.campType))
+            {
+                _camps.Add(camp.campType, camp);
+                return true;
+            }
+            return false;
         }
 
         public void SwitchStudent(BattleStudentEntity student)
         {
-            for (int i = 0; i < studentEntitys.Length; i++)
+            for (int i = 0; i < students.Length; i++)
             {
-                if (studentEntitys[i] == student)
+                if (students[i] == student)
                 {
                     _isCurRoleEnemy = false;
                     _curRoleIndex = i;
@@ -95,14 +122,14 @@ namespace Game.BattleScene
         public void AutoEnemyIndex()
         {
             _isCurRoleEnemy = true;
-            _curRoleIndex = _curRoleIndex + 1 > enemyEntitys.Length - 1 ? 0 : _curRoleIndex + 1;
+            _curRoleIndex = _curRoleIndex + 1 > enemies.Length - 1 ? 0 : _curRoleIndex + 1;
         }
 
         public void SwitchEnemy(BattleEnemyEntity enemy)
         {
-            for (int i = 0; i < enemyEntitys.Length; i++)
+            for (int i = 0; i < enemies.Length; i++)
             {
-                if (enemyEntitys[i] == enemy)
+                if (enemies[i] == enemy)
                 {
                     _isCurRoleEnemy = true;
                     _curRoleIndex = i;
@@ -112,20 +139,19 @@ namespace Game.BattleScene
             }
         }
 
-        public BattleStudentEntity GetStudentEntity(int index)
-            => studentEntitys[index];
+        public IBattleRole GetStudent(int index)
+            => students[index];
         
-        public BattleEnemyEntity GetEnemyEntity(int index)
-            => enemyEntitys[index];
+        public IBattleRole GetEnemy(int index)
+            => enemies[index];
 
-        public BattleEnemyEntity GetEnemyEntity(GameObject obj)
+        public IBattleRole GetEnemy(GameObject obj)
         {
-            for (int i = 0; i < enemyEntitys.Length; i++)
+            for (int i = 0; i < enemies.Length; i++)
             {
-                if (enemyEntitys[i].gameObject == obj)
-                    return enemyEntitys[i];
+                if (enemies[i].Go == obj)
+                    return enemies[i];
             }
-
             return null;
         }
 
@@ -138,10 +164,10 @@ namespace Game.BattleScene
 
             if (isEnemy)
             {
-                Dictionary<int, Vector2> dic = new Dictionary<int, Vector2>(enemyEntitys.Length);
-                for (int i = 0; i < enemyEntitys.Length; i++)
+                Dictionary<int, Vector2> dic = new Dictionary<int, Vector2>(enemies.Length);
+                for (int i = 0; i < enemies.Length; i++)
                 {
-                    var viewport = mapCam.WorldToViewportPoint(enemyEntitys[i].transform.position);//[0,1]的屏幕映射
+                    var viewport = mapCam.WorldToViewportPoint(enemies[i].Go.transform.position);//[0,1]的屏幕映射
                     //映射
                     var targetPos = new Vector2(mapLeftBottom.x + viewport.x * sizeDelta.x,
                         mapLeftBottom.y + viewport.y * sizeDelta.y);
@@ -151,10 +177,10 @@ namespace Game.BattleScene
             }
             else
             {
-                Dictionary<int, Vector2> dic = new Dictionary<int, Vector2>(studentEntitys.Length);
-                for (int i = 0; i < studentEntitys.Length; i++)
+                Dictionary<int, Vector2> dic = new Dictionary<int, Vector2>(students.Length);
+                for (int i = 0; i < students.Length; i++)
                 {
-                    var viewport = mapCam.WorldToViewportPoint(studentEntitys[i].transform.position);//[0,1]的屏幕映射
+                    var viewport = mapCam.WorldToViewportPoint(students[i].transform.position);//[0,1]的屏幕映射
                     //映射
                     var targetPos = new Vector2(mapLeftBottom.x + viewport.x * sizeDelta.x,
                         mapLeftBottom.y + viewport.y * sizeDelta.y);
@@ -169,10 +195,10 @@ namespace Game.BattleScene
             Vector2 sizeDelta = mapRect.sizeDelta;
             var mapLeftBottom = mapRect.anchoredPosition - sizeDelta / 2;//左下
             
-            Dictionary<int, Vector2> dic = new Dictionary<int, Vector2>(flagEntitys.Length);
-            for (int i = 0; i < flagEntitys.Length; i++)
+            Dictionary<int, Vector2> dic = new Dictionary<int, Vector2>(flags.Length);
+            for (int i = 0; i < flags.Length; i++)
             {
-                var viewport = mapCam.WorldToViewportPoint(flagEntitys[i].transform.position);//[0,1]的屏幕映射
+                var viewport = mapCam.WorldToViewportPoint(flags[i].transform.position);//[0,1]的屏幕映射
                 //映射
                 var targetPos = new Vector2(mapLeftBottom.x + viewport.x * sizeDelta.x,
                     mapLeftBottom.y + viewport.y * sizeDelta.y);
@@ -186,16 +212,16 @@ namespace Game.BattleScene
         {
             if (isEnemy)
             {
-                Dictionary<int, float> dic = new Dictionary<int, float>(enemyEntitys.Length);
-                for (int i = 0; i < enemyEntitys.Length; i++)
-                    dic.Add(i, enemyEntitys[i].transform.localEulerAngles.y);
+                Dictionary<int, float> dic = new Dictionary<int, float>(enemies.Length);
+                for (int i = 0; i < enemies.Length; i++)
+                    dic.Add(i, enemies[i].transform.localEulerAngles.y);
                 return dic;
             }
             else
             {
-                Dictionary<int, float> dic = new Dictionary<int, float>(studentEntitys.Length);
-                for (int i = 0; i < studentEntitys.Length; i++)
-                    dic.Add(i, studentEntitys[i].transform.localEulerAngles.y);
+                Dictionary<int, float> dic = new Dictionary<int, float>(students.Length);
+                for (int i = 0; i < students.Length; i++)
+                    dic.Add(i, students[i].transform.localEulerAngles.y);
                 return dic;
             }
         }
@@ -207,8 +233,8 @@ namespace Game.BattleScene
         {
             if (isEnemy)
             {
-                var atker = enemyEntitys[atkerIndex];
-                var defer = studentEntitys[deferIndex];
+                var atker = enemies[atkerIndex];
+                var defer = students[deferIndex];
                 int atk = atker.EnemyInfo.atk * (isCrit ? 3 : 1);
                 int def = defer.Student.Def;
                 int hit = Mathf.Max(atk - def, 0);
@@ -225,8 +251,8 @@ namespace Game.BattleScene
             }
             else
             {
-                var atker = studentEntitys[atkerIndex];
-                var defer = enemyEntitys[deferIndex];
+                var atker = students[atkerIndex];
+                var defer = enemies[deferIndex];
                 int atk = atker.Student.Atk * (isCrit ? 2 : 1);
                 int def = defer.EnemyInfo.def;
                 int hit = Mathf.Max(atk - def, 0);
@@ -247,21 +273,21 @@ namespace Game.BattleScene
         {
             if (isEnemy)
             {
-                enemyEntitys[roleIndex].gameObject.SetActive(false);
+                enemies[roleIndex].gameObject.SetActive(false);
             }
             else
             {
-                studentEntitys[roleIndex].gameObject.SetActive(false);
+                students[roleIndex].gameObject.SetActive(false);
             }
         }
 
         public bool IsRoleAroundFlag(BattleRoleEntity role, out FlagEntity flag)
         {
             //先找到最近的旗帜
-            flag = flagEntitys[0];
+            flag = flags[0];
             float nearestDis = float.MaxValue;
             
-            foreach (var f in flagEntitys)
+            foreach (var f in flags)
             {
                 var dis = Vector3.Distance(role.transform.position, f.transform.position);
                 if (dis <= nearestDis)
@@ -278,9 +304,9 @@ namespace Game.BattleScene
         public void RiseFlag(FlagEntity flag, FlagType type)
         {
             bool isRise = false;
-            for (int i = 0; i < flagEntitys.Length; i++)
+            for (int i = 0; i < flags.Length; i++)
             {
-                if (flagEntitys[i] == flag)
+                if (flags[i] == flag)
                 {
                     flag.RiseFlag(type);
                     isRise = true;
@@ -290,11 +316,11 @@ namespace Game.BattleScene
 
             bool hasStudentFlag = false;
             bool hasEnemyFlag = false;
-            for (int i = 0; i < flagEntitys.Length; i++)
+            for (int i = 0; i < flags.Length; i++)
             {
-                if (flagEntitys[i].FlagType == FlagType.Student)
+                if (flags[i].FlagType == FlagType.Student)
                     hasStudentFlag = true;
-                else if (flagEntitys[i].FlagType == FlagType.Enemy)
+                else if (flags[i].FlagType == FlagType.Enemy)
                     hasEnemyFlag = true;
             }
 

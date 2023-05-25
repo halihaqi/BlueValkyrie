@@ -31,7 +31,7 @@ namespace Game.UI.Controls.Battle
         public void SetData(int roleIndex)
         {
             var bm = FsmMgr.Instance.GetFsm<BattleMaster>(BattleConst.BATTLE_FSM).Owner;
-            _enemy = bm.GetEnemyEntity(roleIndex);
+            _enemy = bm.GetEnemy(roleIndex);
             
             ResMgr.Instance.LoadAsync<Sprite>(GameConst.RES_GROUP_UI, ResPath.GetEnemyIcon(_enemy.EnemyInfo.roleName),
                 spr =>
