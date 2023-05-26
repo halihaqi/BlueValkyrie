@@ -17,17 +17,15 @@ namespace Game.BattleScene.BattleRole
         public static readonly int BattleDead = Animator.StringToHash("dead");
         
         private int _roleId;
+        private AtkType _atkType;
+        private RoleType _roleType;
+        
+        private bool _isControl;
         private int _curHp;
         private float _curAp;
         private int _curAmmo;
-        private int _maxHp;
-        private float _maxAp;
-        private int _maxAmmo;
-        private bool _isControl;
         private bool _isDead;
-        private RoleType _roleType;
-        private AtkType _atkType;
-        private int _atkRange;
+        private BattleRoleState _roleState;
         
         //组件
         private NavMeshAgent _agent;
@@ -39,25 +37,18 @@ namespace Game.BattleScene.BattleRole
         
         //角色信息
         public int RoleId => _roleId;
-        public int MaxHp => _maxHp;
-        public float MaxAp => _maxAp;
-        public int MaxAmmo => _maxAmmo;
         public AtkType AtkType => _atkType;
-        public int AtkRange => _atkRange;
         public RoleType RoleType => _roleType;
         public GameObject Go => gameObject;
-        
+
         //角色状态
-        public bool IsControl
-        {
-            get => _isControl;
-            set => _isControl = value;
-        }
+        public bool IsControl { get; set; }
         public int CurHp => _curHp;
         public float CurAp => _curAp;
         public int CurAmmo => _curAmmo;
         public bool IsDead => _isDead;
         public IBattleRole AtkTarget { get; set; }
+        public BattleRoleState RoleState => _roleState;
         
         //代理
         public NavMeshAgent Agent => _agent;
@@ -86,7 +77,7 @@ namespace Game.BattleScene.BattleRole
         public void ResetAmmo()
         {
             if(_isDead) return;
-            _curAmmo = _maxAmmo;
+            _curAmmo = _roleState.maxAmmo;
         }
 
         public void InitMe(object info)
@@ -94,15 +85,26 @@ namespace Game.BattleScene.BattleRole
             if (!(info is EnemyInfo enemy))
                 throw new Exception("Init enemy info valid.");
             _roleId = enemy.roleId;
-            _maxHp = _curHp = enemy.hp;
-            _maxAp = _curAp = enemy.ap;
-            _maxAmmo = _curAmmo = enemy.ammo;
             _atkType = (AtkType)enemy.atkType;
-            _atkRange = enemy.atkRange;
-            _roleType = RoleType.Enemy;
+            _roleType = RoleType.Student;
+            BattleRoleState state = new BattleRoleState
+            {
+                maxHp = enemy.hp,
+                maxAp = enemy.ap,
+                maxAmmo = enemy.ammo,
+                atkRange = enemy.atkRange,
+                atk = enemy.atk,
+                def = enemy.def,
+                //todo 暴击和闪避
+            };
             
+            _curHp = enemy.hp;
+            _curAp = enemy.ap;
+            _curAmmo = enemy.ammo;
+            _roleState = state;
+
             _isDead = false;
-            _isControl = false;
+            IsControl = false;
             AtkTarget = null;
             _anim.SetBool(BattleDead, false);
         }

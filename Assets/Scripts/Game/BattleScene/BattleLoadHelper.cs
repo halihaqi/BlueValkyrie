@@ -36,7 +36,6 @@ namespace Game.BattleScene
             int roleCount = formation.students.Length;
             //防止站位和士兵数量不对导致的溢出
             int maxCount = Mathf.Min(station.Count, roleCount);
-            int loadedCount = 0;
             for (int i = 0; i < maxCount; i++)
             {
                 int index = i;
@@ -63,8 +62,36 @@ namespace Game.BattleScene
 
         private static IEnumerator LoadEnemy(CampStation camp, List<IBattleRole> container)
         {
+            var episodeInfo = ProcedureMgr.Instance.GetData<EpisodeInfo>(BattleConst.MAP_KEY);
+            var enemyDic = BinaryDataMgr.Instance.GetTable<EnemyInfoContainer>().dataDic;
+            
             var station = camp.roles;
-            var formation = 
+            var enemyIds = episodeInfo.enemy;
+            int roleCount = enemyIds.Length;
+            int maxCount = Mathf.Min(station.Count, roleCount);
+            for (int i = 0; i < maxCount; i++)
+            {
+                if(!enemyDic.TryGetValue(enemyIds[i], out var enemyInfo)) continue;
+                
+                int index = i;
+                BattleEnemy entity = null;
+                bool loaded = false;
+                ResMgr.Instance.LoadAsync<GameObject>(GameConst.BATTLE_SCENE, ResPath.GetEnemyObj(enemyInfo.roleName),
+                    obj =>
+                {
+                    //设置站位
+                    obj.transform.position = station[index].position;
+                    obj.transform.rotation = station[index].rotation;
+                    
+                    //添加战斗脚本
+                    entity = obj.AddComponent<BattleEnemy>();
+                    entity.InitMe(enemyInfo);
+                    loaded = true;
+                });
+                while (!loaded)
+                    yield return null;
+                container.Add(entity);
+            }
         }
     }
 }

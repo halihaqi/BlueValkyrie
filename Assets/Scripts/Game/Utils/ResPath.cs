@@ -82,5 +82,10 @@ namespace Game.Utils
         {
             return $"Image/Enemy_Icon/EnemyInfo_{enemyName}";
         }
+
+        public static string GetChessIcon(RoleType type)
+        {
+            return $"Image/ChessIcon/{type.ToString().ToLower()}_chess_icon";
+        }
     }
 }

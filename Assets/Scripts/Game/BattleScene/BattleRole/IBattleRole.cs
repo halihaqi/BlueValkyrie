@@ -5,13 +5,8 @@ namespace Game.BattleScene.BattleRole
 {
     public interface IBattleRole
     {
-        #region 角色状态
+        #region 可变信息
 
-        /// <summary>
-        /// 是否可控制
-        /// </summary>
-        public bool IsControl { get; set; }
-        
         /// <summary>
         /// 当前生命
         /// </summary>
@@ -32,42 +27,35 @@ namespace Game.BattleScene.BattleRole
         /// </summary>
         public bool IsDead { get; }
         
+        /// <summary>
+        /// 是否可控制
+        /// </summary>
+        public bool IsControl { get; set; }
+        
+        /// <summary>
+        /// 攻击目标
+        /// </summary>
         public IBattleRole AtkTarget { get; set; }
+        
+        /// <summary>
+        /// 角色可变信息，可上buff和debuff
+        /// </summary>
+        public BattleRoleState RoleState { get; }
 
         #endregion
 
-        #region 角色信息
+        #region 固定信息
         
         /// <summary>
         /// 角色Id
         /// </summary>
         public int RoleId { get; }
-        
-        /// <summary>
-        /// 最大生命
-        /// </summary>
-        public int MaxHp { get; }
-
-        /// <summary>
-        /// 最大行动力
-        /// </summary>
-        public float MaxAp { get; }
-
-        /// <summary>
-        /// 最大弹药量
-        /// </summary>
-        public int MaxAmmo { get; }
 
         /// <summary>
         /// 攻击类型
         /// </summary>
         public AtkType AtkType { get; }
-        
-        /// <summary>
-        /// 攻击范围
-        /// </summary>
-        public int AtkRange { get; }
-        
+
         /// <summary>
         /// 角色类型
         /// </summary>

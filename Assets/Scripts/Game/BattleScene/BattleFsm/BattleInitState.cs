@@ -18,9 +18,6 @@ namespace Game.BattleScene
         private Stopwatch _sw;
         private bool _initComplete;
 
-        private EpisodeEntity _episode;
-        private EpisodeInfo _episodeInfo;
-        
         protected internal override void OnEnter(IFsm<BattleMaster> fsm)
         {
             base.OnEnter(fsm);
@@ -35,6 +32,8 @@ namespace Game.BattleScene
             if (_initComplete)
             {
                 Debug.Log($"<battle> 战场加载完成，耗时：{_sw.ElapsedMilliseconds} ms");
+                _sw.Stop();
+                _sw = null;
                 ChangeState<BattleStartState>(fsm);
             }
         }
@@ -42,8 +41,6 @@ namespace Game.BattleScene
         protected internal override void OnLeave(IFsm<BattleMaster> fsm, bool isShutdown)
         {
             base.OnLeave(fsm, isShutdown);
-            _sw.Stop();
-            _sw = null;
             SceneMgr.Instance.ManualCompleteLoad();
         }
 
@@ -53,7 +50,7 @@ namespace Game.BattleScene
             bool mapComplete = false;
             var episodeInfo = ProcedureMgr.Instance.GetData<EpisodeInfo>(BattleConst.MAP_KEY);
             EpisodeEntity episodeEntity = null;
-            ResMgr.Instance.LoadAsync<GameObject>(GameConst.BATTLE_SCENE, ResPath.GetMapObj(_episodeInfo.id), obj =>
+            ResMgr.Instance.LoadAsync<GameObject>(GameConst.BATTLE_SCENE, ResPath.GetMapObj(episodeInfo.id), obj =>
             {
                 episodeEntity = obj.GetComponent<EpisodeEntity>();
                 if (episodeEntity == null)
@@ -76,58 +73,11 @@ namespace Game.BattleScene
                     (BattleLoadHelper.LoadSolider(camp, roles));
                 //todo 设置队长
                 info.soldiers = roles;
-                fsm.Owner.AddCamp(info);
+                fsm.Owner.JoinCamp(info);
             }
 
             //3.最后加载面板
             InitPanel(fsm);
-        }
-
-        private void InitEnemy(IFsm<BattleMaster> fsm)
-        {
-            _enemyComplete = false;
-
-            var enemyPos = _episode.enemyPos;
-            var formationCount = _episodeInfo.enemy.Length;
-            if (enemyPos.Count < formationCount)
-                throw new Exception("Enemys need more born pos.");
-            
-            fsm.Owner.enemies = new BattleEnemyEntity[_episode.enemyPos.Count];
-            var enemyDic = BinaryDataMgr.Instance.GetTable<EnemyInfoContainer>().dataDic;
-            int completeNum = 0;
-            for (int i = 0; i < formationCount; i++)
-            {
-                int index = i;
-                var enemyInfo = enemyDic[_episodeInfo.enemy[index]];
-                ResMgr.Instance.LoadAsync<GameObject>(GameConst.BATTLE_SCENE, ResPath.GetEnemyObj(enemyInfo.roleName),
-                    obj =>
-                    {
-                        //设置位置
-                        obj.transform.position = enemyPos[index].position;
-                        obj.transform.rotation = enemyPos[index].rotation;
-
-                        //添加战斗逻辑脚本
-                        var entity = obj.AddComponent<BattleEnemyEntity>();
-                        entity.SetEnemyInfo(enemyInfo);
-                        entity.InitFsm(index);
-                        //todo 可以配表设置
-                        if (enemyInfo.roleName == "Drone")
-                        {
-                            entity.cc.center = Vector3.up * 1.9f;
-                            entity.cc.radius = 0.75f;
-                            entity.cc.height = 1.8f;
-                        }
-                        else
-                        {
-                            entity.cc.center = Vector3.up * 1.08f;
-                            entity.cc.radius = 0.75f;
-                            entity.cc.height = 2f;
-                        }
-                        fsm.Owner.enemies[index] = entity;
-                        completeNum++;
-                        if (completeNum >= formationCount) _enemyComplete = true;
-                    });
-            }
         }
 
         private void InitPanel(IFsm<BattleMaster> fsm)

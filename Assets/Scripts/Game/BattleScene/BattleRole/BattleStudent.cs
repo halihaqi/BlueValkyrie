@@ -14,39 +14,29 @@ namespace Game.BattleScene.BattleRole
         public static readonly int BattleDead = Animator.StringToHash("battle_dead");
         
         private int _roleId;
+        private AtkType _atkType;
+        private RoleType _roleType;
+        
         private int _curHp;
         private float _curAp;
         private int _curAmmo;
-        private int _maxHp;
-        private float _maxAp;
-        private int _maxAmmo;
-        private bool _isControl;
         private bool _isDead;
-        private RoleType _roleType;
-        private AtkType _atkType;
-        private int _atkRange;
-        
+        private BattleRoleState _roleState;
+
         //角色信息
         public int RoleId => _roleId;
-        public int MaxHp => _maxHp;
-        public float MaxAp => _maxAp;
-        public int MaxAmmo => _maxAmmo;
         public AtkType AtkType => _atkType;
-        public int AtkRange => _atkRange;
         public RoleType RoleType => _roleType;
         public GameObject Go => gameObject;
 
         //角色状态
-        public bool IsControl
-        {
-            get => _isControl;
-            set => _isControl = value;
-        }
+        public bool IsControl { get; set; }
         public int CurHp => _curHp;
         public float CurAp => _curAp;
         public int CurAmmo => _curAmmo;
         public bool IsDead => _isDead;
         public IBattleRole AtkTarget { get; set; }
+        public BattleRoleState RoleState => _roleState;
 
         public void SubAp(float ap)
         {
@@ -71,7 +61,7 @@ namespace Game.BattleScene.BattleRole
         public void ResetAmmo()
         {
             if(_isDead) return;
-            _curAmmo = _maxAmmo;
+            _curAmmo = _roleState.maxAmmo;
         }
 
         public void InitMe(object info)
@@ -79,15 +69,26 @@ namespace Game.BattleScene.BattleRole
             if (!(info is StudentItem student))
                 throw new Exception("Init student info valid.");
             _roleId = student.roleId;
-            _maxHp = _curHp = student.Hp;
-            _maxAp = _curAp = student.Ap;
-            _maxAmmo = _curAmmo = student.Ammo;
             _atkType = student.AtkType;
-            _atkRange = student.atkRange;
             _roleType = RoleType.Student;
+            BattleRoleState state = new BattleRoleState
+            {
+                maxHp = student.Hp,
+                maxAp = student.Ap,
+                maxAmmo = student.Ammo,
+                atkRange = student.atkRange,
+                atk = student.Atk,
+                def = student.Def,
+                //todo 暴击和闪避
+            };
+            
+            _curHp = student.Hp;
+            _curAp = student.Ap;
+            _curAmmo = student.Ammo;
+            _roleState = state;
 
             _isDead = false;
-            _isControl = false;
+            IsControl = false;
             AtkTarget = null;
             anim.SetBool(BattleDead, false);
         }
@@ -95,7 +96,7 @@ namespace Game.BattleScene.BattleRole
         private void KillMe()
         {
             _isDead = true;
-            _isControl = false;
+            IsControl = false;
             _curHp = 0;
             _curAp = 0;
             _curAmmo = 0;

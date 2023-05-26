@@ -1,4 +1,5 @@
-﻿using Game.Entity;
+﻿using Game.BattleScene.BattleRole;
+using Game.Entity;
 using Hali_Framework;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,7 +10,7 @@ namespace Game.UI.Controls.Battle
     public partial class UI_battle_chess : ControlBase
     {
         public RectTransform rotRect; 
-        private BattleRoleEntity _role;
+        private IBattleRole _role;
         private Toggle _togChess;
 
         protected internal override void OnInit()
@@ -23,17 +24,17 @@ namespace Game.UI.Controls.Battle
             base.OnRecycle();
             EventMgr.Instance.RemoveListener<bool, int>(ClientEvent.CHESS_AUTO_CLICK, OnChessAutoClick);
             EventMgr.Instance.RemoveListener<bool, int>(ClientEvent.CHESS_CLICK, OnOtherChessClick);
-            EventMgr.Instance.RemoveListener<BattleRoleEntity>(ClientEvent.BATTLE_ROLE_REST, OnRoleRest);
+            EventMgr.Instance.RemoveListener<IBattleRole>(ClientEvent.BATTLE_ROLE_REST, OnRoleRest);
             UIMgr.RemoveCustomEventListener(this, EventTriggerType.PointerClick, OnClick);
         }
 
-        public void SetRole(BattleRoleEntity role)
+        public void SetData(IBattleRole role)
         {
             SetGray(role.RestOneRound);
             _role = role;
             EventMgr.Instance.AddListener<bool, int>(ClientEvent.CHESS_AUTO_CLICK, OnChessAutoClick);
             EventMgr.Instance.AddListener<bool, int>(ClientEvent.CHESS_CLICK, OnOtherChessClick);
-            EventMgr.Instance.AddListener<BattleRoleEntity>(ClientEvent.BATTLE_ROLE_REST, OnRoleRest);
+            EventMgr.Instance.AddListener<IBattleRole>(ClientEvent.BATTLE_ROLE_REST, OnRoleRest);
             UIMgr.AddCustomEventListener(this, EventTriggerType.PointerClick, OnClick);
         }
 
@@ -44,7 +45,7 @@ namespace Game.UI.Controls.Battle
             _togChess.isOn = false;
         }
 
-        private void OnRoleRest(BattleRoleEntity role)
+        private void OnRoleRest(IBattleRole role)
         {
             if (role.IsEnemy == _role.IsEnemy && role.RoleIndex == _role.RoleIndex)
                 SetGray(true);

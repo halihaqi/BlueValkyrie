@@ -31,14 +31,11 @@ namespace Game.BattleScene
         private IFsm<BattleMaster> _battleFsm;
         private BattleOverType _overType = BattleOverType.NotOver;
         
-        private IBattleRole _curRole;
-        private int _curRoleIndex = 0;
 
         //战斗阵营
         private Dictionary<RoleType, CampInfo> _camps;
-        private IBattleRole[] students;
-        private IBattleRole[] enemies;
-        private FlagEntity[] flags;
+        private List<RoleType> _campTypes;//用于记录参与战斗的阵营类型
+        private IBattleRole _curRole;
         private Transform[] shelterPos;
         private OverMapEntity overMapEntity;
 
@@ -54,9 +51,13 @@ namespace Game.BattleScene
         public RoundEngine RoundEngine => _roundEngine;
 
         public BattleOverType OverType => _overType;
-        
+
+        public List<RoleType> CampTypes => _campTypes;
+
         private void Awake()
         {
+            _camps = new Dictionary<RoleType, CampInfo>();
+            _campTypes = new List<RoleType>();
             //初始化回合
             _roundEngine = new RoundEngine();
             var episodeInfo = ProcedureMgr.Instance.GetData<EpisodeInfo>(BattleConst.MAP_KEY);
@@ -65,7 +66,7 @@ namespace Game.BattleScene
             //创建战斗状态机
             _battleFsm = FsmMgr.Instance.CreateFsm(BattleConst.BATTLE_FSM, this, 
                 new BattleInitState(), new BattleStartState(), 
-                new BattleArrayState(), new BattleRunState(), new BattleOverState());
+                new BattleChessState(), new BattleRunState(), new BattleOverState());
         }
 
         private void Start()
@@ -87,256 +88,206 @@ namespace Game.BattleScene
             cam = null;
             followCam = null;
             mapCam = null;
-            students = null;
-            enemies = null;
         }
+
+        #region 处理士兵
 
         /// <summary>
         /// 添加作战阵营
         /// </summary>
         /// <param name="camp"></param>
-        public bool AddCamp(CampInfo camp)
+        public void JoinCamp(CampInfo camp)
         {
             if (!_camps.ContainsKey(camp.campType))
             {
                 _camps.Add(camp.campType, camp);
-                return true;
+                _campTypes.Add(camp.campType);
             }
-            return false;
+            else
+                Debug.Log($"Cannot add same camp: {camp.campType}.");
         }
 
-        public void SwitchStudent(BattleStudentEntity student)
+        public void ChangeRole(IBattleRole role)
         {
-            for (int i = 0; i < students.Length; i++)
+            var type = role.RoleType;
+            if (!_camps.ContainsKey(type)) return;
+            
+            foreach (var soldier in _camps[type].soldiers)
             {
-                if (students[i] == student)
+                //切换
+                if (soldier == role)
                 {
-                    _isCurRoleEnemy = false;
-                    _curRoleIndex = i;
-                    EventMgr.Instance.TriggerEvent(ClientEvent.BATTLE_ROLE_CHANGE, student);
-                    break;
+                    _curRole = role;
+                    //todo 切换可能需要的逻辑
+                    EventMgr.Instance.TriggerEvent(ClientEvent.BATTLE_ROLE_CHANGE, _curRole);
+                    return;
                 }
             }
         }
 
-        public void AutoEnemyIndex()
+        public IBattleRole GetRole(RoleType type, int roleId)
         {
-            _isCurRoleEnemy = true;
-            _curRoleIndex = _curRoleIndex + 1 > enemies.Length - 1 ? 0 : _curRoleIndex + 1;
-        }
-
-        public void SwitchEnemy(BattleEnemyEntity enemy)
-        {
-            for (int i = 0; i < enemies.Length; i++)
+            if (_camps.TryGetValue(type, out var camp))
             {
-                if (enemies[i] == enemy)
-                {
-                    _isCurRoleEnemy = true;
-                    _curRoleIndex = i;
-                    EventMgr.Instance.TriggerEvent(ClientEvent.BATTLE_ROLE_CHANGE, enemy);
-                    break;
-                }
-            }
-        }
-
-        public IBattleRole GetStudent(int index)
-            => students[index];
-        
-        public IBattleRole GetEnemy(int index)
-            => enemies[index];
-
-        public IBattleRole GetEnemy(GameObject obj)
-        {
-            for (int i = 0; i < enemies.Length; i++)
-            {
-                if (enemies[i].Go == obj)
-                    return enemies[i];
+                var role = camp.soldiers.Find(o => o.RoleId == roleId);
+                return role;
             }
             return null;
         }
 
-        #region 棋子地图位置
-
-        public Dictionary<int, Vector2> CalcRolesMapPos(bool isEnemy, RectTransform mapRect)
+        public List<IBattleRole> GetRoles(RoleType type)
         {
-            Vector2 sizeDelta = mapRect.sizeDelta;
-            var mapLeftBottom = mapRect.anchoredPosition - sizeDelta / 2;//左下
-
-            if (isEnemy)
-            {
-                Dictionary<int, Vector2> dic = new Dictionary<int, Vector2>(enemies.Length);
-                for (int i = 0; i < enemies.Length; i++)
-                {
-                    var viewport = mapCam.WorldToViewportPoint(enemies[i].Go.transform.position);//[0,1]的屏幕映射
-                    //映射
-                    var targetPos = new Vector2(mapLeftBottom.x + viewport.x * sizeDelta.x,
-                        mapLeftBottom.y + viewport.y * sizeDelta.y);
-                    dic.Add(i, targetPos);
-                }
-                return dic;
-            }
-            else
-            {
-                Dictionary<int, Vector2> dic = new Dictionary<int, Vector2>(students.Length);
-                for (int i = 0; i < students.Length; i++)
-                {
-                    var viewport = mapCam.WorldToViewportPoint(students[i].transform.position);//[0,1]的屏幕映射
-                    //映射
-                    var targetPos = new Vector2(mapLeftBottom.x + viewport.x * sizeDelta.x,
-                        mapLeftBottom.y + viewport.y * sizeDelta.y);
-                    dic.Add(i, targetPos);
-                }
-                return dic;
-            }
-        }
-
-        public Dictionary<int, Vector2> CalcFlagMapPos(RectTransform mapRect)
-        {
-            Vector2 sizeDelta = mapRect.sizeDelta;
-            var mapLeftBottom = mapRect.anchoredPosition - sizeDelta / 2;//左下
-            
-            Dictionary<int, Vector2> dic = new Dictionary<int, Vector2>(flags.Length);
-            for (int i = 0; i < flags.Length; i++)
-            {
-                var viewport = mapCam.WorldToViewportPoint(flags[i].transform.position);//[0,1]的屏幕映射
-                //映射
-                var targetPos = new Vector2(mapLeftBottom.x + viewport.x * sizeDelta.x,
-                    mapLeftBottom.y + viewport.y * sizeDelta.y);
-                dic.Add(i, targetPos);
-            }
-
-            return dic;
+            if (_camps.TryGetValue(type, out var camp))
+                return camp.soldiers;
+            return null;
         }
         
-        public Dictionary<int, float> CalcRolesMapRotation(bool isEnemy)
+        public List<FlagEntity> GetFlags(RoleType type)
         {
-            if (isEnemy)
+            if (_camps.TryGetValue(type, out var camp))
+                return camp.flags;
+            return null;
+        }
+
+        public void Atk(IBattleRole atker, IBattleRole defer)
+        {
+            //先计算伤害
+            int hit = BattleComputeHelper.Atk(atker.RoleState, defer.RoleState);
+            defer.SubHp(hit);
+            if (defer.IsDead)
             {
-                Dictionary<int, float> dic = new Dictionary<int, float>(enemies.Length);
-                for (int i = 0; i < enemies.Length; i++)
-                    dic.Add(i, enemies[i].transform.localEulerAngles.y);
-                return dic;
-            }
-            else
-            {
-                Dictionary<int, float> dic = new Dictionary<int, float>(students.Length);
-                for (int i = 0; i < students.Length; i++)
-                    dic.Add(i, students[i].transform.localEulerAngles.y);
-                return dic;
+                Debug.Log($"{defer.Go.name} 死亡.");
+                //todo 死亡后处理
             }
         }
 
         #endregion
+
+        #region 处理棋子
+
+        /// <summary>
+        /// 获得士兵在地图中的位置
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="mapRect"></param>
+        /// <returns></returns>
+        public Dictionary<IBattleRole, Vector2> GetRoleChessStation(RoleType type, RectTransform mapRect)
+        {
+            if (!_camps.TryGetValue(type, out var camp)) return null;
+            Dictionary<IBattleRole, Vector2> res = new Dictionary<IBattleRole, Vector2>(camp.soldiers.Count);
+            
+            Vector2 sizeDelta = mapRect.sizeDelta;
+            var mapLb = mapRect.anchoredPosition - sizeDelta / 2;//左下
+            for (int i = 0; i < camp.soldiers.Count; i++)
+            {
+                var viewport = mapCam.WorldToViewportPoint(camp.soldiers[i].Go.transform.position);//[0,1]的屏幕映射
+                //映射
+                var targetPos = new Vector2(mapLb.x + viewport.x * sizeDelta.x,
+                    mapLb.y + viewport.y * sizeDelta.y);
+                res.Add(camp.soldiers[i], targetPos);
+            }
+
+            return res;
+        }
+
+        /// <summary>
+        /// 获得士兵在地图中的旋转
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public Dictionary<IBattleRole, float> GetRoleChessRotation(RoleType type)
+        {
+            if (!_camps.TryGetValue(type, out var camp)) return null;
+            Dictionary<IBattleRole, float> res = new Dictionary<IBattleRole, float>(camp.soldiers.Count);
+            for (int i = 0; i < camp.soldiers.Count; i++)
+                res.Add(camp.soldiers[i], camp.soldiers[i].Go.transform.localEulerAngles.y);
+            return res;
+        }
+
+        /// <summary>
+        /// 获取旗帜在地图中的位置
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="mapRect"></param>
+        /// <returns></returns>
+        public Dictionary<FlagEntity, Vector2> GetFlagChessStation(RoleType type, RectTransform mapRect)
+        {
+            if (!_camps.TryGetValue(type, out var camp)) return null;
+            Dictionary<FlagEntity, Vector2> res = new Dictionary<FlagEntity, Vector2>(camp.flags.Count);
+            
+            Vector2 sizeDelta = mapRect.sizeDelta;
+            var mapLb = mapRect.anchoredPosition - sizeDelta / 2;//左下
+            for (int i = 0; i < camp.soldiers.Count; i++)
+            {
+                var viewport = mapCam.WorldToViewportPoint(camp.flags[i].transform.position);//[0,1]的屏幕映射
+                //映射
+                var targetPos = new Vector2(mapLb.x + viewport.x * sizeDelta.x,
+                    mapLb.y + viewport.y * sizeDelta.y);
+                res.Add(camp.flags[i], targetPos);
+            }
+
+            return res;
+        }
+
+        #endregion
         
-
-        public void Atk(bool isCrit, bool isEnemy, int atkerIndex, int deferIndex)
-        {
-            if (isEnemy)
-            {
-                var atker = enemies[atkerIndex];
-                var defer = students[deferIndex];
-                int atk = atker.EnemyInfo.atk * (isCrit ? 3 : 1);
-                int def = defer.Student.Def;
-                int hit = Mathf.Max(atk - def, 0);
-                defer.SubHp(hit);
-                Debug.Log($"{atker.name} 对 {defer.name} 造成 {hit} 点伤害.");
-                if (defer.IsDead)
-                {
-                    Debug.Log($"{defer.name} 死亡.");
-                    DelayUtils.Instance.Delay(3,1, obj =>
-                    {
-                        KillRole(true, deferIndex);
-                    });
-                }
-            }
-            else
-            {
-                var atker = students[atkerIndex];
-                var defer = enemies[deferIndex];
-                int atk = atker.Student.Atk * (isCrit ? 2 : 1);
-                int def = defer.EnemyInfo.def;
-                int hit = Mathf.Max(atk - def, 0);
-                defer.SubHp(hit);
-                Debug.Log($"{atker.name} 对 {defer.name} 造成 {hit} 点伤害.");
-                if (defer.IsDead)
-                {
-                    DelayUtils.Instance.Delay(3,1, obj =>
-                    {
-                        Debug.Log($"{defer.name} 死亡.");
-                        KillRole(false, deferIndex);
-                    });
-                }
-            }
-        }
-
-        public void KillRole(bool isEnemy, int roleIndex)
-        {
-            if (isEnemy)
-            {
-                enemies[roleIndex].gameObject.SetActive(false);
-            }
-            else
-            {
-                students[roleIndex].gameObject.SetActive(false);
-            }
-        }
-
-        public bool IsRoleAroundFlag(BattleRoleEntity role, out FlagEntity flag)
-        {
-            //先找到最近的旗帜
-            flag = flags[0];
-            float nearestDis = float.MaxValue;
-            
-            foreach (var f in flags)
-            {
-                var dis = Vector3.Distance(role.transform.position, f.transform.position);
-                if (dis <= nearestDis)
-                {
-                    nearestDis = dis;
-                    flag = f;
-                }
-            }
-            
-            //判断是否在旗帜周围
-            return flag.IsRoleAround(role);
-        }
-
-        public void RiseFlag(FlagEntity flag, FlagType type)
-        {
-            bool isRise = false;
-            for (int i = 0; i < flags.Length; i++)
-            {
-                if (flags[i] == flag)
-                {
-                    flag.RiseFlag(type);
-                    isRise = true;
-                    break;
-                }
-            }
-
-            bool hasStudentFlag = false;
-            bool hasEnemyFlag = false;
-            for (int i = 0; i < flags.Length; i++)
-            {
-                if (flags[i].FlagType == FlagType.Student)
-                    hasStudentFlag = true;
-                else if (flags[i].FlagType == FlagType.Enemy)
-                    hasEnemyFlag = true;
-            }
-
-            //学生赢
-            if (!hasEnemyFlag)
-            {
-                _overType = BattleOverType.StudentWin;
-                _battleFsm.ChangeState<BattleOverState>();
-            }
-            //敌人赢
-            else if (!hasStudentFlag)
-            {
-                _overType = BattleOverType.EnemyWin;
-                _battleFsm.ChangeState<BattleOverState>();
-            }
-        }
+        
+        // public bool IsRoleAroundFlag(BattleRoleEntity role, out FlagEntity flag)
+        // {
+        //     //先找到最近的旗帜
+        //     flag = flags[0];
+        //     float nearestDis = float.MaxValue;
+        //     
+        //     foreach (var f in flags)
+        //     {
+        //         var dis = Vector3.Distance(role.transform.position, f.transform.position);
+        //         if (dis <= nearestDis)
+        //         {
+        //             nearestDis = dis;
+        //             flag = f;
+        //         }
+        //     }
+        //     
+        //     //判断是否在旗帜周围
+        //     return flag.IsRoleAround(role);
+        // }
+        //
+        // public void RiseFlag(FlagEntity flag, FlagType type)
+        // {
+        //     bool isRise = false;
+        //     for (int i = 0; i < flags.Length; i++)
+        //     {
+        //         if (flags[i] == flag)
+        //         {
+        //             flag.RiseFlag(type);
+        //             isRise = true;
+        //             break;
+        //         }
+        //     }
+        //
+        //     bool hasStudentFlag = false;
+        //     bool hasEnemyFlag = false;
+        //     for (int i = 0; i < flags.Length; i++)
+        //     {
+        //         if (flags[i].FlagType == FlagType.Student)
+        //             hasStudentFlag = true;
+        //         else if (flags[i].FlagType == FlagType.Enemy)
+        //             hasEnemyFlag = true;
+        //     }
+        //
+        //     //学生赢
+        //     if (!hasEnemyFlag)
+        //     {
+        //         _overType = BattleOverType.StudentWin;
+        //         _battleFsm.ChangeState<BattleOverState>();
+        //     }
+        //     //敌人赢
+        //     else if (!hasStudentFlag)
+        //     {
+        //         _overType = BattleOverType.EnemyWin;
+        //         _battleFsm.ChangeState<BattleOverState>();
+        //     }
+        // }
 
         private void OnBattleStepOver()
         {
@@ -345,8 +296,8 @@ namespace Game.BattleScene
 
         private void OnBattleRoundRun()
         {
-            if(_battleFsm.CurrentState.GetType() != typeof(BattleArrayState))
-                _battleFsm.ChangeState<BattleArrayState>();
+            if(_battleFsm.CurrentState.GetType() != typeof(BattleChessState))
+                _battleFsm.ChangeState<BattleChessState>();
         }
     }
 }

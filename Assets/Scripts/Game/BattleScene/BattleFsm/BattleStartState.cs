@@ -9,7 +9,7 @@ namespace Game.BattleScene
             base.OnEnter(fsm);
             //todo 开场动画
             
-            ChangeState<BattleArrayState>(fsm);
+            ChangeState<BattleChessState>(fsm);
         }
     }
 }
