@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,8 +32,16 @@ public class ThirdPersonCam : MonoBehaviour
     private Vector3 _targetFollowPos;
     private Vector3 _targetLookPos;
     private Vector3 _lastRotation;
+    private Camera _camera;
     private bool _isTransmit = false;
-    
+
+    public Camera Camera => _camera;
+
+    private void Awake()
+    {
+        _camera = GetComponent<Camera>();
+    }
+
     private void LateUpdate()
     {
         if (followTarget == null)

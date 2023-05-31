@@ -1,4 +1,5 @@
 ﻿using System;
+using Game.Managers;
 using Game.Model;
 using Hali_Framework;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace Game.BattleScene.BattleRole
         public static readonly int BattleDead = Animator.StringToHash("battle_dead");
         
         private int _roleId;
+        private string _roleName;
         private AtkType _atkType;
         private RoleType _roleType;
         
@@ -25,6 +27,7 @@ namespace Game.BattleScene.BattleRole
 
         //角色信息
         public int RoleId => _roleId;
+        public string RoleName => _roleName;
         public AtkType AtkType => _atkType;
         public RoleType RoleType => _roleType;
         public GameObject Go => gameObject;
@@ -37,6 +40,7 @@ namespace Game.BattleScene.BattleRole
         public bool IsDead => _isDead;
         public IBattleRole AtkTarget { get; set; }
         public BattleRoleState RoleState => _roleState;
+        public Transform FollowTarget => followTarget;
 
         public void SubAp(float ap)
         {
@@ -69,6 +73,7 @@ namespace Game.BattleScene.BattleRole
             if (!(info is StudentItem student))
                 throw new Exception("Init student info valid.");
             _roleId = student.roleId;
+            _roleName = RoleMgr.Instance.GetRole(student.roleId).name;
             _atkType = student.AtkType;
             _roleType = RoleType.Student;
             BattleRoleState state = new BattleRoleState

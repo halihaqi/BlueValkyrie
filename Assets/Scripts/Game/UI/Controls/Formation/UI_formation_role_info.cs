@@ -7,37 +7,23 @@ namespace Game.UI.Controls
 {
     public partial class UI_formation_role_info : ControlBase
     {
-        private Text _txtStar;
-        private Text _txtLv;
-        private Text _txtName;
-        private Image _imgStar;
-
-        protected internal override void OnInit()
-        {
-            base.OnInit();
-            _txtLv = GetControl<Text>("txt_lv");
-            _txtName = GetControl<Text>("txt_name");
-            _txtStar = GetControl<Text>("txt_star");
-            _imgStar = GetControl<Image>("img_star");
-        }
-
         public void SetData(StudentItem student)
         {
             if (student == null)
             {
-                _txtName.text = "NULL";
-                _txtStar.gameObject.SetActive(false);
-                _imgStar.gameObject.SetActive(false);
-                _txtLv.gameObject.SetActive(false);
+                txt_name.text = "NULL";
+                txt_star.gameObject.SetActive(false);
+                img_star.gameObject.SetActive(false);
+                txt_lv.gameObject.SetActive(false);
             }
             else
             {
-                _txtStar.gameObject.SetActive(true);
-                _imgStar.gameObject.SetActive(true);
-                _txtLv.gameObject.SetActive(true);
-                _txtStar.text = student.star.ToString();
-                _txtLv.text = student.lv.ToLv();
-                _txtName.text = RoleMgr.Instance.GetRole(student.roleId).fullName;   
+                txt_star.gameObject.SetActive(true);
+                img_star.gameObject.SetActive(true);
+                txt_lv.gameObject.SetActive(true);
+                txt_star.text = student.star.ToString();
+                txt_lv.text = student.lv.ToLv();
+                txt_name.text = RoleMgr.Instance.GetRole(student.roleId).fullName;
             }
         }
     }

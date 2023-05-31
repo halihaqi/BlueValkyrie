@@ -4,7 +4,6 @@ using Game.Managers;
 using Game.Model.BagModel;
 using Hali_Framework;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Game.UI.Controls
 {
@@ -56,14 +55,14 @@ namespace Game.UI.Controls
 
         private void OnItemRenderer(int index, GameObject obj)
         {
-            var itemObj = obj.GetComponent<UI_btn_bag_item>();
+            var itemObj = obj.GetComponent<UI_bag_item>();
             var bagItemInfo = _items[index];
             itemObj.SetData(bagItemInfo.id, bagItemInfo.num);
         }
 
         private void OnItemClick(int index, ControlBase cb)
         {
-            var item = cb as UI_btn_bag_item;
+            var item = cb as UI_bag_item;
             if(item == null) return;
             EventMgr.Instance.TriggerEvent(ClientEvent.BAG_ITEM_CLICK, item.Item, item.ItemNum);
         }

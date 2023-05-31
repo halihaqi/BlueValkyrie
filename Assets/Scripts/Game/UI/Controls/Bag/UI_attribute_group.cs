@@ -7,21 +7,7 @@ namespace Game.UI.Controls
 {
     public partial class UI_attribute_group : ControlBase
     {
-        private Text _txtHp;
-        private Text _txtAp;
-        private Text _txtAtk;
-        private Text _txtDef;
-
         private StudentItem _student;
-
-        protected internal override void OnInit()
-        {
-            base.OnInit();
-            _txtHp = GetControl<Text>("txt_hp");
-            _txtAp = GetControl<Text>("txt_ap");
-            _txtAtk = GetControl<Text>("txt_atk");
-            _txtDef = GetControl<Text>("txt_def");
-        }
 
         protected internal override void OnRecycle()
         {
@@ -45,10 +31,10 @@ namespace Game.UI.Controls
 
         private void UpdateView()
         {
-            _txtHp.text = _student.Hp.ToString();
-            _txtAp.text = _student.Ap.ToString();
-            _txtAtk.text = _student.Atk.ToString();
-            _txtDef.text = _student.Def.ToString();
+            txt_hp.text = _student.Hp.ToString();
+            txt_ap.text = _student.Ap.ToString();
+            txt_atk.text = _student.Atk.ToString();
+            txt_def.text = _student.Def.ToString();
         }
 
         public void OnLvPreUp(int toLvl)
@@ -70,19 +56,19 @@ namespace Game.UI.Controls
                 addDef += lvlList[i].addDef;
             }
             
-            _txtHp.text = $"{_student.Hp}<color=green>(+{addHp})</color>";
-            _txtAp.text = $"{_student.Ap}<color=green>(+{addAp})</color>";
-            _txtAtk.text = $"{_student.Atk}<color=green>(+{addAtk})</color>";
-            _txtDef.text = $"{_student.Def}<color=green>(+{addDef})</color>";
+            txt_hp.text = $"{_student.Hp}<color=green>(+{addHp})</color>";
+            txt_ap.text = $"{_student.Ap}<color=green>(+{addAp})</color>";
+            txt_atk.text = $"{_student.Atk}<color=green>(+{addAtk})</color>";
+            txt_def.text = $"{_student.Def}<color=green>(+{addDef})</color>";
         }
 
         private void OnStarPreUp()
         {
             var info = StudentMgr.Instance.GetStarUpInfo(_student.star);
-            _txtHp.text = $"{_student.Hp}<color=green>(+{info.addHp})</color>";
-            _txtAp.text = $"{_student.Ap}<color=green>(+{info.addAp})</color>";
-            _txtAtk.text = $"{_student.Atk}<color=green>(+{info.addAtk})</color>";
-            _txtDef.text = $"{_student.Def}<color=green>(+{info.addDef})</color>";
+            txt_hp.text = $"{_student.Hp}<color=green>(+{info.addHp})</color>";
+            txt_ap.text = $"{_student.Ap}<color=green>(+{info.addAp})</color>";
+            txt_atk.text = $"{_student.Atk}<color=green>(+{info.addAtk})</color>";
+            txt_def.text = $"{_student.Def}<color=green>(+{info.addDef})</color>";
         }
     }
 }

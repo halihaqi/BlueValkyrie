@@ -1,6 +1,6 @@
 ﻿using System;
 using Game.Managers;
-using Game.UI.Controls.Dialogue;
+using Game.UI.Controls;
 using Game.Utils;
 using Hali_Framework;
 using UnityEngine;

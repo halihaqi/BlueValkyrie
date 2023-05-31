@@ -128,6 +128,8 @@ namespace Hali_Framework
             canvasGroup.blocksRaycasts = enable;
         }
 
+        public void SetAlpha(float alpha) => canvasGroup.alpha = Mathf.Clamp(alpha, 0, 1);
+
         protected virtual void BindControls(){}
 
         #region CustomControl

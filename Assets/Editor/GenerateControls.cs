@@ -72,7 +72,15 @@ namespace Editor
         private static List<PrefabInfo> GetAllPrefabInfo()
         {
             List<PrefabInfo> prefabInfos = new List<PrefabInfo>();
-            string[] files = Directory.GetFiles($"{Application.dataPath}/{CONTROL_PATH}", "*.prefab");
+            string dirPath = $"{Application.dataPath}/{CONTROL_PATH}";
+            GetDirectoryPrefabInfo(dirPath, ref prefabInfos);
+            return prefabInfos;
+        }
+
+        private static void GetDirectoryPrefabInfo(string dirPath, ref List<PrefabInfo> prefabInfos)
+        {
+            string[] subDirs = Directory.GetDirectories(dirPath);
+            string[] files = Directory.GetFiles(dirPath, "*.prefab");
             for (int i = 0; i < files.Length; i++)
             {
                 //去除Asset前的路径
@@ -85,7 +93,9 @@ namespace Editor
                 DeepFindMember(prefab.transform, ref info.members);
                 prefabInfos.Add(info);
             }
-            return prefabInfos;
+
+            for (int i = 0; i < subDirs.Length; i++)
+                GetDirectoryPrefabInfo(subDirs[i], ref prefabInfos);
         }
 
         private static void DeepFindMember(Transform parent, ref Dictionary<string, Type> members)

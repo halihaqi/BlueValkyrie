@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Game.BattleScene.BattleRole;
 using Hali_Framework;
 using UnityEngine;
 
@@ -62,9 +63,9 @@ namespace Game.Entity
             }
         }
 
-        public bool IsRoleAround(BattleRoleEntity role)
+        public bool IsRoleAround(IBattleRole role)
         {
-            return _aroundRole.Contains(role.gameObject);
+            return _aroundRole.Contains(role.Go);
         }
 
         public void RiseFlag(FlagType type)

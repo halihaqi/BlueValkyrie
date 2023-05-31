@@ -7,7 +7,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.UI.Controls.Dialogue
+namespace Game.UI.Controls
 {
     public partial class UI_dialogue_frame : ControlBase
     {
@@ -22,14 +22,9 @@ namespace Game.UI.Controls.Dialogue
         private float skipCd = 0.3f;
 
         private RectTransform _rect;
-        private RectTransform _arrow;
         private float _arrowOriY;
         private Sequence _arrowTween;
-        private Text _txtDialogue;
-        //为了逐字显示时文本框固定，用一个隐藏的文本框规定大小
-        //再通过改变显示的文本框实现逐字显示
-        private Text _txtHide;
-
+        
         private float _skipCdDelta;
         private float _sentenceInterval = 1;
         private bool _isShowing = false;
@@ -48,10 +43,6 @@ namespace Game.UI.Controls.Dialogue
         protected internal override void OnInit()
         {
             base.OnInit();
-            _txtDialogue = GetControl<Text>("txt_dialogue");
-            _txtHide = GetControl<Text>("txt_hide");
-            
-            _arrow = GetControl<Image>("img_next").rectTransform;
             _rect = this.transform as RectTransform;
         }
 
@@ -111,7 +102,7 @@ namespace Game.UI.Controls.Dialogue
             if (_textQueue.Count <= 0)
             {
                 SetArrowActive(false);
-                _txtDialogue.text = text;
+                txt_dialogue.text = text;
                 _perSentenceCallbacks[_sentenceCount - 1]?.Invoke(text);
                 _completeCallback?.Invoke();
                 _isShowing = false;
@@ -119,7 +110,7 @@ namespace Game.UI.Controls.Dialogue
             else
             {
                 SetArrowActive(true);
-                _txtDialogue.text = text;
+                txt_dialogue.text = text;
                 _perSentenceCallbacks[_sentenceCount - _textQueue.Count - 1]?.Invoke(text);
                 StartCoroutine(VerbatimShowSentences());
             }
@@ -136,7 +127,7 @@ namespace Game.UI.Controls.Dialogue
 
         private void SetArrowActive(bool enable)
         {
-            _arrow.gameObject.SetActive(enable);
+            img_next.gameObject.SetActive(enable);
         }
 
         private IEnumerator VerbatimShowSentences()
@@ -151,13 +142,13 @@ namespace Game.UI.Controls.Dialogue
                 text = _textQueue.Dequeue();
                 
                 //设置文本框大小
-                _txtHide.text = text;
-                _rect.sizeDelta = new Vector2(_txtHide.preferredWidth + offset, _rect.sizeDelta.y);
+                txt_hide.text = text;
+                _rect.sizeDelta = new Vector2(txt_hide.preferredWidth + offset, _rect.sizeDelta.y);
                 //逐字显示
-                _txtDialogue.text = "";
+                txt_dialogue.text = "";
                 for (int i = 0; i < text.Length; i++)
                 {
-                    _txtDialogue.text += text[i];
+                    txt_dialogue.text += text[i];
                     yield return new WaitForSeconds(INTERVAL);
                 }
                 
@@ -189,13 +180,13 @@ namespace Game.UI.Controls.Dialogue
         protected override void OnValidate()
         {
             base.OnValidate();
-            _txtDialogue ??= transform.Find("txt_dialogue").GetComponent<Text>();
+            txt_dialogue ??= transform.Find("txt_dialogue").GetComponent<Text>();
             _rect ??= GetComponent<RectTransform>();
             EditorApplication.delayCall = () =>
             {
-                _txtDialogue.text = text;
+                txt_dialogue.text = text;
                 //设置文本框大小
-                _rect.sizeDelta = new Vector2(_txtDialogue.preferredWidth + offset, _rect.sizeDelta.y);
+                _rect.sizeDelta = new Vector2(txt_dialogue.preferredWidth + offset, _rect.sizeDelta.y);
             };
         }
     }

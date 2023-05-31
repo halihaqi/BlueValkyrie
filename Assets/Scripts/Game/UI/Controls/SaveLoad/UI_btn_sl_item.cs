@@ -12,16 +12,6 @@ namespace Game.UI.Controls
 {
     public partial class UI_btn_sl_item : ControlBase
     {
-        private Image _imgBadge;
-        private Image _imgTitleSave;
-        private Image _imgTitleLoad;
-        
-        private Slider _sldComplete;
-
-        private Text _txtTitle;
-        private Text _txtName;
-        private Text _txtTime;
-
         private ControlGroup _slGroup;
 
         private int _userId;
@@ -33,16 +23,6 @@ namespace Game.UI.Controls
         protected internal override void OnInit()
         {
             base.OnInit();
-            
-            _imgTitleSave = GetControl<Image>("img_title_save");
-            _imgTitleLoad = GetControl<Image>("img_title_load");
-            _imgBadge = GetControl<Image>("img_badge");
-            _sldComplete = GetControl<Slider>("sld_complete");
-            
-            _txtTitle = GetControl<Text>("txt_title");
-            _txtName = GetControl<Text>("txt_name");
-            _txtTime = GetControl<Text>("txt_time");
-
             _slGroup = GetControl<ControlGroup>("sl_group");
         }
 
@@ -51,10 +31,10 @@ namespace Game.UI.Controls
             _userId = userId;
             _item = item;
             
-            _imgTitleSave.gameObject.SetActive(true);
-            _imgTitleLoad.gameObject.SetActive(false);
+            img_title_save.gameObject.SetActive(true);
+            img_title_load.gameObject.SetActive(false);
             //更新面板
-            _txtTitle.text = $"存档{_userId + 1}";
+            txt_title.text = $"存档{_userId + 1}";
             UpdateView(item);
         }
 
@@ -65,10 +45,10 @@ namespace Game.UI.Controls
             _userName = userName;
             _secretaryId = secretaryId;
             
-            _imgTitleSave.gameObject.SetActive(true);
-            _imgTitleLoad.gameObject.SetActive(false);
+            img_title_save.gameObject.SetActive(true);
+            img_title_load.gameObject.SetActive(false);
             //更新面板
-            _txtTitle.text = $"存档{_userId + 1}";
+            txt_title.text = $"存档{_userId + 1}";
             UpdateView(item);
         }
 
@@ -77,10 +57,10 @@ namespace Game.UI.Controls
             _userId = userId;
             _item = item;
             
-            _imgTitleSave.gameObject.SetActive(false);
-            _imgTitleLoad.gameObject.SetActive(true);
+            img_title_save.gameObject.SetActive(false);
+            img_title_load.gameObject.SetActive(true);
             //更新面板
-            _txtTitle.text = $"存档{_userId + 1}";
+            txt_title.text = $"存档{_userId + 1}";
             UpdateView(item);
         }
 
@@ -131,12 +111,12 @@ namespace Game.UI.Controls
             else
             {
                 _slGroup.SetActive(true);
-                _txtName.text = item.name;
-                _txtTime.text = ((int)item.time).ToTime();
-                _sldComplete.value = item.complete;
+                txt_name.text = item.name;
+                txt_time.text = ((int)item.time).ToTime();
+                sld_complete.value = item.complete;
                 ResMgr.Instance.LoadAsync<Sprite>(ResPath.GetSchoolBadgeIcon(item.secretaryId), img =>
                 {
-                    _imgBadge.sprite = img;
+                    img_badge.sprite = img;
                 });
             }
         }

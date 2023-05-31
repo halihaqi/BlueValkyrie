@@ -5,7 +5,7 @@ using Hali_Framework;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.UI.Controls.Battle
+namespace Game.UI.Controls
 {
     public enum RoundTipType
     {
@@ -23,8 +23,6 @@ namespace Game.UI.Controls.Battle
         [SerializeField]
         private Color enemyColor;
 
-        private Text _txtTip;
-
         private static Dictionary<RoundTipType, string> _tipDic = new Dictionary<RoundTipType, string>
         {
             { RoundTipType.StudentRound, "己方回合" },
@@ -34,24 +32,18 @@ namespace Game.UI.Controls.Battle
             { RoundTipType.BattleStart, "游戏开始" }
         };
 
-        protected internal override void OnInit()
-        {
-            base.OnInit();
-            _txtTip = GetControl<Text>("txt_tip");
-        }
-
         public void ShowTip(RoundTipType tipType, Action callback)
         {
-            _txtTip.text = _tipDic[tipType];
+            txt_tip.text = _tipDic[tipType];
             switch (tipType)
             {
                 case RoundTipType.StudentRound:
                 case RoundTipType.StudentWin:
-                    _txtTip.color = studentColor;
+                    txt_tip.color = studentColor;
                     break;
                 case RoundTipType.EnemyRound:
                 case RoundTipType.EnemyWin:
-                    _txtTip.color = enemyColor;
+                    txt_tip.color = enemyColor;
                     break;
             }
             DOTween.To(() => canvasGroup.alpha, 

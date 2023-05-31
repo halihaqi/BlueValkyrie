@@ -41,6 +41,11 @@ namespace Game.BattleScene.BattleRole
         /// 角色可变信息，可上buff和debuff
         /// </summary>
         public BattleRoleState RoleState { get; }
+        
+        /// <summary>
+        /// 相机跟随目标
+        /// </summary>
+        public Transform FollowTarget { get; }
 
         #endregion
 
@@ -50,6 +55,11 @@ namespace Game.BattleScene.BattleRole
         /// 角色Id
         /// </summary>
         public int RoleId { get; }
+        
+        /// <summary>
+        /// 角色名
+        /// </summary>
+        public string RoleName { get; }
 
         /// <summary>
         /// 攻击类型

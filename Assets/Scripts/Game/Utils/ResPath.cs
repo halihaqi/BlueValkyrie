@@ -2,6 +2,7 @@
 using Game.Model;
 using Game.Model.BagModel;
 using Hali_Framework;
+using UnityEngine;
 
 namespace Game.Utils
 {
@@ -28,6 +29,11 @@ namespace Game.Utils
         public static string GetStudentIcon(RoleInfo info)
         {
             return $"Image/HeadIcon/Student_Portrait_{info.name}";
+        }
+        
+        public static string GetStudentIcon(string roleName)
+        {
+            return $"Image/HeadIcon/Student_Portrait_{roleName}";
         }
 
         public static string GetStudentObj(RoleInfo info)
@@ -80,7 +86,42 @@ namespace Game.Utils
         
         public static string GetEnemyIcon(string enemyName)
         {
-            return $"Image/Enemy_Icon/EnemyInfo_{enemyName}";
+            return $"Image/EnemyIcon/EnemyInfo_{enemyName}";
+        }
+
+        public static string GetRoleIcon(RoleType type, string roleName)
+        {
+            switch (type)
+            {
+                case RoleType.Student:
+                    return GetStudentIcon(roleName);
+                    break;
+                case RoleType.Enemy:
+                    return GetEnemyIcon(roleName);
+                    break;
+                default:
+                    return "";
+            }
+        }
+
+        public static string GetAmmonIcon(RoleType type)
+        {
+            return $"Image/AmmoIcon/{type}_ammo_icon";
+        }
+
+        public static Color GetRoleColor(RoleType type)
+        {
+            switch (type)
+            {
+                case RoleType.Student:
+                    return new Color(0.4f, 1, 0.9f);
+                    break;
+                case RoleType.Enemy:
+                    return new Color(1, 0.4f, 0.4f);
+                    break;
+                default:
+                    return Color.white;
+            }
         }
 
         public static string GetChessIcon(RoleType type)

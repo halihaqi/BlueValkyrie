@@ -10,7 +10,6 @@ namespace Game.UI.Controls
         public void SetData(IBattleRole role)
         {
             _role = role;
-            
         }
     }
 }

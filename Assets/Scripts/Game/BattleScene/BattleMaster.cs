@@ -37,10 +37,8 @@ namespace Game.BattleScene
         private List<RoleType> _campTypes;//用于记录参与战斗的阵营类型
         private IBattleRole _curRole;
         private Transform[] shelterPos;
-        private OverMapEntity overMapEntity;
 
         public Camera mapCam;
-        public Camera cam;
         public ThirdPersonCam followCam;
 
         public BattlePanel BattlePanel { get; set; }
@@ -73,7 +71,6 @@ namespace Game.BattleScene
         {
             _battleFsm.Start<BattleInitState>();
             _overType = BattleOverType.NotOver;
-            overMapEntity.gameObject.SetActive(false);
             EventMgr.Instance.AddListener(ClientEvent.BATTLE_STEP_OVER, OnBattleStepOver);
             EventMgr.Instance.AddListener(ClientEvent.BATTLE_ROUND_RUN, OnBattleRoundRun);
         }
@@ -85,7 +82,6 @@ namespace Game.BattleScene
             EventMgr.Instance.RemoveListener(ClientEvent.BATTLE_ROUND_RUN, OnBattleRoundRun);
 
             _battleFsm = null;
-            cam = null;
             followCam = null;
             mapCam = null;
         }
@@ -119,6 +115,7 @@ namespace Game.BattleScene
                 {
                     _curRole = role;
                     //todo 切换可能需要的逻辑
+                    SetFollowTarget(role);
                     EventMgr.Instance.TriggerEvent(ClientEvent.BATTLE_ROLE_CHANGE, _curRole);
                     return;
                 }
@@ -227,6 +224,17 @@ namespace Game.BattleScene
             }
 
             return res;
+        }
+
+        #endregion
+
+        #region 处理相机
+
+        private void SetFollowTarget(IBattleRole role)
+        {
+            if (role == null || !_camps.ContainsKey(role.RoleType)) return;
+            if(!_camps.ContainsKey(role.RoleType)) return;
+            followCam.followTarget = role.FollowTarget;
         }
 
         #endregion

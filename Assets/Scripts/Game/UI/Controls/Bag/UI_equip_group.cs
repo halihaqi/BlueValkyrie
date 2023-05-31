@@ -7,20 +7,7 @@ namespace Game.UI.Controls
 {
     public partial class UI_equip_group : ControlBase
     {
-        private UI_equip_item _equipHat;
-        private UI_equip_item _equipBag;
-        private UI_equip_item _equipGloves;
-        private UI_equip_item _equipShoes;
         private StudentItem _student;
-
-        protected internal override void OnInit()
-        {
-            base.OnInit();
-            _equipHat = GetControl<UI_equip_item>("equip_hat");
-            _equipBag = GetControl<UI_equip_item>("equip_bag");
-            _equipGloves = GetControl<UI_equip_item>("equip_gloves");
-            _equipShoes = GetControl<UI_equip_item>("equip_shoes");
-        }
 
         protected internal override void OnRecycle()
         {
@@ -30,10 +17,10 @@ namespace Game.UI.Controls
 
         public void SetData(StudentItem student)
         {
-            _equipHat.SetClickListener(OnHatClick);
-            _equipBag.SetClickListener(OnBagClick);
-            _equipGloves.SetClickListener(OnGlovesClick);
-            _equipShoes.SetClickListener(OnShoesClick);
+            equip_hat.SetClickListener(OnHatClick);
+            equip_bag.SetClickListener(OnBagClick);
+            equip_gloves.SetClickListener(OnGlovesClick);
+            equip_shoes.SetClickListener(OnShoesClick);
             EventMgr.Instance.AddListener(ClientEvent.WEAR_EQUIP, UpdateView);
             
             _student = student;
@@ -42,10 +29,10 @@ namespace Game.UI.Controls
 
         private void UpdateView()
         {
-            _equipHat.SetData(_student.equips[0]);
-            _equipGloves.SetData(_student.equips[1]);
-            _equipBag.SetData(_student.equips[2]);
-            _equipShoes.SetData(_student.equips[3]);
+            equip_hat.SetData(_student.equips[0]);
+            equip_gloves.SetData(_student.equips[1]);
+            equip_bag.SetData(_student.equips[2]);
+            equip_shoes.SetData(_student.equips[3]);
         }
 
         private void OnHatClick()

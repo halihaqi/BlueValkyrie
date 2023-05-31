@@ -17,6 +17,7 @@ namespace Game.BattleScene.BattleRole
         public static readonly int BattleDead = Animator.StringToHash("dead");
         
         private int _roleId;
+        private string _roleName;
         private AtkType _atkType;
         private RoleType _roleType;
         
@@ -30,13 +31,12 @@ namespace Game.BattleScene.BattleRole
         //组件
         private NavMeshAgent _agent;
         private CapsuleCollider _collider;
-        private Animator _anim; 
-        
-        //相机
-        public Transform followTarget;
+        private Animator _anim;
+        private Transform _followTarget;
         
         //角色信息
         public int RoleId => _roleId;
+        public string RoleName => _roleName;
         public AtkType AtkType => _atkType;
         public RoleType RoleType => _roleType;
         public GameObject Go => gameObject;
@@ -49,6 +49,7 @@ namespace Game.BattleScene.BattleRole
         public bool IsDead => _isDead;
         public IBattleRole AtkTarget { get; set; }
         public BattleRoleState RoleState => _roleState;
+        public Transform FollowTarget => _followTarget;
         
         //代理
         public NavMeshAgent Agent => _agent;
@@ -85,6 +86,7 @@ namespace Game.BattleScene.BattleRole
             if (!(info is EnemyInfo enemy))
                 throw new Exception("Init enemy info valid.");
             _roleId = enemy.roleId;
+            _roleName = enemy.roleName;
             _atkType = (AtkType)enemy.atkType;
             _roleType = RoleType.Student;
             BattleRoleState state = new BattleRoleState
@@ -129,7 +131,7 @@ namespace Game.BattleScene.BattleRole
             gameObject.layer = LayerMask.NameToLayer(GameConst.ROLE_LAYER);
             _collider.center = Vector3.up * 1.03f;
             gameObject.tag = GameConst.ENEMY_TAG;
-            followTarget = transform.Find("followTarget");
+            _followTarget = transform.Find("followTarget");
         }
 
         #endregion
