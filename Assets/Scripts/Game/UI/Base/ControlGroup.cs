@@ -8,6 +8,8 @@ namespace Game.UI.Base
     {
         private CanvasGroup _canvasGroup;
 
+        public float Alpha => _canvasGroup.alpha;
+
         protected override void Awake()
         {
             base.Awake();

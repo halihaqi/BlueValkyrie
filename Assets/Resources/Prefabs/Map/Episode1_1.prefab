@@ -1188,16 +1188,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65cb26adb07344f3a540f5f6cc8ed8a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  studentPos:
-  - {fileID: 1741263207}
-  - {fileID: 1390037774}
-  - {fileID: 505731715}
-  - {fileID: 105385236}
-  enemyPos:
-  - {fileID: 5817291375262975278}
-  - {fileID: 4453641835749514}
-  - {fileID: 1253165917935064725}
-  - {fileID: 4375492638468781987}
+  campPos:
+  - type: 0
+    flags:
+    - {fileID: 7950974952022933470}
+    roles:
+    - {fileID: 1741263207}
+    - {fileID: 1390037774}
+    - {fileID: 505731715}
+    - {fileID: 105385236}
+  - type: 1
+    flags:
+    - {fileID: 5820891641602502579}
+    roles:
+    - {fileID: 5817291375262975278}
+    - {fileID: 4453641835749514}
+    - {fileID: 1253165917935064725}
+    - {fileID: 4375492638468781987}
   shelterPos:
   - {fileID: 251606682137934643}
   - {fileID: 251606683023658421}
@@ -1206,9 +1213,6 @@ MonoBehaviour:
   - {fileID: 2626668918288583896}
   - {fileID: 7010669339513766174}
   - {fileID: 5717473609266204723}
-  flagPos:
-  - {fileID: 7950974952022933470}
-  - {fileID: 5820891641602502579}
 --- !u!1 &7303113927569827809
 GameObject:
   m_ObjectHideFlags: 0

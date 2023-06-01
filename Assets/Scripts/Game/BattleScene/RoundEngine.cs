@@ -1,83 +1,136 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Game.Model;
 using Hali_Framework;
+using UnityEngine;
 
 namespace Game.BattleScene
 {
+    public class CampRoundInfo
+    {
+        public RoleType type;
+        public int curAp;
+    }
+    
     public class RoundEngine
     {
-        private bool _isEnemy;
+        //key 阵营种类   value 阵营ap
+        private HashSet<RoleType> _addedCamp;
+        private LinkedList<CampRoundInfo> _camps;
         private int _maxRound;
-        private int _curRound;
         private int _logicAp;
-        private int _enemyLastAp = 0;
-        private int _studentLastAp = 0;
-        private int _curAp;
-        private bool _isHalfOver;
-        private bool _isOver;
 
-        public bool IsEnemy => _isEnemy;
+        private int _curRound;
+        private LinkedListNode<CampRoundInfo> _curCamp;
+        private LinkedListNode<CampRoundInfo> _cacheNode;
+        private bool _isRun;
+
 
         public int CurRound => _curRound;
 
-        public int CurAp => _curAp;
-
         public int MaxRound => _maxRound;
 
-        public bool IsHalfOver => _isHalfOver;
+        public CampRoundInfo CurCamp => _curCamp.Value;
 
-        public bool IsOver => _isOver;
+        public bool IsOver => !_isRun;
 
-        public void Init(bool isEnemy, int maxRound, int logicAp)
+        public void Init(int maxRound, int logicAp)
         {
-            _isEnemy = isEnemy;
+            _camps = new LinkedList<CampRoundInfo>();
+            _addedCamp = new HashSet<RoleType>();
+            _curCamp = null;
             _curRound = _maxRound = maxRound;
-            _curAp = _logicAp = logicAp;
-            _isHalfOver = false;
+            _logicAp = logicAp;
+        }
+
+        public void Start(RoleType type)
+        {
+            if (!_addedCamp.Contains(type))
+            {
+                Debug.Log($"Has no camp {type} in RoundEngine.");
+                return;
+            }
+
+            _cacheNode = _camps.First;
+            while (_cacheNode != null)
+            {
+                if(_cacheNode.Value.type == type)
+                    break;
+                _cacheNode = _cacheNode.Next;
+            }
+
+            _curCamp = _cacheNode;
+            _cacheNode = null;
+            _isRun = true;
+        }
+
+        public void AddCamp(RoleType type)
+        {
+            if (!_addedCamp.Add(type))
+            {
+                Debug.Log($"Has the same camp {type} in RoundEngine.");
+                return;
+            }
+
+            CampRoundInfo info = new CampRoundInfo();
+            info.type = type;
+            info.curAp = _logicAp;
+            _camps.AddLast(info);
         }
 
         public void Run()
         {
-            --_curAp;
-            if (_curAp <= 0)
-            {
-                _isEnemy = !_isEnemy;
-                _curAp = Math.Min(_maxRound, _logicAp + (_isEnemy ? _enemyLastAp : _studentLastAp));
-                if (_isHalfOver)
-                {
-                    _studentLastAp = 0;
-                    _enemyLastAp = 0;
-                    --_curRound;
-                    if (_curRound <= 0)
-                    {
-                        _isOver = true;
-                        return;
-                    }
-                }
+            _curCamp.Value.curAp--;
+            //行动点用完，切换到下个队伍
+            if (_curCamp.Value.curAp <= 0)
+                CampOver();
+        }
+        
+        /// <summary>
+        /// 一个阵营行动结束
+        /// </summary>
+        public void CampOver()
+        {
+            _curCamp = _curCamp.Next;
+            //所有队伍行动完成，结束一回合
+            if (_curCamp == null)
+                RoundOver();
 
-                EventMgr.Instance.TriggerEvent(ClientEvent.BATTLE_HALF_ROUND_OVER);
-                _isHalfOver = !_isHalfOver;
-                if(!_isHalfOver)
-                    EventMgr.Instance.TriggerEvent(ClientEvent.BATTLE_ROUND_OVER);
-            }
-            EventMgr.Instance.TriggerEvent(ClientEvent.BATTLE_ROUND_RUN);
+            _curCamp.Value.curAp += _logicAp;//每回合恢复行动点
+            _curCamp.Value.curAp = Math.Min(BattleConst.ROUND_MAX_AP, _curCamp.Value.curAp);
         }
 
-        public void HalfOver()
+        /// <summary>
+        /// 一个回合结束
+        /// </summary>
+        public void RoundOver()
         {
-            if (_isEnemy)
-                _enemyLastAp = _curAp;
-            else
-                _studentLastAp = _curAp;
-            _curAp = 0;
-            Run();
+            _curRound--;
+            _curCamp = _camps.First;
+            if(_curRound <= 0)
+                BattleOver();
+        }
+
+        public void BattleOver()
+        {
+            _isRun = false;
+            _curRound = 0;
+            _curCamp = null;
         }
 
         public void ShutDown()
         {
-            _curAp = 0;
-            _curRound = 0;
-            _isHalfOver = true;
-            _isOver = true;
+            BattleOver();
+            _addedCamp = null;
+            _camps = null;
+            _cacheNode = null;
+            _curCamp = null;
+        }
+
+        public void AutoRun()
+        {
+            
         }
     }
 }

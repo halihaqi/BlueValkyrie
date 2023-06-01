@@ -14,12 +14,16 @@ namespace Hali_Framework
         protected CanvasGroup canvasGroup;
         private Dictionary<string, List<UIBehaviour>> _controlDic;//控件名为键
         private Dictionary<Type, List<ControlBase>> _addControlDic;//自定义控件类为键
+        private RectTransform _rectTransform;
+
+        public RectTransform RectTransform => _rectTransform;
 
         protected internal virtual void OnInit()
         {
             _controlDic = new Dictionary<string, List<UIBehaviour>>();
             _addControlDic = new Dictionary<Type, List<ControlBase>>();
             canvasGroup = GetComponent<CanvasGroup>();
+            _rectTransform = transform as RectTransform;
             //搜索UI组件添加到容器中
             FindChildrenControls(this.transform);
             BindControls();//用于自动生成控件的成员绑定

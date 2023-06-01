@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using DG.Tweening;
+using Game.Model;
 using Hali_Framework;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,6 +10,7 @@ namespace Game.UI.Controls
 {
     public enum RoundTipType
     {
+        Null,
         StudentRound,
         EnemyRound,
         StudentWin,
@@ -25,6 +27,7 @@ namespace Game.UI.Controls
 
         private static Dictionary<RoundTipType, string> _tipDic = new Dictionary<RoundTipType, string>
         {
+            { RoundTipType.Null, "" },
             { RoundTipType.StudentRound, "己方回合" },
             { RoundTipType.EnemyRound, "敌方回合" },
             { RoundTipType.StudentWin, "己方胜利" },
@@ -54,6 +57,21 @@ namespace Game.UI.Controls
                     val => canvasGroup.alpha = val, 0, 1f);
                 callback?.Invoke();
             });
+        }
+
+        public RoundTipType GetTipType(RoleType type)
+        {
+            switch (type)
+            {
+                case RoleType.Student:
+                    return RoundTipType.StudentRound;
+                    break;
+                case RoleType.Enemy:
+                    return RoundTipType.EnemyRound;
+                    break;
+                default:
+                    return RoundTipType.Null;
+            }
         }
     }
 }

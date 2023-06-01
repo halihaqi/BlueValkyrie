@@ -21,9 +21,9 @@ namespace Game.BattleScene
         protected internal override void OnEnter(IFsm<BattleMaster> fsm)
         {
             base.OnEnter(fsm);
-            MonoMgr.Instance.StartCoroutine(InitBattlefield(fsm));
             Debug.Log("<battle> 开始加载战场");
             _sw = Stopwatch.StartNew();
+            MonoMgr.Instance.StartCoroutine(InitBattlefield(fsm));
         }
 
         protected internal override void OnUpdate(IFsm<BattleMaster> fsm, float elapseSeconds, float realElapseSeconds)
@@ -82,10 +82,14 @@ namespace Game.BattleScene
 
         private void InitPanel(IFsm<BattleMaster> fsm)
         {
-            UIMgr.Instance.ShowPanel<BattlePanel>
-                (callback: panel => { fsm.Owner.BattlePanel = panel as BattlePanel; });
+            // UIMgr.Instance.ShowPanel<BattlePanel>
+            //     (callback: panel => { fsm.Owner.BattlePanel = panel as BattlePanel; });
             UIMgr.Instance.ShowPanel<BattleRoundPanel>
-                (callback: panel => { fsm.Owner.BattleRoundPanel = panel as BattleRoundPanel; });
+                (callback: panel =>
+                {
+                    fsm.Owner.BattleRoundPanel = panel as BattleRoundPanel;
+                    _initComplete = true;
+                });
         }
     }
 }

@@ -18,8 +18,8 @@ namespace Game.BattleScene
         private bool _isGenerateChessOver = false;
         private List<GameObject> roleChess = new List<GameObject>();
         private List<GameObject> flagChess = new List<GameObject>();
-        private const string ROLE_CHESS_PATH = "UI/Controls/role_chess";
-        private const string FLAG_CHESS_PATH = "UI/Controls/flag_chess";
+        private const string ROLE_CHESS_PATH = "UI/Controls/Battle/role_chess";
+        private const string FLAG_CHESS_PATH = "UI/Controls/Battle/flag_chess";
 
         protected internal override void OnEnter(IFsm<BattleMaster> fsm)
         {
@@ -104,15 +104,15 @@ namespace Game.BattleScene
                     bool loaded = false; 
                     ObjectPoolMgr.Instance.PopObj(ROLE_CHESS_PATH, obj =>
                     {
-                        // var item = obj.GetComponent<UI_battle_chess>();
-                        // item.OnInit();
-                        // item.SetData(kv.Key);
-                        // var trans = (RectTransform)item.transform;
-                        // trans.SetParent(parent, false);
-                        // trans.anchoredPosition = kv.Value;
-                        // item.rotRect.localRotation = Quaternion.Euler(0, 0, roleRotation[kv.Key] + camOffset);
-                        // roleChess.Add(obj);
-                        // loaded = true;
+                        var item = obj.GetComponent<UI_role_chess>();
+                        item.OnInit();
+                        item.SetData(kv.Key);
+                        var trans = (RectTransform)item.transform;
+                        trans.SetParent(parent, false);
+                        trans.anchoredPosition = kv.Value;
+                        item.RectTransform.localRotation = Quaternion.Euler(0, 0, roleRotation[kv.Key] + camOffset);
+                        roleChess.Add(obj);
+                        loaded = true;
                     });
                     while(!loaded)
                         yield return null;

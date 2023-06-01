@@ -88,7 +88,7 @@ namespace Game.BattleScene.BattleRole
             _roleId = enemy.roleId;
             _roleName = enemy.roleName;
             _atkType = (AtkType)enemy.atkType;
-            _roleType = RoleType.Student;
+            _roleType = RoleType.Enemy;
             BattleRoleState state = new BattleRoleState
             {
                 maxHp = enemy.hp,

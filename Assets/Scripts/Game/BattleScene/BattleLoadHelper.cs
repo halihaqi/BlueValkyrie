@@ -40,20 +40,20 @@ namespace Game.BattleScene
             {
                 int index = i;
                 var student = formation.students[i];
-                var info = RoleMgr.Instance.GetBattleRole(student.roleId);
                 BattleStudent entity = null;
                 bool loaded = false;
-                ResMgr.Instance.LoadAsync<GameObject>(GameConst.BATTLE_SCENE, ResPath.GetStudentObj(info), obj =>
-                {
-                    //设置站位
-                    obj.transform.position = station[index].position;
-                    obj.transform.rotation = station[index].rotation;
-                    
-                    //添加战斗脚本
-                    entity = obj.AddComponent<BattleStudent>();
-                    entity.InitMe(info);
-                    loaded = true;
-                });
+                ResMgr.Instance.LoadAsync<GameObject>(GameConst.BATTLE_SCENE, ResPath.GetStudentObj(student.roleId),
+                    obj =>
+                    {
+                        //设置站位
+                        obj.transform.position = station[index].position;
+                        obj.transform.rotation = station[index].rotation;
+
+                        //添加战斗脚本
+                        entity = obj.AddComponent<BattleStudent>();
+                        entity.InitMe(student);
+                        loaded = true;
+                    });
                 while (!loaded)
                     yield return null;
                 container.Add(entity);

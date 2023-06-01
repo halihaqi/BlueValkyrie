@@ -28,8 +28,7 @@ namespace Game.UI.Battle
         private Button _btnOption;
         
         private BattleMaster _bm;
-        private bool _isFirstRound;
-        
+
         public RectTransform Map => (RectTransform)_rawMap.transform;
         public RectTransform ChessTrans => chessTrans;
         
@@ -59,8 +58,6 @@ namespace Game.UI.Battle
             Visible = false;
             EventMgr.Instance.AddListener<IBattleRole>(ClientEvent.CHESS_CLICK, OnChessClick);
             EventMgr.Instance.AddListener(ClientEvent.BATTLE_ROUND_RUN, OnRoundRun);
-            EventMgr.Instance.AddListener(ClientEvent.BATTLE_HALF_ROUND_OVER, OnHalfRoundOver);
-            _isFirstRound = true;
         }
         
         protected internal override void OnHide(bool isShutdown, object userData)
@@ -68,8 +65,6 @@ namespace Game.UI.Battle
             base.OnHide(isShutdown, userData);
             EventMgr.Instance.RemoveListener<IBattleRole>(ClientEvent.CHESS_CLICK, OnChessClick);
             EventMgr.Instance.RemoveListener(ClientEvent.BATTLE_ROUND_RUN, OnRoundRun);
-            EventMgr.Instance.RemoveListener(ClientEvent.BATTLE_HALF_ROUND_OVER, OnHalfRoundOver);
-            _isFirstRound = false;
         }
         
         protected internal override void OnCover()
@@ -83,26 +78,13 @@ namespace Game.UI.Battle
             base.OnRefocus(userData);
             Visible = true;
             PanelEntity.Fade(true);
-            UpdateView(_bm.RoundEngine);
-            if (_isFirstRound)
-            {
-                _imgMask.gameObject.SetActive(true);
-                _roundTipForm.ShowTip(RoundTipType.BattleStart, () =>
-                {
-                    if (_bm.RoundEngine.IsEnemy)
-                        StartCoroutine(AutoRound());
-                    else
-                        _imgMask.gameObject.SetActive(false);
-                });
-                _isFirstRound = false;
-                return;
-            }
-        
+            UpdateView();
+            
             _imgMask.gameObject.SetActive(true);
-            if (_bm.RoundEngine.IsEnemy)
-                StartCoroutine(AutoRound());
-            else
+            _roundTipForm.ShowTip(_roundTipForm.GetTipType(_bm.CurRole.RoleType), () =>
+            {
                 _imgMask.gameObject.SetActive(false);
+            });
         }
 
         private void OnChessClick(IBattleRole role)
@@ -124,33 +106,21 @@ namespace Game.UI.Battle
         
         private void OnRoundRun()
         {
-            UpdateView(_bm.RoundEngine);
+            UpdateView();
         }
-        
-        private void OnHalfRoundOver()
+
+        private void UpdateView()
         {
-            _imgMask.gameObject.SetActive(true);
-            RoundTipType type = _bm.RoundEngine.IsEnemy ? RoundTipType.EnemyRound : RoundTipType.StudentRound;
-            _roundTipForm.ShowTip(type, () =>
-            {
-                if (_bm.RoundEngine.IsEnemy)
-                    StartCoroutine(AutoRound());
-                else
-                    _imgMask.gameObject.SetActive(false);
-            });
-        }
-        
-        private void UpdateView(RoundEngine roundEngine)
-        {
-            _txtRound.text = $"{roundEngine.CurRound}/{roundEngine.MaxRound}";
-            _txtCamp.text = roundEngine.IsEnemy ? "<color=red>Enemy</color>" : "<color=blue>Student</color>";
+            _txtRound.text = $"{_bm.CurRound}/{_bm.MaxRound}";
+            _txtCamp.text = _bm.CurCamp.type.ToString();
             OnChessClick(null);
-            _imgCp.rectTransform.sizeDelta = new Vector2(CP_WIDTH * roundEngine.CurAp, _imgCp.rectTransform.sizeDelta.y);
+            _imgCp.rectTransform.sizeDelta = new Vector2
+                (CP_WIDTH * _bm.CurCamp.curAp, _imgCp.rectTransform.sizeDelta.y);
         }
         
         private void OnBtnOverClick()
         {
-            _bm.RoundEngine.HalfOver();
+            _bm.WarCampOver();
         }
         
         private IEnumerator AutoRound()

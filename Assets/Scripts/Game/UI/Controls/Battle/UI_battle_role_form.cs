@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using Game.BattleScene;
 using Game.BattleScene.BattleRole;
 using Game.Utils;
 using Hali_Framework;
@@ -10,6 +11,7 @@ namespace Game.UI.Controls
     {
         [SerializeField] private RectTransform btnGroup;
         private float _oriBtnY;
+        private IBattleRole _role;
         
         protected internal override void OnInit()
         {
@@ -21,6 +23,7 @@ namespace Game.UI.Controls
 
         public void SetData(IBattleRole role, bool canChoose)
         {
+            _role = role;
             ResMgr.Instance.LoadAsync<Sprite>(GameConst.RES_GROUP_UI, 
                 ResPath.GetRoleIcon(role.RoleType, role.RoleName), img =>
             {
@@ -47,22 +50,25 @@ namespace Game.UI.Controls
             txt_ammo.text = $"{role.CurAmmo}/{role.RoleState.maxAmmo}";
             if (canChoose)
             {
-                btnGroup.DOAnchorPosY(_oriBtnY + 80, 0.5f);
+                btnGroup.DOAnchorPosY(_oriBtnY, 0.5f);
             }
             else
             {
-                btnGroup.DOAnchorPosY(_oriBtnY, 0.5f);
+                btnGroup.DOAnchorPosY(_oriBtnY + 100, 0.5f);
             }
         }
 
         private void OnFight()
         {
-            
+            var fsm = FsmMgr.Instance.GetFsm<BattleMaster>(BattleConst.BATTLE_FSM);
+            fsm.Owner.ChangeRole(_role);
+            fsm.ChangeState<BattleRunState>();
         }
 
         private void OnRest()
         {
-            
+            var fsm = FsmMgr.Instance.GetFsm<BattleMaster>(BattleConst.BATTLE_FSM);
+            fsm.Owner.WarRun();
         }
     }
 }

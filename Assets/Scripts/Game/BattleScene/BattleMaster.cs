@@ -46,11 +46,14 @@ namespace Game.BattleScene
 
         public IBattleRole CurRole => _curRole;
 
-        public RoundEngine RoundEngine => _roundEngine;
-
         public BattleOverType OverType => _overType;
 
         public List<RoleType> CampTypes => _campTypes;
+        
+        //回合属性
+        public CampRoundInfo CurCamp => _roundEngine.CurCamp;
+        public int CurRound => _roundEngine.CurRound;
+        public int MaxRound => _roundEngine.MaxRound;
 
         private void Awake()
         {
@@ -59,7 +62,7 @@ namespace Game.BattleScene
             //初始化回合
             _roundEngine = new RoundEngine();
             var episodeInfo = ProcedureMgr.Instance.GetData<EpisodeInfo>(BattleConst.MAP_KEY);
-            _roundEngine.Init(false, episodeInfo.round, BattleConst.ROUND_AP);
+            _roundEngine.Init(episodeInfo.round, BattleConst.ROUND_AP);
             
             //创建战斗状态机
             _battleFsm = FsmMgr.Instance.CreateFsm(BattleConst.BATTLE_FSM, this, 
@@ -71,15 +74,11 @@ namespace Game.BattleScene
         {
             _battleFsm.Start<BattleInitState>();
             _overType = BattleOverType.NotOver;
-            EventMgr.Instance.AddListener(ClientEvent.BATTLE_STEP_OVER, OnBattleStepOver);
-            EventMgr.Instance.AddListener(ClientEvent.BATTLE_ROUND_RUN, OnBattleRoundRun);
         }
 
         private void OnDestroy()
         {
             FsmMgr.Instance.DestroyFsm(BattleConst.BATTLE_FSM);
-            EventMgr.Instance.RemoveListener(ClientEvent.BATTLE_STEP_OVER, OnBattleStepOver);
-            EventMgr.Instance.RemoveListener(ClientEvent.BATTLE_ROUND_RUN, OnBattleRoundRun);
 
             _battleFsm = null;
             followCam = null;
@@ -98,6 +97,7 @@ namespace Game.BattleScene
             {
                 _camps.Add(camp.campType, camp);
                 _campTypes.Add(camp.campType);
+                _roundEngine.AddCamp(camp.campType);
             }
             else
                 Debug.Log($"Cannot add same camp: {camp.campType}.");
@@ -116,7 +116,6 @@ namespace Game.BattleScene
                     _curRole = role;
                     //todo 切换可能需要的逻辑
                     SetFollowTarget(role);
-                    EventMgr.Instance.TriggerEvent(ClientEvent.BATTLE_ROLE_CHANGE, _curRole);
                     return;
                 }
             }
@@ -214,7 +213,7 @@ namespace Game.BattleScene
             
             Vector2 sizeDelta = mapRect.sizeDelta;
             var mapLb = mapRect.anchoredPosition - sizeDelta / 2;//左下
-            for (int i = 0; i < camp.soldiers.Count; i++)
+            for (int i = 0; i < camp.flags.Count; i++)
             {
                 var viewport = mapCam.WorldToViewportPoint(camp.flags[i].transform.position);//[0,1]的屏幕映射
                 //映射
@@ -235,6 +234,26 @@ namespace Game.BattleScene
             if (role == null || !_camps.ContainsKey(role.RoleType)) return;
             if(!_camps.ContainsKey(role.RoleType)) return;
             followCam.followTarget = role.FollowTarget;
+        }
+
+        #endregion
+
+        #region 处理回合
+
+        public void WarStart(RoleType type)
+        {
+            _roundEngine.Start(type);
+        }
+
+        public void WarRun()
+        {
+            _roundEngine.Run();
+            EventMgr.Instance.TriggerEvent(ClientEvent.BATTLE_ROUND_RUN);
+        }
+
+        public void WarCampOver()
+        {
+            _roundEngine.CampOver();
         }
 
         #endregion
@@ -296,16 +315,5 @@ namespace Game.BattleScene
         //         _battleFsm.ChangeState<BattleOverState>();
         //     }
         // }
-
-        private void OnBattleStepOver()
-        {
-            _roundEngine.Run();
-        }
-
-        private void OnBattleRoundRun()
-        {
-            if(_battleFsm.CurrentState.GetType() != typeof(BattleChessState))
-                _battleFsm.ChangeState<BattleChessState>();
-        }
     }
 }
