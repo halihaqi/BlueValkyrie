@@ -1,4 +1,5 @@
 ﻿using Game.Model;
+using Hali_Framework;
 using UnityEngine;
 
 namespace Game.BattleScene.BattleRole
@@ -72,6 +73,8 @@ namespace Game.BattleScene.BattleRole
         public RoleType RoleType { get; }
         
         public GameObject Go { get; }
+        
+        public IFsm<IBattleRole> Fsm { get; }
 
         #endregion
 

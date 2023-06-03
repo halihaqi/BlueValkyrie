@@ -1189,7 +1189,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   campPos:
-  - type: 0
+  - type: 1
     flags:
     - {fileID: 7950974952022933470}
     roles:
@@ -1197,7 +1197,7 @@ MonoBehaviour:
     - {fileID: 1390037774}
     - {fileID: 505731715}
     - {fileID: 105385236}
-  - type: 1
+  - type: 2
     flags:
     - {fileID: 5820891641602502579}
     roles:

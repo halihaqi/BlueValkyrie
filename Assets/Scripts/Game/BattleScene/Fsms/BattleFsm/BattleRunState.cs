@@ -1,4 +1,5 @@
-﻿using Hali_Framework;
+﻿using Game.BattleScene.Fsms.BattleRoleFsm;
+using Hali_Framework;
 
 namespace Game.BattleScene
 {
@@ -8,6 +9,7 @@ namespace Game.BattleScene
         {
             base.OnEnter(fsm);
             UIMgr.Instance.RefocusPanel(fsm.Owner.BattlePanel, fsm.Owner.CurRole);
+            fsm.Owner.CurRole.Fsm.ChangeState<RoleMoveState>();
         }
     }
 }

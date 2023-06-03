@@ -1,4 +1,5 @@
 ﻿using System;
+using Game.BattleScene.Fsms.BattleRoleFsm;
 using Game.Model;
 using Hali_Framework;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace Game.BattleScene.BattleRole
     [RequireComponent(typeof(CapsuleCollider))]
     public class BattleEnemy : MonoBehaviour, IBattleRole
     {
+        private static int _fsmID = 1;
         public static readonly int BattleMove = Animator.StringToHash("move");
         public static readonly int BattleAim = Animator.StringToHash("aim");
         public static readonly int BattleShoot = Animator.StringToHash("shoot");
@@ -27,6 +29,7 @@ namespace Game.BattleScene.BattleRole
         private int _curAmmo;
         private bool _isDead;
         private BattleRoleState _roleState;
+        private IFsm<IBattleRole> _fsm;
         
         //组件
         private NavMeshAgent _agent;
@@ -40,6 +43,7 @@ namespace Game.BattleScene.BattleRole
         public AtkType AtkType => _atkType;
         public RoleType RoleType => _roleType;
         public GameObject Go => gameObject;
+        public IFsm<IBattleRole> Fsm => _fsm;
 
         //角色状态
         public bool IsControl { get; set; }
@@ -106,9 +110,13 @@ namespace Game.BattleScene.BattleRole
             _roleState = state;
 
             _isDead = false;
-            IsControl = false;
             AtkTarget = null;
             _anim.SetBool(BattleDead, false);
+            
+            //初始化状态机
+            _fsm = FsmMgr.Instance.CreateFsm($"{_roleType}_{_roleName}_{_fsmID++}", this,
+                new RoleResetState(), new RoleMoveState(), new RoleAimState(), new RoleDeadState());
+            _fsm.Start<RoleResetState>();
         }
         
         private void KillMe()
@@ -119,6 +127,8 @@ namespace Game.BattleScene.BattleRole
             _curAp = 0;
             _curAmmo = 0;
             _anim.SetBool(BattleDead, true);
+            FsmMgr.Instance.DestroyFsm(_fsm.Name);
+            _fsm = null;
         }
 
         #region 生命周期

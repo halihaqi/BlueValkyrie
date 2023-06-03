@@ -45,9 +45,8 @@ namespace Game.BattleScene
         public BattleRoundPanel BattleRoundPanel { get; set; }
 
         public IBattleRole CurRole => _curRole;
-
+        public RoleType CurRoleType => _curRole == null ? RoleType.Null : CurRole.RoleType;
         public BattleOverType OverType => _overType;
-
         public List<RoleType> CampTypes => _campTypes;
         
         //回合属性
@@ -136,6 +135,13 @@ namespace Game.BattleScene
             if (_camps.TryGetValue(type, out var camp))
                 return camp.soldiers;
             return null;
+        }
+
+        public int GetRoleCampIndex(IBattleRole role)
+        {
+            if (_camps.TryGetValue(role.RoleType, out var camp))
+                return camp.soldiers.IndexOf(role);
+            return -1;
         }
         
         public List<FlagEntity> GetFlags(RoleType type)
@@ -245,7 +251,13 @@ namespace Game.BattleScene
             _roundEngine.Start(type);
         }
 
-        public void WarRun()
+        public void WarRoleFight(IBattleRole role)
+        {
+            ChangeRole(role);
+            _battleFsm.ChangeState<BattleRunState>();
+        }
+
+        public void WarRoleReset()
         {
             _roundEngine.Run();
             EventMgr.Instance.TriggerEvent(ClientEvent.BATTLE_ROUND_RUN);

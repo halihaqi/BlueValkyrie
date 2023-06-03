@@ -76,20 +76,24 @@ namespace Game.BattleScene
                 fsm.Owner.JoinCamp(info);
             }
 
+            int panelLoaded = 0;
             //3.最后加载面板
-            InitPanel(fsm);
-        }
-
-        private void InitPanel(IFsm<BattleMaster> fsm)
-        {
-            // UIMgr.Instance.ShowPanel<BattlePanel>
-            //     (callback: panel => { fsm.Owner.BattlePanel = panel as BattlePanel; });
+            UIMgr.Instance.ShowPanel<BattlePanel>
+                (callback: panel =>
+                {
+                    fsm.Owner.BattlePanel = panel as BattlePanel;
+                    panelLoaded++;
+                });
             UIMgr.Instance.ShowPanel<BattleRoundPanel>
                 (callback: panel =>
                 {
                     fsm.Owner.BattleRoundPanel = panel as BattleRoundPanel;
-                    _initComplete = true;
+                    panelLoaded++;
                 });
+            while (panelLoaded != 2)
+                yield return null;
+            //加载完成
+            _initComplete = true;
         }
     }
 }

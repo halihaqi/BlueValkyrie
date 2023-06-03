@@ -10,7 +10,7 @@ namespace Game.UI.Controls
     public partial class UI_battle_role_form : ControlBase
     {
         [SerializeField] private RectTransform btnGroup;
-        private float _oriBtnY;
+        private Vector2 _oriBtnPos;
         private IBattleRole _role;
         
         protected internal override void OnInit()
@@ -18,7 +18,14 @@ namespace Game.UI.Controls
             base.OnInit();
             btn_fight.onClick.AddListener(OnFight);
             btn_rest.onClick.AddListener(OnRest);
-            _oriBtnY = btnGroup.anchoredPosition.y;
+            _oriBtnPos = btnGroup.anchoredPosition;
+        }
+
+        protected internal override void OnRecycle()
+        {
+            base.OnRecycle();
+            btn_fight.onClick.RemoveListener(OnFight);
+            btn_rest.onClick.RemoveListener(OnRest);
         }
 
         public void SetData(IBattleRole role, bool canChoose)
@@ -48,27 +55,19 @@ namespace Game.UI.Controls
             txt_name.text = role.RoleName;
             txt_hp.text = $"{role.CurHp}/{role.RoleState.maxHp}";
             txt_ammo.text = $"{role.CurAmmo}/{role.RoleState.maxAmmo}";
-            if (canChoose)
-            {
-                btnGroup.DOAnchorPosY(_oriBtnY, 0.5f);
-            }
-            else
-            {
-                btnGroup.DOAnchorPosY(_oriBtnY + 100, 0.5f);
-            }
+            btnGroup.anchoredPosition = canChoose ? _oriBtnPos : new Vector2(_oriBtnPos.x, _oriBtnPos.y + 100);
         }
 
         private void OnFight()
         {
             var fsm = FsmMgr.Instance.GetFsm<BattleMaster>(BattleConst.BATTLE_FSM);
-            fsm.Owner.ChangeRole(_role);
-            fsm.ChangeState<BattleRunState>();
+            fsm.Owner.WarRoleFight(_role);
         }
 
         private void OnRest()
         {
             var fsm = FsmMgr.Instance.GetFsm<BattleMaster>(BattleConst.BATTLE_FSM);
-            fsm.Owner.WarRun();
+            fsm.Owner.WarRoleReset();
         }
     }
 }

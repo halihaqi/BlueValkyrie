@@ -4,7 +4,6 @@ using DG.Tweening;
 using Game.Model;
 using Hali_Framework;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Game.UI.Controls
 {
@@ -32,7 +31,7 @@ namespace Game.UI.Controls
             { RoundTipType.EnemyRound, "敌方回合" },
             { RoundTipType.StudentWin, "己方胜利" },
             { RoundTipType.EnemyWin, "敌方胜利" },
-            { RoundTipType.BattleStart, "游戏开始" }
+            { RoundTipType.BattleStart, "战斗开始" }
         };
 
         public void ShowTip(RoundTipType tipType, Action callback)
@@ -63,12 +62,12 @@ namespace Game.UI.Controls
         {
             switch (type)
             {
+                case RoleType.Null:
+                    return RoundTipType.BattleStart;
                 case RoleType.Student:
                     return RoundTipType.StudentRound;
-                    break;
                 case RoleType.Enemy:
                     return RoundTipType.EnemyRound;
-                    break;
                 default:
                     return RoundTipType.Null;
             }

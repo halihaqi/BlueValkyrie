@@ -16,6 +16,7 @@ namespace Game.Model
 
     public enum RoleType
     {
+        Null,
         Student,
         Enemy,
     }

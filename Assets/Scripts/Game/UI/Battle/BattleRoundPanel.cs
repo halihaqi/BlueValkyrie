@@ -81,7 +81,7 @@ namespace Game.UI.Battle
             UpdateView();
             
             _imgMask.gameObject.SetActive(true);
-            _roundTipForm.ShowTip(_roundTipForm.GetTipType(_bm.CurRole.RoleType), () =>
+            _roundTipForm.ShowTip(_roundTipForm.GetTipType(_bm.CurRoleType), () =>
             {
                 _imgMask.gameObject.SetActive(false);
             });
@@ -91,11 +91,11 @@ namespace Game.UI.Battle
         {
             if (role == null)
             {
-                _battleRoleForm.SetAlpha(0);
+                _battleRoleForm.SetAlpha(false);
                 return;
             }
             
-            _battleRoleForm.SetAlpha(1);
+            _battleRoleForm.SetAlpha(true);
             _battleRoleForm.SetData(role, role.RoleType == RoleType.Student);
         }
         

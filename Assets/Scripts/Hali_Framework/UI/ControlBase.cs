@@ -134,6 +134,8 @@ namespace Hali_Framework
 
         public void SetAlpha(float alpha) => canvasGroup.alpha = Mathf.Clamp(alpha, 0, 1);
 
+        public void SetAlpha(bool isShow) => canvasGroup.alpha = isShow ? 1 : 0;
+
         protected virtual void BindControls(){}
 
         #region CustomControl

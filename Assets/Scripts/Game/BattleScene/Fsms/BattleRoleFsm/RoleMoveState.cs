@@ -19,7 +19,10 @@ namespace Game.BattleScene.Fsms.BattleRoleFsm
             _myFsm = fsm;
             //恢复操控
             _role.IsControl = true;
+            InputMgr.Instance.Enabled = true;
+            EventMgr.Instance.AddListener<KeyCode>(ClientEvent.GET_KEY, OnMove);
             EventMgr.Instance.AddListener<KeyCode>(ClientEvent.GET_KEY_DOWN, OnKeyDown);
+            _lastPosition = _role.Go.transform.position;
         }
 
         protected internal override void OnUpdate(IFsm<IBattleRole> fsm, float elapseSeconds, float realElapseSeconds)
@@ -44,7 +47,13 @@ namespace Game.BattleScene.Fsms.BattleRoleFsm
             base.OnLeave(fsm, isShutdown);
             _role = null;
             _myFsm = null;
+            EventMgr.Instance.RemoveListener<KeyCode>(ClientEvent.GET_KEY, OnMove);
             EventMgr.Instance.RemoveListener<KeyCode>(ClientEvent.GET_KEY_DOWN, OnKeyDown);
+        }
+
+        private void OnMove(KeyCode key)
+        {
+            
         }
         
         private void OnKeyDown(KeyCode keyCode)
